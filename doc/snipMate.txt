@@ -1,0 +1,227 @@
+*snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
+
+Snippets                                       *snippet* *snippets* *snipMate*
+Last Change: February 13, 2009
+
+|snipMate-description|   Description
+|snipMate-usage|         Usage
+|snipMate-syntax|        Snippet syntax
+|snipMate-features|      Features
+|snipMate-disadvantages| Disadvantages to TextMate
+|snipMate-contact|       Contact
+
+For Vim version 7.0 or later.
+This plugin only works if 'compatible' is not set.
+{Vi does not have any of these features}
+
+==============================================================================
+DESCRIPTION                                             *snipMate-description*
+
+snipMate.vim implements some of TextMate's snippets features in
+Vim. A snippet is a piece of often-typed text that you can
+insert into your document using a trigger word followed by a <tab>.
+
+For instance, in a C file using the default installation of
+snipMate.vim, if you type "for<tab>" in insert mode,
+it will expand a typical for loop in C: >
+
+ for (i = 0; i < count; i++) {
+
+ }
+
+
+To go to the next item in the loop, simply <tab>
+over to it; if there is repeated code, such as the "i" variable
+in this example, you can simply start typing once it's
+highlighted and all the matches specified in the snippet will
+be updated.
+
+==============================================================================
+USAGE                                                         *snipMate-usage*
+
+Snippets should be installed in the 'after' directory, usually located in
+'~/.vim/after'. Filetype specific snippets should be installed in
+'after/ftplugin', such as 'after/ftplugin/<filetype>_snips.vim'.
+See |ftplugins|. Global snippets should be installed in 'after/plugin'.
+To ensure user snippets are not lost when upgrading the plugin, name them
+using an ending other than "snips" such as "<filetype>_mysnips.vim"
+
+                                                          *Snipp* *GlobalSnip*
+Snipp and GlobalSnip Commands~
+
+Snippets are added via the "Snipp" and "GlobalSnip" commands. The syntax for
+these are "Snipp <trigger> <text>"; e.g.: >
+
+ exe "Snipp trigger The cursor will be placed here."
+ exe "GlobalSnip another_trigger foo"
+
+"Snipp" creates snippets local to the buffer, while "GlobalSnip" creates
+global snippets. "Snipp" is used instead of "Snip" to avoid conflicts with the
+imaps.vim script that uses that command name.
+
+These commands are conveniently bound to snippets themselves; "snip" and
+"gsnip", respectively. So to expand a Snipp command with double quotes,
+type snip<tab>. Single quote Snipp and GlobalSnip commands are bound
+to the snippets "snipp" and "gsnipp". See |literal-string| for the
+difference between single and double quotes.
+
+                                           *multi_snip* *Snipp!* *GlobalSnip!*
+To specify that a snippet can have multiple matches, use the Snipp or
+GlobalSnip command followed by a bang (!). The syntax for these are
+'Snipp! <trigger> "<name>" <text>'. (Note that the name must be
+enclosed in double quotes). E.g.: >
+
+ exe 'Snip! trigger "Snippet name #1" expand_this_text'
+ exe 'Snip! trigger "Snippet name #2" expand_THIS_text!'
+
+In this example, when "trigger<tab>" is typed, a numbered menu containing all
+of the names for the "trigger" will be shown; when the user presses the
+corresponding number, that snippet will then be expanded.
+
+To ensure snipMate.vim is loaded and 'compatible' is not set, make sure
+to add: >
+
+ if !exists('g:loaded_snips')
+     fini
+ en
+
+to the top of your snippets files.
+
+==============================================================================
+SYNTAX                                       *snipMate-syntax* *snipMate-${#}*
+
+Tab stops ~
+
+By default, the cursor is placed at the end of a snippet. To specify where the
+cursor is to be placed next, use "${#}", where the # is the number of the tab
+stop. E.g., to place the cursor first on the id of a <div> tag, and then allow
+the user to <tab> to the middle of it:
+ >
+ exe "Snipp div <div id=\"${1}\">\n\t${2}\n</div>"
+<
+                        *snipMate-placeholders* *snipMate-${#:}* *snipMate-$#*
+Placeholders ~
+
+Placeholder text can be supplied using "${#:text}", where # is the number of
+the tab stop. This text then can be copied throughout the snippet using "$#",
+given # is the same number as used before. So, to make a C for loop: >
+
+ exe "Snipp for for (${2:i}; $2 < ${1:count}; $1++) {\n\t${4}\n}"
+
+This will cause "count" to first be selected and change if the user starts
+typing. When <tab> is pressed, the "i" in ${2}'s position will be selected;
+all $2 variables will default to "i" and automatically be updated if the user
+starts typing.
+NOTE: "$#" syntax is used only for variables, not for tab stops as in TextMate.
+
+Variables within variables are also possible. For instance: >
+
+ exe 'Snipp opt <option value="${1:option}">${2:$1}</option>'
+
+Will, as usual, cause "option" to first be selected and update all the $1
+variables if the user starts typing. Since one of these variables is inside of
+${2}, this text will then be used as a placeholder for the next tab stop,
+allowing the user to change it if he wishes.
+
+To copy a value throughout a snippet without supplying default text, simply
+use the "${#:}" construct without the text; e.g.: >
+
+ exe 'Snipp foo${1:}bar$1'
+<                                                          *snipMate-commands*
+Interpolated Vim Script ~
+
+Snippets can also contain Vim script commands that are executed (via |eval()|)
+when the snippet is inserted. Commands are given inside backticks (`...`); for
+TextMates's functionality, use the |system()| function. E.g.: >
+
+ exe 'Snipp date `system("date +%Y-%m-%d")`'
+
+will insert the current date, assuming you are on a Unix system. Note you can
+also (and should) use |strftime()| for this example.
+
+Filename([{expr}, {defaultText}])             *snipMate-filename* *Filename()*
+
+Since the current filename is used often in snippets, a default function
+has been defined for it in snipMate.vim, appropriately called Filename().
+
+With no arguments, the default filename without an extension is returned;
+the first argument specifies what to place before or after the filename,
+and the second argument supplies the default text to be used if the file
+has not been named. "$1" in the first argument is replaced with the filename;
+if you only want the filename to be returned, the first argument can be left
+blank. Examples: >
+
+ exe 'Snipp filename `Filename()`'
+ exe 'Snipp filename_with_default `Filename("", "name")`'
+ exe 'Snipp filename_foo `Filename("$1_foo")`'
+
+
+The first example returns the filename if it the file has been named, and an
+empty string if it hasn't. The second returns the filename if it's been named,
+and "name" if it hasn't. The third returns the filename followed by "_foo" if
+it has been named, and an empty string if it hasn't.
+
+                                          *snipMate-settings* *g:snips_author*
+The g:snips_author string (similar to $TM_FULLNAME in TextMate) should be set
+to your name; it can then be used in snippets to automatically add it. E.g.: >
+
+ let g:snips_author = 'Hubert Farnsworth'
+ exe 'Snipp name `g:snips_author`'
+<
+                                                              *snipMate-remap*
+snipMate does not come with a setting to customize the trigger key, but you
+can remap it easily in the two lines it's defined in
+'~/.vim/after/plugin/snipMate.vim'. For instance, to change the trigger key
+to shift-tab, just change this: >
+ ino <tab> <c-r>=ExpandSnippet()<cr>
+ snor <tab> <esc>i<right><c-r>=ExpandSnippet()<cr>
+
+to this: >
+ ino <s-tab> <c-r>=ExpandSnippet()<cr>
+ snor <s-tab> <esc>i<right><c-r>=ExpandSnippet()<cr>
+
+==============================================================================
+FEATURES                                                   *snipMate-features*
+
+snipMate.vim has the following features among others:
+  - The syntax of snippets is very similar to TextMate's allowing
+    easy conversion.
+  - The position of the snippet is kept transparently (i.e. it does not use
+    regexes from text inserted in the buffer to track your position), which
+    allows you to escape out of an incomplete snippet, something particularly
+    useful in Vim.
+  - Variables in snippets are updated as-you-type
+  - Snippets can have multiple matches
+  - Snippets can be out of order. For instance, in a do...while loop, the
+    condition can be added before the code.
+
+==============================================================================
+DISADVANTAGES                                         *snipMate-disadvantages*
+
+snipMate.vim currently has the following disadvantages to TextMate's snippets:
+    - There is no way to go back a tab stop, like shift-tab in TextMate.
+    - There is no $0; the order of tab stops must be explicitly stated.
+    - Placeholders within placeholders are not possible. E.g.: >
+
+      '<div${1: id="${2:some_id}}">${3}</div>'
+<
+      In TextMate this would first highlight ' id="some_id"', and if
+      you hit delete it would automatically skip ${2} and go to ${3}
+      on the next <tab>, but if you didn't delete it it would highlight
+      "some_id" first. You cannot do this in snipMate.vim.
+    - Regex cannot be performed on variables, such as "${1/.*/\U&}"
+    - Placeholders cannot span multiple lines.
+    - Activating snippets in different scopes of the same file is
+      not possible.
+
+Perhaps some of these features will be added in a later release.
+
+==============================================================================
+CONTACT                                   *snipMate-contact* *snipMate-author*
+
+To contact the author (Michael Sanders), please email:
+ msanders42+snipmate <at> gmail <dot> com
+
+I greatly appreciate any suggestions or improvements offered for the script.
+
+vim:tw=78:ts=8:ft=help:norl:
