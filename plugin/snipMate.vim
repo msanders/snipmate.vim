@@ -114,26 +114,26 @@ fun! TriggerSnippet()
 		call feedkeys("\<esc>a", 'n') | call s:UpdateChangedSnip(0)
 	endif
 
-	if !exists('s:snipPos') " don't expand snippets within snippets
-		if !exists('s:sid') && exists('g:SuperTabMappingForward')
-					\ && g:SuperTabMappingForward == "<tab>"
-			call s:GetSuperTabSID()
-		endif
-		let word = s:GetSnippet()
-
-		if exists('s:snippet')
-			if s:snippet == ''
-				return unl s:snippet  " if user cancelled multi snippet, quit
-			endif
-			let col = col('.')-len(word)
-			" if word is a trigger for a snippet, delete the trigger & expand
-			" the snippet
-			exe 'sil s/'.word.'\%#//'
-			return s:ExpandSnippet(col)
-		endif
-		return exists('s:sid') ? {s:sid}_SuperTab('n') : "\<tab>"
+	if exists('s:snipPos')
+		return s:JumpTabStop()
 	endif
-	return s:JumpTabStop()
+
+	if !exists('s:sid') && exists('g:SuperTabMappingForward')
+				\ && g:SuperTabMappingForward == "<tab>"
+		call s:GetSuperTabSID()
+	endif
+	let word = s:GetSnippet()
+
+	" if word is a trigger for a snippet, delete the trigger & expand the snippet
+	if exists('s:snippet')
+		if s:snippet == ''
+			return unl s:snippet  " if user cancelled multi snippet, quit
+		endif
+		let col = col('.')-len(word)
+		sil exe 's/'.word.'\%#//'
+		return s:ExpandSnippet(col)
+	endif
+	return exists('s:sid') ? {s:sid}_SuperTab('n') : "\<tab>"
 endf
 
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
@@ -171,6 +171,12 @@ fun s:ExpandSnippet(col)
 		sil exe 's/\%'.col.'c.*//'
 	else | let afterCursor = '' | endif
 
+	" for some reason the cursor needs to move one right after this
+	let line = getline(lnum)
+	if line != '' && col == 1 && afterCursor == '' && &ve !~ 'all\|onemore'
+		let col += 1
+	endif
+
 	call s:ProcessSnippet()
 	if s:snippet == ''
 		return unl s:snippet " avoid an error if the snippet is now empty
@@ -178,20 +184,11 @@ fun s:ExpandSnippet(col)
 
 	let snip = split(substitute(s:snippet, '$\d\|${\d.\{-}}', '', 'g'), "\n", 1)
 	if afterCursor != '' | let snip[-1] .= afterCursor | endif
-	let line = getline(lnum)
 	call setline(lnum, line.snip[0])
 
-	" for some reason the cursor needs to move one right after this
-	if line != '' && col == 1 && afterCursor == '' && &ve !~ 'all\|onemore'
-		let col += 1
-	endif
 	" autoindent snippet according to previous indentation
 	let indent = matchend(line, '^.\{-}\ze\(\S\|$\)')+1
-	if !indent
-		call append(lnum, snip[1:])
-	else
-		call append(lnum, map(snip[1:], "'".strpart(line, 0, indent-1)."'.v:val"))
-	endif
+	call append(lnum, map(snip[1:], "'".strpart(line, 0, indent-1)."'.v:val"))
 
 	let snipLen = s:BuildTabStops(lnum, col-indent, indent)
 	unl s:snippet
@@ -242,6 +239,7 @@ fun s:ProcessSnippet()
 		endif
 		let i += 1
 	endw
+
 	if &et " expand tabs to spaces if 'expandtab' is set
 		let s:snippet = substitute(s:snippet, '\t',
 						\ repeat(' ', &sts ? &sts : &sw), 'g')
@@ -317,7 +315,8 @@ fun s:JumpTabStop()
 		let changeLine = s:endSnipLine - s:snipPos[s:curPos][0]
 		let changeCol  = s:endSnip - s:snipPos[s:curPos][1]
 		if exists('s:origWordLen')
-			let changeCol -= s:origWordLen | unl s:origWordLen
+			let changeCol -= s:origWordLen
+			unl s:origWordLen
 		endif
 	endif
 
