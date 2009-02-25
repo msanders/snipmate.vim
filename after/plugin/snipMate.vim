@@ -15,9 +15,9 @@ snor <left> <esc>bi
 " By default load snippets in ~/.vim/snippets/<filetype>
 if isdirectory($HOME.'/.vim/snippets')
 	if isdirectory($HOME.'/.vim/snippets/_')
-		cal ExtractSnips($HOME.'/.vim/snippets/_', '_')
-	en
+		call ExtractSnips($HOME.'/.vim/snippets/_', '_')
+	endif
 	au FileType * if !exists('s:did_'.&ft) && 
 					\ isdirectory($HOME.'/.vim/snippets/'.&ft)
 					\| cal ExtractSnips($HOME.'/.vim/snippets/'.&ft, &ft) | en
-en
+endif
