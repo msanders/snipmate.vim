@@ -1,7 +1,7 @@
-if !exists('loaded_snips') || exists('b:did_java_snips')
+if !exists('loaded_snips') || exists('s:did_java_snips')
 	fini
 en
-let b:did_java_snips = 1
+let s:did_java_snips = 1
 
 exe "Snipp main public static void main (String [] args)\n{\n\t${1:/* code */}\n}"
 exe 'Snipp pu public'

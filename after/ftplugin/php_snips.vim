@@ -1,7 +1,7 @@
-if !exists('loaded_snips') || exists('b:did_php_snips')
+if !exists('loaded_snips') || exists('s:did_php_snips')
 	fini
 en
-let b:did_php_snips = 1
+let s:did_php_snips = 1
 
 exe "Snipp php <?php\n${1}\n?>"
 exe 'Snipp ec echo "${1:string}"${2};'

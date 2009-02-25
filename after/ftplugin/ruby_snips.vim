@@ -1,7 +1,7 @@
-if !exists('loaded_snips') || exists('b:did_ruby_snips')
+if !exists('loaded_snips') || exists('s:did_ruby_snips')
 	fini
 en
-let b:did_ruby_snips = 1
+let s:did_ruby_snips = 1
 
 " New Block
 exe "Snipp =b =begin rdoc\n\t${1}\n=end"

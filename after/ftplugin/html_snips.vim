@@ -1,7 +1,7 @@
-if !exists('g:loaded_snips') || exists('b:did_html_snips')
+if !exists('g:loaded_snips') || exists('s:did_'.&ft.'_snips')
 	fini
 en
-let b:did_html_snips = 1
+let s:did_{&ft}_snips = 1
 
 " automatically add a closing '/' to the end of xhtml tags
 let c = &ft == 'xhtml' ? ' /' : ''
@@ -42,6 +42,7 @@ exe 'Snipp escape &#x238B;'
 " Generic Doctype
 exe "Snipp! doctype \"HTML 4.01 Strict\" <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\"\n\"http://www.w3.org/TR/html4/strict.dtd\">"
 exe "Snipp! doctype \"HTML 4.01 Transitional\" <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\"\n\"http://www.w3.org/TR/html4/loose.dtd\">"
+exe "Snipp! doctype \"HTML 5\" <!DOCTYPE HTML>"
 exe "Snipp! doctype \"XHTML 1.0 Frameset\" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
 exe "Snipp! doctype \"XHTML 1.0 Strict\" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
 exe "Snipp! doctype \"XHTML 1.0 Transitional\" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
@@ -50,6 +51,8 @@ exe "Snipp! doctype \"XHTML 1.1\" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1/
 exe "Snipp docts <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\"\n\"http://www.w3.org/TR/html4/strict.dtd\">"
 " HTML Doctype 4.01 Transitional
 exe "Snipp doct <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\"\n\"http://www.w3.org/TR/html4/loose.dtd\">"
+" HTML Doctype 5
+exe 'Snipp doct5 <!DOCTYPE HTML>'
 " XHTML Doctype 1.0 Frameset
 exe "Snipp docxf <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">"
 " XHTML Doctype 1.0 Strict
@@ -58,6 +61,7 @@ exe "Snipp docxs <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"h
 exe "Snipp docxt <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
 " XHTML Doctype 1.1
 exe "Snipp docx <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"\n\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">"
+exe "Snipp html <html>\n${1}\n</html>"
 exe "Snipp xhtml <html xmlns=\"http://www.w3.org/1999/xhtml\">\n${1}\n</html>"
 exe "Snipp body <body>\n\t${1}\n</body>"
 exe "Snipp head <head>\n\t<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"".c.">\n\t"

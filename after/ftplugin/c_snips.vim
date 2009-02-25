@@ -1,7 +1,7 @@
-if !exists('g:loaded_snips') || exists('b:did_c_snips')
+if !exists('loaded_snips') || exists('s:did_'.&ft.'_snips')
 	fini
 en
-let b:did_c_snips = 1
+let s:did_{&ft}_snips = 1
 
 " main()
 exe "Snipp main int main (int argc, char const* argv[])\n{\n\t${1}\n\treturn 0;\n}"
@@ -39,7 +39,7 @@ exe 'Snipp td typedef ${1:int} ${2:MyCustomType};'
 " Struct
 exe "Snipp st struct ${1:`Filename('$1_t', 'name')`} {\n\t${2:/* data */}\n}${3: /* optional variable list */};${4}"
 " Typedef struct
-exe "Snipp tds typedef struct {\n\t${2:/* data */}\n} ${1:`Filename('$1_t', 'name')`};"
+exe "Snipp tds typedef struct ${2:$1 }{\n\t${3:/* data */}\n} ${1:`Filename('$1_t', 'name')`};"
 " Class
 exe "Snipp cl class ${1:`Filename('$1_t', 'name')`} {\npublic:\n\t$1 (${2:arguments});\n\tvirtual ~$1 ();\n\nprivate:\n\t${3:/* data */}\n};"
 " Namespace

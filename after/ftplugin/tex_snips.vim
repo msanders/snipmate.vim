@@ -1,7 +1,7 @@
-if !exists('loaded_snips') || exists('b:did_tex_snips')
+if !exists('loaded_snips') || exists('s:did_tex_snips')
 	fini
 en
-let b:did_tex_snips = 1
+let s:did_tex_snips = 1
 
 " \begin{}...\end{}
 exe "Snipp begin \\begin{${1:env}}\n\t${2}\n\\end{$1}"
@@ -41,9 +41,9 @@ exe "Snipp subs \\subsubsection{${1:subsubsection name}} % (fold)\n\\label{ssub:
 exe "Snipp par \\paragraph{${1:paragraph name}} % (fold)\n\\label{par:${2:$1}}\n${3}\n% paragraph $2 (end)"
 " Sub Paragraph
 exe "Snipp subp \\subparagraph{${1:subparagraph name}} % (fold)\n\\label{subp:${2:$1}}\n${3}\n% subparagraph $2 (end)"
-exe 'Snipp itd \\item[${1:description}] ${2:item}'
-exe 'Snipp figure ${1:Figure}~\\ref{${2:fig:}}${3}'
-exe 'Snipp table ${1:Table}~\\ref{${2:tab:}}${3}'
-exe 'Snipp listing ${1:Listing}~\\ref{${2:list}}${3}'
-exe 'Snipp section ${1:Section}~\\ref{${2:sec:}}${3}'
-exe 'Snipp page ${1:page}~\\pageref{${2}}${3}'
+exe 'Snipp itd \item[${1:description}] ${2:item}'
+exe 'Snipp figure ${1:Figure}~\ref{${2:fig:}}${3}'
+exe 'Snipp table ${1:Table}~\ref{${2:tab:}}${3}'
+exe 'Snipp listing ${1:Listing}~\ref{${2:list}}${3}'
+exe 'Snipp section ${1:Section}~\ref{${2:sec:}}${3}'
+exe 'Snipp page ${1:page}~\pageref{${2}}${3}'

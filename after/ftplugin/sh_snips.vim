@@ -1,7 +1,7 @@
-if !exists('loaded_snips') || exists('b:did_sh_snips')
+if !exists('loaded_snips') || exists('s:did_sh_snips')
 	fini
 en
-let b:did_sh_snips = 1
+let s:did_sh_snips = 1
 
 exe "Snipp if if [[ ${1:condition} ]]; then\n\t${2:#statements}\nfi"
 exe "Snipp elif elif [[ ${1:condition} ]]; then\n\t${2:#statements}"
