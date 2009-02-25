@@ -130,7 +130,7 @@ fun! TriggerSnippet()
 			return unl s:snippet  " if user cancelled multi snippet, quit
 		endif
 		let col = col('.')-len(word)
-		sil exe 's/'.word.'\%#//'
+		sil exe 's/'.escape(word, '/\*[]').'\%#//'
 		return s:ExpandSnippet(col)
 	endif
 	return exists('s:sid') ? {s:sid}_SuperTab('n') : "\<tab>"
@@ -150,9 +150,10 @@ fun s:GetSnippet()
 			let s:snippet = s:ChooseSnippet(&ft, word)
 		elseif exists('s:multi_snips["_"]["'.word.'"]')
 			let s:snippet = s:ChooseSnippet('_', word)
+		else
+			if match(origWord, '\W') == -1 | break | en
+			let origWord = substitute(origWord, '.\{-}\W', '', '')
 		en
-		if match(origWord, '\W') == -1 | break | en
-		let origWord = substitute(origWord, '.\{-}\W', '', '')
 	endw
 	return origWord
 endf
