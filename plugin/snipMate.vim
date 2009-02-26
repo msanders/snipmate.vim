@@ -41,7 +41,7 @@ fun s:MakeSnippet(text, ft, multisnip)
 		let name   = strpart(a:text, space, quote-space)
 		let space  = stridx(a:text, ' ', quote)
 		let var    = 's:multi_snips'
-	else " evaluating a regular snippet
+	else
 		let var = 's:snippets'
 	endif
 	if !has_key({var}, a:ft) | let {var}[a:ft] = {} | endif
@@ -64,11 +64,12 @@ fun! ExtractSnips(dir, ft)
 	for path in split(globpath(a:dir, '*'), '\n')
 		if isdirectory(path)
 			for snipFile in split(globpath(path, '*.snippet'), '\n')
-				call s:ProcessFile(snipFile, a:ft, strpart(path, strridx(path, s:slash)+1))
+				call s:ProcessFile(snipFile, a:ft, 
+									\ strpart(path, strridx(path, s:slash)+1))
 			endfor
-			continue
+		else
+			call s:ProcessFile(path, a:ft)
 		endif
-		call s:ProcessFile(path, a:ft)
 	endfor
 	unl s:slash
 	let s:did_{a:ft} = 1
@@ -114,24 +115,22 @@ fun! TriggerSnippet()
 		call feedkeys("\<esc>a", 'n') | call s:UpdateChangedSnip(0)
 	endif
 
-	if exists('s:snipPos')
-		return s:JumpTabStop()
-	endif
-
 	if !exists('s:sid') && exists('g:SuperTabMappingForward')
 				\ && g:SuperTabMappingForward == "<tab>"
 		call s:GetSuperTabSID()
 	endif
-	let word = s:GetSnippet()
 
+	let word = s:GetSnippet()
 	" if word is a trigger for a snippet, delete the trigger & expand the snippet
 	if exists('s:snippet')
-		if s:snippet == ''
-			return unl s:snippet  " if user cancelled multi snippet, quit
+		if s:snippet == '' " if user cancelled a multi snippet, quit
+			return unl s:snippet
 		endif
 		let col = col('.')-len(word)
 		sil exe 's/'.escape(word, '/\*[]').'\%#//'
 		return s:ExpandSnippet(col)
+	elseif exists('s:snipPos')
+		return s:JumpTabStop()
 	endif
 	return exists('s:sid') ? {s:sid}_SuperTab('n') : "\<tab>"
 endf
@@ -195,18 +194,22 @@ fun s:ExpandSnippet(col)
 	unl s:snippet
 
 	if snipLen
-		let s:curPos      = 0
-		let s:snipLen     = snipLen
-		let s:endSnip     = s:snipPos[0][1]
+		if exists('s:snipLen')
+			let s:snipLen += snipLen-1 | let s:curPos += 1
+		else
+			let s:snipLen = snipLen | let s:curPos = 0
+		endif
+		let s:endSnip     = s:snipPos[s:curPos][1]
 		let s:endSnipLine = s:snipPos[s:curPos][0]
 
-		call cursor(s:snipPos[0][0], s:snipPos[0][1])
+		call cursor(s:snipPos[s:curPos][0], s:snipPos[s:curPos][1])
 		let s:prevLen = [line('$'), col('$')]
-		if s:snipPos[0][2] != -1 | return s:SelectWord() | endif
+		if s:snipPos[s:curPos][2] != -1 | return s:SelectWord() | endif
 	else
+		if !exists('s:snipLen') | unl s:snipPos | endif
 		" place cursor at end of snippet if no tab stop is given
-		unl s:snipPos | let newlines = len(snip)-1
-		call cursor(lnum + newlines, tab + len(snip[-1]) - len(afterCursor)
+		let newlines = len(snip)-1
+		call cursor(lnum + newlines, indent + len(snip[-1]) - len(afterCursor)
 					\ + (newlines ? 0: col))
 	endif
 	return ''
@@ -274,29 +277,28 @@ endf
 " second is the position (column) of the "$#" tab stop on the line.
 " If there are none of these tab stop, an empty list ([]) is returnrned
 fun s:BuildTabStops(lnum, col, indent)
-	let s:snipPos = []
-	let i = 1
+	let snipPos = [] | let i = 1
 	" temporarily delete placeholders
 	let cut_snip = substitute(s:snippet, '$\d', '', 'g')
 	wh stridx(s:snippet, '${'.i) != -1
-		let s:snipPos += [[a:lnum+s:Count(matchstr(cut_snip, '^.*\ze${'.i), "\n"),
+		let snipPos += [[a:lnum+s:Count(matchstr(cut_snip, '^.*\ze${'.i), "\n"),
 				\ a:indent+len(matchstr(substitute(cut_snip, '${'.i.'\@!\d.\{-}}', '', 'g'),
 				\ "^.*\\(\n\\|^\\)\\zs.*\\ze${".i.'.\{-}}')), -1]]
-		if s:snipPos[i-1][0] == a:lnum
-			let s:snipPos[i-1][1] += a:col
+		if snipPos[i-1][0] == a:lnum
+			let snipPos[i-1][1] += a:col
 		endif
 
 		" get all $# matches in another list, if ${#:name} is given
 		if stridx(cut_snip, '${'.i.':') != -1
 			let j = i-1
-			let s:snipPos[j][2] = len(matchstr(cut_snip, '${'.i.':\zs.\{-}\ze}'))
-			let s:snipPos[j] += [[]]
+			let snipPos[j][2] = len(matchstr(cut_snip, '${'.i.':\zs.\{-}\ze}'))
+			let snipPos[j] += [[]]
 			" temporarily delete all other tab stops/placeholders
 			let tempstr = substitute(s:snippet, '$'.i.'\@!\d\|${\d.\{-}}', '', 'g')
 			wh stridx(tempstr, '$'.i) != -1
 				let beforeMark = matchstr(tempstr, '^.\{-}\ze$'.i)
 				let linecount = a:lnum+s:Count(beforeMark, "\n")
-				let s:snipPos[j][3] += [[linecount,
+				let snipPos[j][3] += [[linecount,
 							\ a:indent+(linecount > a:lnum ?
 							\ len(matchstr(beforeMark, "^.*\n\\zs.*"))
 							\ : a:col+len(beforeMark))]]
@@ -305,6 +307,11 @@ fun s:BuildTabStops(lnum, col, indent)
 		endif
 		let i += 1
 	endw
+	if exists('s:snipPos') " allow nested snippets
+		let s:snipPos = extend(s:snipPos, snipPos, s:curPos+1)
+	else
+		let s:snipPos = snipPos
+	endif
 	return i-1
 endf
 
