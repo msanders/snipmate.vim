@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.7
+" Version:       0.71
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -8,7 +8,7 @@
 "                For more help see snipMate.txt; you can do this by using:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-" Last Modified: February 25, 2009.
+" Last Modified: February 26, 2009.
 
 if exists('loaded_snips') || &cp || version < 700
 	finish
@@ -150,9 +150,9 @@ fun s:GetSnippet()
 		elseif exists('s:multi_snips["_"]["'.word.'"]')
 			let s:snippet = s:ChooseSnippet('_', word)
 		else
-			if match(origWord, '\W') == -1 | break | en
+			if match(origWord, '\W') == -1 | break | endif
 			let origWord = substitute(origWord, '.\{-}\W', '', '')
-		en
+		endif
 	endw
 	return origWord
 endf
@@ -439,7 +439,7 @@ fun s:UpdateTabStops(changeLine, changeCol)
 				endfor
 			endif
 		endfor
-	en
+	endif
 endf
 
 fun s:SelectWord()
@@ -451,10 +451,12 @@ fun s:SelectWord()
 		let s:update    = 1
 		let s:endSnip   = -1
 		let s:startSnip = s:snipPos[s:curPos][1]-1
-	en
-	if !s:origWordLen | return '' | en
+	endif
+	if !s:origWordLen | return '' | endif
 	let l = col('.') != 1 ? 'l' : ''
-	if &sel == 'exclusive' | return "\<esc>".l.'v'.s:origWordLen."l\<c-g>" | en
+	if &sel == 'exclusive'
+		return "\<esc>".l.'v'.s:origWordLen."l\<c-g>"
+	endif
 	return s:origWordLen == 1 ? "\<esc>".l.'gh'
 							\ : "\<esc>".l.'v'.(s:origWordLen-1)."l\<c-g>"
 endf
@@ -538,27 +540,27 @@ fun s:UpdateSnip()
 				if pos[0] == curLine && pos[1] <= start
 					let s:startSnip -= changeLen
 					let s:endSnip -= changeLen
-				en
+				endif
 				for nPos in s:snipPos[s:curPos][3][(i):]
 					if nPos[0] == pos[0]
 						if nPos[1] > pos[1] || (nPos == [curLine, pos[1]] &&
 												\ nPos[1] > start)
 							let nPos[1] -= changeLen
-						en
-					elseif nPos[0] > pos[0] | break | en
+						endif
+					elseif nPos[0] > pos[0] | break | endif
 				endfor
 				let i += 1
-			en
+			endif
 
 			call setline(pos[0], substitute(getline(pos[0]), '\%'.pos[1].'c'.
 						\ s:oldWord, newWord, ''))
 		endfor
 		if oldStartSnip != s:startSnip
 			call cursor('.', startCol + s:startSnip - oldStartSnip)
-		en
+		endif
 
 		let s:oldWord = newWord
 		let s:snipPos[s:curPos][2] = newWordLen
-	en
+	endif
 endf
 " vim:noet:sw=4:ts=4:ft=vim
