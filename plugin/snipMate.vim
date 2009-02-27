@@ -61,9 +61,9 @@ endf
 
 fun! ExtractSnips(dir, ft)
 	let s:slash = has('win16') || has('win32') || has('win64') ? '\\' : '/'
-	for path in split(globpath(a:dir, '*'), '\n')
+	for path in split(globpath(a:dir, '*'), "\n")
 		if isdirectory(path)
-			for snipFile in split(globpath(path, '*.snippet'), '\n')
+			for snipFile in split(globpath(path, '*.snippet'), "\n")
 				call s:ProcessFile(snipFile, a:ft, 
 									\ strpart(path, strridx(path, s:slash)+1))
 			endfor
@@ -81,7 +81,7 @@ fun s:ProcessFile(file, ft, ...)
 	let keyword = matchstr(a:file, '.*'.s:slash.'\zs.*\ze\.snippet')
 	if keyword  == '' | return | endif
 	try
-		let text = join(readfile(a:file), '\n')
+		let text = join(readfile(a:file), "\n")
 	catch /E484/
 		echom "Error in snipMate.vim: couldn't read file: ".a:file
 	endtry
