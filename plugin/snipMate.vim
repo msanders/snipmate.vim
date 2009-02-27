@@ -21,6 +21,23 @@ com! -nargs=+ -bang GlobalSnip call s:MakeSnippet(<q-args>, '_', <bang>0)
 
 let s:snippets = {} | let s:multi_snips = {}
 
+"read in file based snippets for each filetype as we encounter the filetype
+au FileType * call s:CheckForSnippets()
+fun! s:CheckForSnippets()
+	if !exists('s:did_'.&ft) && isdirectory($HOME.'/.vim/snippets/'.&ft)
+		cal ExtractSnips($HOME.'/.vim/snippets/'.&ft, &ft)
+		let s:did_{&ft} = 1
+	en
+endf
+
+"read in the global file based snippets after vim starts
+au VimEnter * call s:ReadGlobalSnippets()
+fun! s:ReadGlobalSnippets()
+	if isdirectory($HOME.'/.vim/snippets/_')
+		call ExtractSnips($HOME.'/.vim/snippets/_', '_')
+	endif
+endf
+
 fun! Filename(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return a:0 == 2 ? a:2 : '' | endif

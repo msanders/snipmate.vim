@@ -11,14 +11,3 @@ snor <bs> b<bs>
 snor ' b<bs>'
 snor <right> <esc>a
 snor <left> <esc>bi
-
-" By default load snippets in ~/.vim/snippets/<filetype>
-" NOTE: I need to make sure this works on Windows
-if isdirectory($HOME.'/.vim/snippets')
-	if isdirectory($HOME.'/.vim/snippets/_')
-		call ExtractSnips($HOME.'/.vim/snippets/_', '_')
-	endif
-	au FileType * if !exists('s:did_'.&ft) && 
-					\ isdirectory($HOME.'/.vim/snippets/'.&ft)
-				\| cal ExtractSnips($HOME.'/.vim/snippets/'.&ft, &ft) | en
-endif
