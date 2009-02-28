@@ -11,3 +11,18 @@ snor <bs> b<bs>
 snor ' b<bs>'
 snor <right> <esc>a
 snor <left> <esc>bi
+
+" By default load snippets in ~/.vim/snippets/<filetype>
+if !exists('snippets_dir')
+	let snippets_dir = $HOME.(has('win16') || has('win32') || has('win64') ? 
+							\ '\vimfiles\snippets' : '/.vim/snippets/')
+endif
+if isdirectory(snippets_dir)
+	if isdirectory(snippets_dir)
+		call ExtractSnips(snippets_dir, '_')
+	endif
+	au FileType * if !exists('did_ft_'.&ft) && 
+				\ isdirectory(snippets_dir.&ft)
+					\| cal ExtractSnips(snippets_dir.&ft, &ft)
+				\| endif
+endif

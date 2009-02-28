@@ -8,7 +8,9 @@
 "                For more help see snipMate.txt; you can do this by using:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-" Last Modified: February 26, 2009.
+" Last Modified: February 28, 2009.
+" TO FIX: - filetype snippets
+"         - nesting
 
 if exists('loaded_snips') || &cp || version < 700
 	finish
@@ -20,23 +22,6 @@ com! -nargs=+ -bang Snipp call s:MakeSnippet(<q-args>, &ft, <bang>0)
 com! -nargs=+ -bang GlobalSnip call s:MakeSnippet(<q-args>, '_', <bang>0)
 
 let s:snippets = {} | let s:multi_snips = {}
-
-"read in file based snippets for each filetype as we encounter the filetype
-au FileType * call s:CheckForSnippets()
-fun! s:CheckForSnippets()
-	if !exists('s:did_'.&ft) && isdirectory($HOME.'/.vim/snippets/'.&ft)
-		cal ExtractSnips($HOME.'/.vim/snippets/'.&ft, &ft)
-		let s:did_{&ft} = 1
-	en
-endf
-
-"read in the global file based snippets after vim starts
-au VimEnter * call s:ReadGlobalSnippets()
-fun! s:ReadGlobalSnippets()
-	if isdirectory($HOME.'/.vim/snippets/_')
-		call ExtractSnips($HOME.'/.vim/snippets/_', '_')
-	endif
-endf
 
 fun! Filename(...)
 	let filename = expand('%:t:r')
@@ -81,7 +66,7 @@ fun! ExtractSnips(dir, ft)
 	for path in split(globpath(a:dir, '*'), "\n")
 		if isdirectory(path)
 			for snipFile in split(globpath(path, '*.snippet'), "\n")
-				call s:ProcessFile(snipFile, a:ft, 
+				call s:ProcessFile(snipFile, a:ft,
 									\ strpart(path, strridx(path, s:slash)+1))
 			endfor
 		else
@@ -89,7 +74,7 @@ fun! ExtractSnips(dir, ft)
 		endif
 	endfor
 	unl s:slash
-	let s:did_{a:ft} = 1
+	let g:did_ft_{a:ft} = 1
 endf
 
 " Processes a snippet file; optionally add the name of the parent directory
@@ -202,6 +187,9 @@ fun s:ExpandSnippet(col)
 	let snip = split(substitute(s:snippet, '$\d\|${\d.\{-}}', '', 'g'), "\n", 1)
 	if afterCursor != '' | let snip[-1] .= afterCursor | endif
 	call setline(lnum, line.snip[0])
+	if exists('s:snipPos')
+		call s:UpdateTabStops(len(snip)-1, len(snip[-1])-len(afterCursor))
+	endif
 
 	" autoindent snippet according to previous indentation
 	let indent = matchend(line, '^.\{-}\ze\(\S\|$\)')+1
@@ -212,7 +200,7 @@ fun s:ExpandSnippet(col)
 
 	if snipLen
 		if exists('s:snipLen')
-			let s:snipLen += snipLen-1 | let s:curPos += 1
+			let s:snipLen += snipLen | let s:curPos += 1
 		else
 			let s:snipLen = snipLen | let s:curPos = 0
 		endif
@@ -227,7 +215,7 @@ fun s:ExpandSnippet(col)
 		" place cursor at end of snippet if no tab stop is given
 		let newlines = len(snip)-1
 		call cursor(lnum + newlines, indent + len(snip[-1]) - len(afterCursor)
-					\ + (newlines ? 0: col))
+					\ + (newlines ? -1: col))
 	endif
 	return ''
 endf
@@ -277,7 +265,7 @@ fun s:Count(haystack, needle)
 	return counter
 endf
 
-" Sorry, this next section is a bit convoluted...
+" Sorry, this next function is a bit convoluted...
 " This function builds a list of a list of each tab stop in the snippet
 " containing:
 " 1.) The number of the current line plus the number of "\n"s (line
@@ -335,23 +323,15 @@ endf
 fun s:JumpTabStop()
 	if exists('s:update')
 		call s:UpdatePlaceholderTabStops()
-		let changeLine = 0 | let changeCol = 0
-	else
-		let changeLine = s:endSnipLine - s:snipPos[s:curPos][0]
-		let changeCol  = s:endSnip - s:snipPos[s:curPos][1]
-		if exists('s:origWordLen')
-			let changeCol -= s:origWordLen
-			unl s:origWordLen
-		endif
+		let updated = 1
 	endif
-
 	let s:curPos += 1
 	if s:curPos == s:snipLen
 		let sMode = s:endSnip == s:snipPos[s:curPos-1][1]+s:snipPos[s:curPos-1][2]
 		call s:RemoveSnippet()
 		return sMode ? "\<tab>" : TriggerSnippet()
 	endif
-	call s:UpdateTabStops(changeLine, changeCol)
+	if !exists('updated') | call s:UpdateTabStops() | endif
 
 	call cursor(s:snipPos[s:curPos][0], s:snipPos[s:curPos][1])
 
@@ -415,43 +395,48 @@ fun s:UpdatePlaceholderTabStops()
 	unl s:startSnip s:origWordLen s:update
 endf
 
-fun s:UpdateTabStops(changeLine, changeCol)
+fun s:UpdateTabStops(...)
+	let changeLine = a:0 ? a:1 : s:endSnipLine - s:snipPos[s:curPos-1][0]
+	let changeCol  = a:0 > 1 ? a:2 : s:endSnip - s:snipPos[s:curPos-1][1]
+	if exists('s:origWordLen')
+		let changeCol -= s:origWordLen | unl s:origWordLen
+	endif
 	" there's probably a more efficient way to do this as well...
 	let lnum = s:snipPos[s:curPos-1][0]
 	let col  = s:snipPos[s:curPos-1][1]
 	" update the line number of all proceeding tab stops if <cr> has
 	" been inserted
-	if a:changeLine != 0
+	if changeLine != 0
 		for pos in s:snipPos[(s:curPos):]
 			if pos[0] >= lnum
 				if pos[0] == lnum
-					let pos[1] += a:changeCol
+					let pos[1] += changeCol
 				endif
-				let pos[0] += a:changeLine
+				let pos[0] += changeLine
 			endif
 			if pos[2] != -1
 				for nPos in pos[3]
 					if nPos[0] >= lnum
 						if nPos[0] == lnum
-							let nPos[1] += a:changeCol
+							let nPos[1] += changeCol
 						endif
-						let nPos[0] += a:changeLine
+						let nPos[0] += changeLine
 					endif
 				endfor
 			endif
 		endfor
-	elseif a:changeCol != 0
+	elseif changeCol != 0
 		" update the column of all proceeding tab stops if text has
 		" been inserted/deleted in the current line
 		for pos in s:snipPos[(s:curPos):]
 			if pos[1] >= col && pos[0] == lnum
-				let pos[1] += a:changeCol
+				let pos[1] += changeCol
 			endif
 			if pos[2] != -1
 				for nPos in pos[3]
 					if nPos[0] > lnum | break | endif
 					if nPos[0] == lnum && nPos[1] >= col
-						let nPos[1] += a:changeCol
+						let nPos[1] += changeCol
 					endif
 				endfor
 			endif
