@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 Snippets                                       *snippet* *snippets* *snipMate*
-Last Change: February 21, 2009
+Last Change: February 28, 2009
 
 |snipMate-description|   Description
 |snipMate-usage|         Usage
@@ -40,7 +40,7 @@ be updated.
 USAGE                                                         *snipMate-usage*
 
 There are two ways to make snippets: file-based and command-based. File-based
-snippets are simply plain text files named after the trigger of the snippet
+snippets are simply *.snippet files named after the trigger of the snippet
 and placed in the directory of the filetype (<filetype>/<trigger>.snippet);
 command-based snippets are snippets defined using the |Snipp| and |GlobalSnip|
 commands. File-based snippets have the advantage of being easier to read, but
@@ -48,11 +48,14 @@ do not support some special characters in snippet triggers, while
 command-based snippets are obviously convenient for short snippets but can
 quickly get unreadable.
 
-                                                  *file-snippets* *'snippets'*
+                                 *file-snippets* *'snippets'* *g:snippets_dir*
 File-based snippets by default are looked for in the 'snippets' directory
 inside your home '.vim' directory, typically located in
-'~/.vim/snippets/<filetype>'. To change that location or add another one,
-edit '~/.vim/after/plugin/snipMate.vim' and use the |ExtractSnips()|function.
+'~/.vim/snippets/<filetype>' on *nix or '$HOME\vimfiles\snippets\<filetype>'
+on Windows. To change that location or add another one, change the
+g:snippets_dir variable in your |.vimrc| to your preferred directory, or use
+the |ExtractSnips()|function. NOTE: g:snippets_dir must end in a backslash or
+forward slash.
 
 ExtractSnips({directory}, {filetype})                         *ExtractSnips()*
 
@@ -104,6 +107,10 @@ enclosed in double quotes). E.g.: >
 In this example, when "trigger<tab>" is typed, a numbered menu containing all
 of the names for the "trigger" will be shown; when the user presses the
 corresponding number, that snippet will then be expanded.
+
+To create a create a snippet with multiple matches using file-based snippets,
+simply place all the snippets in a subdirectory with the trigger name, i.e.
+'snippets/<filetype>/<trigger>/<name>.snippet'.
 
 To ensure snipMate.vim is loaded and 'compatible' is not set, make sure
 to add: >
@@ -225,6 +232,10 @@ snipMate.vim has the following features among others:
   - Snippets can have multiple matches.
   - Snippets can be out of order. For instance, in a do...while loop, the
     condition can be added before the code.
+  - (New) File-based snippets are supported.
+  - (New) Triggers after non-word delimiters are expanded, e.g. "foo"
+    in "bar.foo".
+  - (New) Nested snippets are possible.
 
 ==============================================================================
 DISADVANTAGES                                         *snipMate-disadvantages*
