@@ -1,4 +1,4 @@
-" These are the mappings for snipMate.vim. Putting it here ensures that it 
+" These are the mappings for snipMate.vim. Putting it here ensures that it
 " will be mapped after other plugins such as supertab.vim.
 if exists('s:did_snips_mappings') || &cp || version < 700
 	finish
@@ -14,15 +14,14 @@ snor <left> <esc>bi
 
 " By default load snippets in ~/.vim/snippets/<filetype>
 if !exists('snippets_dir')
-	let snippets_dir = $HOME.(has('win16') || has('win32') || has('win64') ? 
+	let snippets_dir = $HOME.(has('win16') || has('win32') || has('win64') ?
 							\ '\vimfiles\snippets' : '/.vim/snippets/')
 endif
 if isdirectory(snippets_dir)
-	if isdirectory(snippets_dir)
-		call ExtractSnips(snippets_dir, '_')
+	if isdirectory(snippets_dir.'_')
+		call ExtractSnips(snippets_dir.'_', '_')
 	endif
-	au FileType * if !exists('did_ft_'.&ft) && 
-				\ isdirectory(snippets_dir.&ft)
+	au FileType * if !exists('did_ft_'.&ft) && isdirectory(snippets_dir.&ft)
 					\| cal ExtractSnips(snippets_dir.&ft, &ft)
 				\| endif
 endif
