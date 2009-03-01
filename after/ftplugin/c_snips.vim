@@ -1,7 +1,9 @@
-if !exists('loaded_snips') || exists('s:did_'.&ft.'_snips')
+if !exists('loaded_snips') || exists('s:did_c_snips')
 	fini
 en
-let s:did_{&ft}_snips = 1
+let s:did_c_snips = 1
+let ft  = &ft
+let &ft ='c'
 
 " main()
 exe "Snipp main int main (int argc, char const* argv[])\n{\n\t${1}\n\treturn 0;\n}"
@@ -29,7 +31,7 @@ exe "Snipp do do {\n\t${2:/* code */}\n} while (${1:/* condition */});"
 " While Loop
 exe "Snipp wh while (${1:/* condition */}) {\n\t${2:/* code */}\n}"
 " For Loop
-exe "Snipp for for (${2:i} = 0; $2 < ${1:count}; $2${3:++}) {\n\t${4:/* code */}\n}"
+exe "Snipp for for (${2:i} = 0; $2 < ${1:count}; $2${3:++}) {\n\t${4:/* code */}\n}${5}"
 " Custom For Loop
 exe "Snipp forr for (${1:i} = 0; ${2:$1 < 5}; $1${3:++}) {\n\t${4:/* code */}\n}"
 " Function
@@ -54,3 +56,4 @@ exe "Snipp vector std::vector<${1:char}> v${2};"
 exe 'Snipp pr printf("${1:%s}\n"${2});${3}'
 " fprintf (again, this isn't as nice as TextMate's version, but it works)
 exe 'Snipp fpr fprintf(${1:stderr}, "${2:%s}\n"${3});${4}'
+let &ft = ft

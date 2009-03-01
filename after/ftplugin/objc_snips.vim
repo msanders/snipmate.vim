@@ -2,6 +2,8 @@ if !exists('loaded_snips') || exists('s:did_objc_snips')
 	fini
 en
 let s:did_objc_snips = 1
+let ft  = &ft
+let &ft ='objc'
 
 " #import <...>
 exe 'Snipp imp #import <${1:Cocoa/Cocoa.h}>${2}'
@@ -52,3 +54,5 @@ exe 'Snipp alloc [[${1:foo} alloc] init]${2};${3}'
 exe 'Snipp ret [${1:foo} retain];${2}'
 " release
 exe 'Snipp rel [${1:foo} release];${2}'
+
+let &ft = ft

@@ -2,6 +2,8 @@ if !exists('loaded_snips') || exists('s:did_perl_snips')
 	fini
 en
 let s:did_perl_snips = 1
+let ft  = &ft
+let &ft ='perl'
 
 " Hash Pointer
 exe 'Snipp .  =>'
@@ -35,3 +37,5 @@ exe 'Snipp xfore ${1:expression} foreach @${2:array};${3}'
 exe "Snipp cl package ${1:ClassName};\n\nuse base qw(${2:ParentClass});\n\nsub new {\n\tmy $class = shift;\n\t$class = ref $class if ref $class;\n\tmy $self = bless {}, $class;\n\t$self;\n}\n\n1;${3}"
 " Read File
 exe "Snipp slurp my $${1:var};\n{ local $/ = undef; local *FILE; open FILE, \"<${2:file}\"; $$1 = <FILE>; close FILE }${2}"
+
+let &ft = ft

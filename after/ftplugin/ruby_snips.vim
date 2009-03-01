@@ -2,6 +2,8 @@ if !exists('loaded_snips') || exists('s:did_ruby_snips')
 	fini
 en
 let s:did_ruby_snips = 1
+let ft  = &ft
+let &ft ='ruby'
 
 " New Block
 exe "Snipp =b =begin rdoc\n\t${1}\n=end"
@@ -165,3 +167,4 @@ exe 'Snipp clafn split("::").inject(Object) { |par, const| par.const_get(const) 
 exe 'Snipp sinc class << self; self end'
 exe "Snipp nam namespace :${1:`Filename()`} do\n\t${2}\nend"
 exe "Snipp tas desc \"${1:Task description\}\"\ntask :${2:task_name => [:dependent, :tasks]} do\n\t${3}\nend"
+let &ft = ft

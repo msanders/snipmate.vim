@@ -2,6 +2,8 @@ if !exists('loaded_snips') || exists('s:did_java_snips')
 	fini
 en
 let s:did_java_snips = 1
+let ft  = &ft
+let &ft ='java'
 
 exe "Snipp main public static void main (String [] args)\n{\n\t${1:/* code */}\n}"
 exe 'Snipp pu public'
@@ -39,3 +41,5 @@ exe 'Snipp v ${1:String} ${2:var}${3: = null}${4};${5}'
 exe 'Snipp co static public final ${1:String} ${2:var} = ${3};${4}'
 exe 'Snipp cos static public final String ${1:var} = "${2}";${3}'
 exe 'Snipp as assert ${1:test} : "${2:Failure message}";${3}'
+
+let &ft = ft

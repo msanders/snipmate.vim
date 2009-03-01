@@ -8,6 +8,7 @@
 "                For more help see snipMate.txt; you can do this by using:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
+" Last Modified: February 28, 2009.
 
 if exists('loaded_snips') || &cp || version < 700
 	finish
@@ -119,7 +120,11 @@ fun! TriggerSnippet()
 		call s:GetSuperTabSID()
 	endif
 
-	let word = s:GetSnippet()
+	for filetype in split(&ft, '\.') " deal with dotted file-types
+		let word = s:GetSnippet(filetype)
+		if exists('s:snippet') | break | endif
+	endfor
+
 	" if word is a trigger for a snippet, delete the trigger & expand the snippet
 	if exists('s:snippet')
 		if s:snippet == '' " if user cancelled a multi snippet, quit
@@ -136,16 +141,16 @@ endf
 
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
 " the text after non-word characters is (e.g. check for "foo" in "bar.foo")
-fun s:GetSnippet()
+fun s:GetSnippet(ft)
 	let origWord = matchstr(getline('.'), '\S\+\%'.col('.').'c')
 	wh !exists('s:snippet')
 		let word = s:Hash(origWord)
-		if exists('s:snippets["'.&ft.'"]["'.word.'"]')
-			let s:snippet = s:snippets[&ft][word]
+		if exists('s:snippets["'.a:ft.'"]["'.word.'"]')
+			let s:snippet = s:snippets[a:ft][word]
 		elseif exists('s:snippets["_"]["'.word.'"]')
 			let s:snippet = s:snippets['_'][word]
-		elseif exists('s:multi_snips["'.&ft.'"]["'.word.'"]')
-			let s:snippet = s:ChooseSnippet(&ft, word)
+		elseif exists('s:multi_snips["'.a:ft.'"]["'.word.'"]')
+			let s:snippet = s:ChooseSnippet(a:ft, word)
 		elseif exists('s:multi_snips["_"]["'.word.'"]')
 			let s:snippet = s:ChooseSnippet('_', word)
 		else

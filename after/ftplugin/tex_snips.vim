@@ -2,6 +2,8 @@ if !exists('loaded_snips') || exists('s:did_tex_snips')
 	fini
 en
 let s:did_tex_snips = 1
+let ft = &ft
+let &ft = 'tex'
 
 " \begin{}...\end{}
 exe "Snipp begin \\begin{${1:env}}\n\t${2}\n\\end{$1}"
@@ -47,3 +49,5 @@ exe 'Snipp table ${1:Table}~\ref{${2:tab:}}${3}'
 exe 'Snipp listing ${1:Listing}~\ref{${2:list}}${3}'
 exe 'Snipp section ${1:Section}~\ref{${2:sec:}}${3}'
 exe 'Snipp page ${1:page}~\pageref{${2}}${3}'
+
+let &ft = ft

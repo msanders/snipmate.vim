@@ -2,6 +2,8 @@ if !exists('loaded_snips') || exists('s:did_php_snips')
 	fini
 en
 let s:did_php_snips = 1
+let ft  = &ft
+let &ft ='php'
 
 exe "Snipp php <?php\n${1}\n?>"
 exe 'Snipp ec echo "${1:string}"${2};'
@@ -65,3 +67,4 @@ exe "Snipp foreach foreach ($${1:variable} as $${2:key}) {\n\t${3:// code...}\n}
 exe "Snipp fun ${1:public }function ${2:FunctionName}(${3})\n{\n\t${4:// code...}\n}"
 " $... = array (...)
 exe "Snipp array $${1:arrayName} = array('${2}' => ${3});${4}"
+let &ft = ft
