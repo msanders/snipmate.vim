@@ -126,7 +126,7 @@ fun! TriggerSnippet()
 			return unl s:snippet
 		endif
 		let col = col('.')-len(word)
-		sil exe 's/'.escape(word, '/\*[]').'\%#//'
+		sil exe 's/'.escape(word, '.^$/\*[]').'\%#//'
 		return s:ExpandSnippet(col)
 	elseif exists('s:snipPos')
 		return s:JumpTabStop()
