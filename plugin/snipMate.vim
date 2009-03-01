@@ -8,9 +8,6 @@
 "                For more help see snipMate.txt; you can do this by using:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-" Last Modified: February 28, 2009.
-" TO FIX: - filetype snippets
-"         - nesting
 
 if exists('loaded_snips') || &cp || version < 700
 	finish
@@ -187,13 +184,19 @@ fun s:ExpandSnippet(col)
 	let snip = split(substitute(s:snippet, '$\d\|${\d.\{-}}', '', 'g'), "\n", 1)
 	if afterCursor != '' | let snip[-1] .= afterCursor | endif
 	call setline(lnum, line.snip[0])
-	if exists('s:snipPos')
-		call s:UpdateTabStops(len(snip)-1, len(snip[-1])-len(afterCursor))
-	endif
 
 	" autoindent snippet according to previous indentation
 	let indent = matchend(line, '^.\{-}\ze\(\S\|$\)')+1
 	call append(lnum, map(snip[1:], "'".strpart(line, 0, indent-1)."'.v:val"))
+
+	if exists('s:snipPos') " update tab stops if expanding nested snip
+		if exists('s:update')
+			call s:UpdateSnip(len(snip[-1])-len(afterCursor))
+			call s:UpdatePlaceholderTabStops()
+		else
+			call s:UpdateTabStops(len(snip)-1, len(snip[-1])-len(afterCursor))
+		endif
+	endif
 
 	let snipLen = s:BuildTabStops(lnum, col-indent, indent)
 	unl s:snippet
@@ -523,10 +526,10 @@ fun s:UpdateChangedSnip(entering)
 	endif
 endf
 
-fun s:UpdateSnip()
+fun s:UpdateSnip(...)
 	" using strpart() here avoids a bug if s:endSnip is negative that would
 	" happen with the getline('.')[(s:startSnip):(s:endSnip)] syntax
-	let newWordLen = s:endSnip - s:startSnip + 1
+	let newWordLen = a:0 ? a:1 : s:endSnip - s:startSnip + 1
 	let newWord    = strpart(getline('.'), s:startSnip, newWordLen)
 	if newWord != s:oldWord
 		let changeLen    = s:snipPos[s:curPos][2] - newWordLen
