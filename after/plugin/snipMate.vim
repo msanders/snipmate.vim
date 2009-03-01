@@ -23,7 +23,12 @@ if isdirectory(snippets_dir)
 	if isdirectory(snippets_dir.'_')
 		call ExtractSnips(snippets_dir.'_', '_')
 	endif
-	au FileType * if !exists('did_ft_'.&ft) && isdirectory(snippets_dir.&ft)
-					\| cal ExtractSnips(snippets_dir.&ft, &ft)
-				\| endif
+	au FileType * cal s:GetSnippets()
+	fun s:GetSnippets()
+		for ft in split(&ft, '\.')
+			if !exists('did_ft_'.&ft) && isdirectory(snippets_dir.ft)
+				cal ExtractSnips(snippets_dir.ft, ft)
+			endif
+		endfor
+	endf
 endif
