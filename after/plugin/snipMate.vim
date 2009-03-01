@@ -19,16 +19,16 @@ if !exists('snippets_dir')
 	let snippets_dir = $HOME.(has('win16') || has('win32') || has('win64') ?
 							\ '\vimfiles\snippets' : '/.vim/snippets/')
 endif
-if isdirectory(snippets_dir)
-	if isdirectory(snippets_dir.'_')
-		call ExtractSnips(snippets_dir.'_', '_')
-	endif
-	au FileType * cal s:GetSnippets()
-	fun s:GetSnippets()
-		for ft in split(&ft, '\.')
-			if !exists('did_ft_'.&ft) && isdirectory(snippets_dir.ft)
-				cal ExtractSnips(snippets_dir.ft, ft)
-			endif
-		endfor
-	endf
+if !isdirectory(snippets_dir) | finish | endif
+
+if isdirectory(snippets_dir.'_')
+	call ExtractSnips(snippets_dir.'_', '_')
 endif
+au FileType * call s:GetSnippets()
+fun s:GetSnippets()
+	for ft in split(&ft, '\.')
+		if !exists('g:did_ft_'.ft) && isdirectory(g:snippets_dir.ft)
+			call ExtractSnips(g:snippets_dir.ft, ft)
+		endif
+	endfor
+endf
