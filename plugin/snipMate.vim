@@ -8,7 +8,6 @@
 "                For more help see snipMate.txt; you can do this by using:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-" Last Modified: February 28, 2009.
 
 if exists('loaded_snips') || &cp || version < 700
 	finish
@@ -114,14 +113,16 @@ fun! TriggerSnippet()
 		if exists('s:sid') | return "\<c-n>" | endif
 		call feedkeys("\<esc>a", 'n') | call s:UpdateChangedSnip(0)
 	endif
-
 	if !exists('s:sid') && exists('g:SuperTabMappingForward')
 				\ && g:SuperTabMappingForward == "<tab>"
 		call s:GetSuperTabSID()
 	endif
 
-	for filetype in split(&ft, '\.') " deal with dotted file-types
-		let word = s:GetSnippet(filetype)
+	if exists('s:update') | return s:JumpTabStop() | endif
+
+	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
+	for filetype in split(&ft, '\.') + ['_'] " deal with dotted file-types
+		let trigger = s:GetSnippet(word, filetype)
 		if exists('s:snippet') | break | endif
 	endfor
 
@@ -130,8 +131,8 @@ fun! TriggerSnippet()
 		if s:snippet == '' " if user cancelled a multi snippet, quit
 			return unl s:snippet
 		endif
-		let col = col('.')-len(word)
-		sil exe 's/'.escape(word, '.^$/\*[]').'\%#//'
+		let col = col('.')-len(trigger)
+		sil exe 's/'.escape(trigger, '.^$/\*[]').'\%#//'
 		return s:ExpandSnippet(col)
 	endif
 	if exists('s:snipPos') | return s:JumpTabStop() | endif
@@ -140,18 +141,14 @@ endf
 
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
 " the text after non-word characters is (e.g. check for "foo" in "bar.foo")
-fun s:GetSnippet(ft)
-	let origWord = matchstr(getline('.'), '\S\+\%'.col('.').'c')
+fun s:GetSnippet(word, ft)
+	let origWord = a:word
 	wh !exists('s:snippet')
 		let word = s:Hash(origWord)
 		if exists('s:snippets["'.a:ft.'"]["'.word.'"]')
 			let s:snippet = s:snippets[a:ft][word]
-		elseif exists('s:snippets["_"]["'.word.'"]')
-			let s:snippet = s:snippets['_'][word]
 		elseif exists('s:multi_snips["'.a:ft.'"]["'.word.'"]')
 			let s:snippet = s:ChooseSnippet(a:ft, word)
-		elseif exists('s:multi_snips["_"]["'.word.'"]')
-			let s:snippet = s:ChooseSnippet('_', word)
 		else
 			if match(origWord, '\W') == -1 | break | endif
 			let origWord = substitute(origWord, '.\{-}\W', '', '')
@@ -222,7 +219,7 @@ fun s:ExpandSnippet(col)
 		" place cursor at end of snippet if no tab stop is given
 		let newlines = len(snip)-1
 		call cursor(lnum + newlines, indent + len(snip[-1]) - len(afterCursor)
-					\ + (newlines ? -1: col))
+					\ + (newlines ? 0: col-1))
 	endif
 	return ''
 endf
