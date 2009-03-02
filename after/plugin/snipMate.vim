@@ -17,7 +17,7 @@ au FileType objc,cpp,cs let &ft = expand('<amatch>').'.c'
 " By default load snippets in ~/.vim/snippets/<filetype>
 if !exists('snippets_dir')
 	let snippets_dir = $HOME.(has('win16') || has('win32') || has('win64') ?
-							\ '\vimfiles\snippets' : '/.vim/snippets/')
+							\ '\vimfiles\snippets\' : '/.vim/snippets/')
 endif
 if !isdirectory(snippets_dir) | finish | endif
 
