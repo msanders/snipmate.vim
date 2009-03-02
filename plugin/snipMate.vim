@@ -118,7 +118,9 @@ fun! TriggerSnippet()
 		call s:GetSuperTabSID()
 	endif
 
-	if exists('s:update') | return s:JumpTabStop() | endif
+	if exists('s:snipPos') && s:endSnip == s:snipPos[s:curPos][1]+s:snipPos[s:curPos][2]
+		return s:JumpTabStop() " don't treat placeholder text as a trigger
+	endif
 
 	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
 	for filetype in split(&ft, '\.') + ['_'] " deal with dotted file-types
@@ -131,7 +133,7 @@ fun! TriggerSnippet()
 		if s:snippet == '' " if user cancelled a multi snippet, quit
 			return unl s:snippet
 		endif
-		let col = col('.')-len(trigger)
+		let col = col('.') - len(trigger)
 		sil exe 's/'.escape(trigger, '.^$/\*[]').'\%#//'
 		return s:ExpandSnippet(col)
 	endif
@@ -190,7 +192,7 @@ fun s:ExpandSnippet(col)
 	let indent = matchend(line, '^.\{-}\ze\(\S\|$\)')+1
 	call append(lnum, map(snip[1:], "'".strpart(line, 0, indent-1)."'.v:val"))
 
-	if exists('s:snipPos') " update tab stops if expanding nested snip
+	if exists('s:snipPos') && stridx(s:snippet, '${1') != -1
 		if exists('s:update')
 			call s:UpdateSnip(len(snip[-1])-len(afterCursor))
 			call s:UpdatePlaceholderTabStops()
@@ -327,15 +329,16 @@ endf
 fun s:JumpTabStop()
 	if exists('s:update')
 		call s:UpdatePlaceholderTabStops()
-		let updated = 1
+	else
+		call s:UpdateTabStops()
 	endif
+
 	let s:curPos += 1
 	if s:curPos == s:snipLen
 		let sMode = s:endSnip == s:snipPos[s:curPos-1][1]+s:snipPos[s:curPos-1][2]
 		call s:RemoveSnippet()
 		return sMode ? "\<tab>" : TriggerSnippet()
 	endif
-	if !exists('updated') | call s:UpdateTabStops() | endif
 
 	call cursor(s:snipPos[s:curPos][0], s:snipPos[s:curPos][1])
 
@@ -400,18 +403,18 @@ fun s:UpdatePlaceholderTabStops()
 endf
 
 fun s:UpdateTabStops(...)
-	let changeLine = a:0 ? a:1 : s:endSnipLine - s:snipPos[s:curPos-1][0]
-	let changeCol  = a:0 > 1 ? a:2 : s:endSnip - s:snipPos[s:curPos-1][1]
+	let changeLine = a:0 ? a:1 : s:endSnipLine - s:snipPos[s:curPos][0]
+	let changeCol  = a:0 > 1 ? a:2 : s:endSnip - s:snipPos[s:curPos][1]
 	if exists('s:origWordLen')
 		let changeCol -= s:origWordLen | unl s:origWordLen
 	endif
 	" there's probably a more efficient way to do this as well...
-	let lnum = s:snipPos[s:curPos-1][0]
-	let col  = s:snipPos[s:curPos-1][1]
+	let lnum = s:snipPos[s:curPos][0]
+	let col  = s:snipPos[s:curPos][1]
 	" update the line number of all proceeding tab stops if <cr> has
 	" been inserted
 	if changeLine != 0
-		for pos in s:snipPos[(s:curPos):]
+		for pos in s:snipPos[(s:curPos+1):]
 			if pos[0] >= lnum
 				if pos[0] == lnum
 					let pos[1] += changeCol
@@ -432,7 +435,7 @@ fun s:UpdateTabStops(...)
 	elseif changeCol != 0
 		" update the column of all proceeding tab stops if text has
 		" been inserted/deleted in the current line
-		for pos in s:snipPos[(s:curPos):]
+		for pos in s:snipPos[(s:curPos+1):]
 			if pos[1] >= col && pos[0] == lnum
 				let pos[1] += changeCol
 			endif
