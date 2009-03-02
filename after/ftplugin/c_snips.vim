@@ -2,8 +2,7 @@ if !exists('loaded_snips') || exists('s:did_c_snips')
 	fini
 en
 let s:did_c_snips = 1
-let ft  = &ft
-let &ft ='c'
+let snippet_filetype = 'c'
 
 " main()
 exe "Snipp main int main (int argc, char const* argv[])\n{\n\t${1}\n\treturn 0;\n}"
@@ -56,4 +55,3 @@ exe "Snipp vector std::vector<${1:char}> v${2};"
 exe 'Snipp pr printf("${1:%s}\n"${2});${3}'
 " fprintf (again, this isn't as nice as TextMate's version, but it works)
 exe 'Snipp fpr fprintf(${1:stderr}, "${2:%s}\n"${3});${4}'
-let &ft = ft

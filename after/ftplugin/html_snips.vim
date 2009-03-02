@@ -1,13 +1,11 @@
-let filetype = stridx(&ft, 'xhtml') > -1 ? 'xhtml' : 'html'
-if !exists('g:loaded_snips') || exists('s:did_'.filetype.'_snips')
+let snippet_filetype = stridx(&ft, 'xhtml') > -1 ? 'xhtml' : 'html'
+if !exists('g:loaded_snips') || exists('s:did_'.snippet_filetype.'_snips')
 	fini
 en
-let s:did_{filetype}_snips = 1
-let ft  = &ft
-let &ft = filetype
+let s:did_{snippet_filetype}_snips = 1
 
 " automatically add a closing '/' to the end of xhtml tags
-let c = filetype == 'xhtml' ? ' /' : ''
+let c = snippet_filetype == 'xhtml' ? ' /' : ''
 
 " Some useful Unicode entities
 " Non-Breaking Space
@@ -95,4 +93,3 @@ exe 'Snipp optt <option>${1:option}</option>${2}'
 exe "Snipp select <select name=\"${1:some_name}\" id=\"${2:$1}\">\n\t<option value=\"${3:option}\">${4:$3}</option>\n</select>${5}"
 exe "Snipp table <table border=\"${1:0}\">\n\t<tr><th>${2:Header}</th></tr>\n\t<tr><th>${3:Data}</th></tr>\n</table>${4}"
 exe 'Snipp textarea <textarea name="${1:Name}" rows="${2:8}" cols="${3:40}">${4}</textarea>${5}'
-let &ft = ft

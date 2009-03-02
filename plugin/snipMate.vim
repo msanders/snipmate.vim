@@ -16,7 +16,7 @@ endif
 let loaded_snips = 1
 if !exists('snips_author') | let snips_author = 'Me' | endif
 
-com! -nargs=+ -bang Snipp call s:MakeSnippet(<q-args>, &ft, <bang>0)
+com! -nargs=+ -bang Snipp call s:MakeSnippet(<q-args>, snippet_filetype, <bang>0)
 com! -nargs=+ -bang GlobalSnip call s:MakeSnippet(<q-args>, '_', <bang>0)
 
 let s:snippets = {} | let s:multi_snips = {}
@@ -133,9 +133,8 @@ fun! TriggerSnippet()
 		let col = col('.')-len(word)
 		sil exe 's/'.escape(word, '.^$/\*[]').'\%#//'
 		return s:ExpandSnippet(col)
-	elseif exists('s:snipPos')
-		return s:JumpTabStop()
 	endif
+	if exists('s:snipPos') | return s:JumpTabStop() | endif
 	return exists('s:sid') ? {s:sid}_SuperTab('n') : "\<tab>"
 endf
 

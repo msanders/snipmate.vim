@@ -12,7 +12,7 @@ snor ' b<bs>'
 snor <right> <esc>a
 snor <left> <esc>bi
 
-au FileType objc,cpp,cs let &ft .= '.c'
+au FileType objc,cpp,cs let &ft = expand('<amatch>').'.c'
 
 " By default load snippets in ~/.vim/snippets/<filetype>
 if !exists('snippets_dir')

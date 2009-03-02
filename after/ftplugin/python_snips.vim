@@ -2,8 +2,7 @@ if !exists('loaded_snips') || exists('s:did_python_snips')
 	fini
 en
 let s:did_python_snips = 1
-let ft  = &ft
-let &ft ='python'
+let snippet_filetype = 'python'
 
 " New Class
 exe "Snipp cl class ${1:ClassName}(${2:object}):\n\t\"\"\"${3:docstring for $1}\"\"\"\n\tdef __init__(self, ${4:arg}):\n\t\t${5:super($1, self).__init__()}\n\t\tself.$4 = $4\n\t\t${6}"
@@ -28,5 +27,3 @@ exe "Snipp tryef try:\n\t${1:pass}\nexcept ${2:Exception}, ${3:e}:\n\t${4:raise 
 exe "Snipp ifmain if __name__ == '__main__':\n\t${1:main()}"
 " __magic__
 exe 'Snipp _ __${1:init}__${2}'
-
-let &ft = ft
