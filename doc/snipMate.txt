@@ -105,14 +105,16 @@ To create a create a snippet with multiple matches using file-based snippets,
 simply place all the snippets in a subdirectory with the trigger name, i.e.
 'snippets/<filetype>/<trigger>/<name>.snippet'.
 
-To ensure snipMate.vim is loaded and 'compatible' is not set, make sure
-to add: >
+To ensure snipMate.vim is loaded, 'compatible' is not set, and your snippet
+file is only loaded once make sure to add: >
 
- if !exists('g:loaded_snips')
-     fini
- en
+ if !exists('g:loaded_snips') || exists('s:did_my_snips')
+     finish
+ endif
+ let s:did_my_snips = 1
 
-to the top of your snippets files.
+to the top of your snippets files. The snippet "guard" comes with snipMate to
+automate this if you'd rather not type it all out.
 
 ------------------------------------------------------------------------------
 
