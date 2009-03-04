@@ -32,3 +32,4 @@ fun s:GetSnippets()
 		endif
 	endfor
 endf
+" vim:noet:sw=4:ts=4:ft=vim
