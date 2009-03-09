@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: March 2, 2009
+Last Change: March 8, 2009
 
 |snipMate-description|   Description
 |snipMate-usage|         Usage
@@ -39,14 +39,14 @@ be updated.
 ==============================================================================
 USAGE                                                         *snipMate-usage*
 
-There are two ways to make snippets: file-based and command-based. File-based
-snippets are simply *.snippet files named after the trigger of the snippet
-placed in the directory of the filetype (<filetype>/<trigger>.snippet);
-command-based snippets are snippets defined using the |Snipp| and |GlobalSnip|
-commands. File-based snippets have the advantage of being easier to read, but
-do not support some special characters in snippet triggers, while
-command-based snippets are obviously convenient for short snippets but can
-quickly get unreadable.
+There are currently two ways to make snippets: file-based and command-based.
+File-based snippets are simply *.snippet files named after the trigger of
+the snippet placed in the directory of the filetype
+(<filetype>/<trigger>.snippet); command-based snippets are snippets defined
+using the |Snipp| and |GlobalSnip| commands. File-based snippets have the
+advantage of being easier to read, but do not support special characters in
+snippet triggers, while command-based snippets are obviously convenient for
+short snippets but can quickly get unreadable.
 
                                                             *command-snippets*
 ------------------------------------------------------------------------------
@@ -200,7 +200,7 @@ TextMates's functionality, use the |system()| function. E.g.: >
 will insert the current date, assuming you are on a Unix system. Note that you
 can also (and should) use |strftime()| for this example.
 
-Filename([{expr}, {defaultText}])             *snipMate-filename* *Filename()*
+Filename([{expr}] [, {defaultText}])             *snipMate-filename* *Filename()*
 
 Since the current filename is used often in snippets, a default function
 has been defined for it in snipMate.vim, appropriately called Filename().
