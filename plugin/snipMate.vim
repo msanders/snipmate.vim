@@ -63,8 +63,8 @@ fun! ExtractSnips(dir, ft)
 	for path in split(globpath(a:dir, '*'), "\n")
 		if isdirectory(path)
 			for snipFile in split(globpath(path, '*.snippet'), "\n")
-				call s:ProcessFile(snipFile, a:ft,
-								\ strpart(path, strridx(path, slash)+1, slash))
+				call s:ProcessFile(snipFile, a:ft, slash,
+								\  strpart(path, strridx(path, slash) + 1))
 			endfor
 		else
 			call s:ProcessFile(path, a:ft, slash)
