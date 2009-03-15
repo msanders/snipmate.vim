@@ -175,19 +175,18 @@ fun s:ExpandSnippet(col)
 
 	let snip = split(substitute(s:snippet, '$\d\|${\d.\{-}}', '', 'g'), "\n", 1)
 
-	let afterCursor = strpart(getline('.'), col-1)
+	let line = getline(lnum)
 	if afterCursor != "\t" && afterCursor != ' '
-		sil exe 's/\%'.col.'c.*//'
+		let line = strpart(line, 0, col - 1)
 		let snip[-1] .= afterCursor
 	else
 		let afterCursor = ''
 		" For some reason the cursor needs to move one right after this
-		if getline(lnum) != '' && col == 1 && &ve !~ 'all\|onemore'
+		if line != '' && col == 1 && &ve !~ 'all\|onemore'
 			let col += 1
 		endif
 	endif
 
-	let line = getline(lnum)
 	call setline(lnum, line.snip[0])
 
 	" Autoindent snippet according to previous indentation
@@ -229,7 +228,7 @@ fun s:ExpandSnippet(col)
 endf
 
 fun s:ProcessSnippet()
-	" Evaluate eval (`...`) expressions
+	" Evaluate eval (`...`) expressions.
 	" Using a loop here instead of a regex fixes a bug with nested "\=".
 	if stridx(s:snippet, '`') != -1
 		wh match(s:snippet, '`.\{-}`') != -1
@@ -241,12 +240,12 @@ fun s:ProcessSnippet()
 	endif
 
 	" Place all text after a colon in a tab stop after the tab stop
-	" (e.g. "${#:foo}" becomes "${:foo}foo")
+	" (e.g. "${#:foo}" becomes "${:foo}foo").
 	" This helps tell the position of the tab stops later.
 	let s:snippet = substitute(s:snippet, '${\d:\(.\{-}\)}', '&\1', 'g')
 
 	" Update the s:snippet so that all the $# become
-	" the text after the colon in their associated ${#}
+	" the text after the colon in their associated ${#}.
 	" (e.g. "${1:foo}" turns all "$1"'s into "foo")
 	let i = 1
 	wh stridx(s:snippet, '${'.i) != -1
@@ -288,9 +287,10 @@ endf
 fun s:BuildTabStops(lnum, col, indent)
 	let snipPos = []
 	let i = 1
+	let withoutVars = substitute(s:snippet, '$\d', '', 'g')
 	wh stridx(s:snippet, '${'.i) != -1
-		let beforeTabStop = matchstr(s:snippet, '^.*\ze${'.i)
-		let withoutOthers = substitute(s:snippet, '$\d\|${'.i.'\@!\d.\{-}}', '', 'g')
+		let beforeTabStop = matchstr(withoutVars, '^.*\ze${'.i)
+		let withoutOthers = substitute(withoutVars, '$\d\|${'.i.'\@!\d.\{-}}', '', 'g')
 		let snipPos += [[a:lnum + s:Count(beforeTabStop, "\n"),
 						\ a:indent + len(matchstr(withoutOthers,
 						\ "^.*\\(\n\\|^\\)\\zs.*\\ze${".i)), -1]]
@@ -299,9 +299,9 @@ fun s:BuildTabStops(lnum, col, indent)
 		endif
 
 		" Get all $# matches in another list, if ${#:name} is given
-		if stridx(s:snippet, '${'.i.':') != -1
+		if stridx(withoutVars, '${'.i.':') != -1
 			let j = i-1
-			let snipPos[j][2] = len(matchstr(s:snippet, '${'.i.':\zs.\{-}\ze}'))
+			let snipPos[j][2] = len(matchstr(withoutVars, '${'.i.':\zs.\{-}\ze}'))
 			let snipPos[j] += [[]]
 			let withoutOthers = substitute(s:snippet, '${\d.\{-}}\|$'.i.'\@!\d', '', 'g')
 			wh stridx(withoutOthers, '$'.i) != -1
@@ -488,19 +488,19 @@ fun s:UpdateChangedSnip(entering)
 			let s:origSnipPos = s:startSnip
 			let s:origPos     = deepcopy(s:snipPos[s:curPos][3])
 		endif
-		let col = col('.')-1
+		let col = col('.') - 1
 
 		if s:endSnip != -1
 			let changeLen = col('$') - s:prevLen[1]
 			let s:endSnip += changeLen
 		else " When being updated the first time, after leaving select mode
 			if a:entering | return | endif
-			let s:endSnip = col-1
+			let s:endSnip = col - 1
 		endif
 
 		" If the cursor moves outside the snippet, quit it
 		if line('.') != s:snipPos[s:curPos][0] || col < s:startSnip ||
-					\ col-1 > s:endSnip
+					\ col - 1 > s:endSnip
 			unl! s:startSnip s:origWordLen s:origPos s:update
 			return s:RemoveSnippet()
 		endif
