@@ -16,6 +16,7 @@ let loaded_snips = 1
 if !exists('snips_author') | let snips_author = 'Me' | endif
 
 com! -nargs=+ -bang Snipp call s:MakeSnippet(<q-args>, snippet_filetype, <bang>0)
+com! -nargs=+ -bang BufferSnip call s:MakeSnippet(<q-args>, bufnr('%'), <bang>0)
 com! -nargs=+ -bang GlobalSnip call s:MakeSnippet(<q-args>, '_', <bang>0)
 
 let s:snippets = {} | let s:multi_snips = {}
@@ -26,7 +27,7 @@ fun! Filename(...)
 	return !a:0 || a:1 == '' ? filename : substitute(a:1, '$1', filename, 'g')
 endf
 
-fun s:MakeSnippet(text, ft, multisnip)
+fun s:MakeSnippet(text, scope, multisnip)
 	let space = stridx(a:text, ' ')
 	let trigger = strpart(a:text, 0, space)
 	if a:multisnip
@@ -38,14 +39,14 @@ fun s:MakeSnippet(text, ft, multisnip)
 	else
 		let var = 's:snippets'
 	endif
-	if !has_key({var}, a:ft) | let {var}[a:ft] = {} | endif
+	if !has_key({var}, a:scope) | let {var}[a:scope] = {} | endif
 	let end = strpart(a:text, space + 1)
 
 	if end == '' || space == '' || (a:multisnip && name == '')
 		echom 'Error in snipMate.vim: Snippet '.a:text.' is undefined.'
-	elseif !has_key({var}[a:ft], trigger)
-		let {var}[a:ft][trigger] = a:multisnip ? [[name, end]] : end
-	elseif a:multisnip | let {var}[a:ft][trigger] += [[name, end]]
+	elseif !has_key({var}[a:scope], trigger)
+		let {var}[a:scope][trigger] = a:multisnip ? [[name, end]] : end
+	elseif a:multisnip | let {var}[a:scope][trigger] += [[name, end]]
 	else
 		echom 'Warning in snipMate.vim: Snippet '.strpart(a:text, 0, stridx(a:text, ' '))
 				\ .' is already defined. See :h multi_snip for help on snippets'
@@ -90,16 +91,16 @@ fun s:RemoveSnippet()
 	unl s:snipPos s:curPos s:snipLen s:endSnip s:endSnipLine s:prevLen
 endf
 
-fun s:ChooseSnippet(ft, trigger)
+fun s:ChooseSnippet(scope, trigger)
 	let snippet = []
 	let i = 1
-	for snip in s:multi_snips[a:ft][a:trigger]
+	for snip in s:multi_snips[a:scope][a:trigger]
 		let snippet += [i.'. '.snip[0]]
 		let i += 1
 	endfor
-	if i == 2 | return s:multi_snips[a:ft][a:trigger][0][1] | endif
+	if i == 2 | return s:multi_snips[a:scope][a:trigger][0][1] | endif
 	let num = inputlist(snippet) - 1
-	return num < i-1 ? s:multi_snips[a:ft][a:trigger][num][1] : ''
+	return num < i-1 ? s:multi_snips[a:scope][a:trigger][num][1] : ''
 endf
 
 fun! TriggerSnippet()
@@ -117,7 +118,7 @@ fun! TriggerSnippet()
 	endif
 
 	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
-	for filetype in split(&ft, '\.') + ['_'] " Deal with dotted file-types
+	for filetype in [bufnr('%')] + split(&ft, '\.') + ['_']
 		let trigger = s:GetSnippet(word, filetype)
 		if exists('s:snippet') | break | endif
 	endfor
@@ -144,13 +145,13 @@ endf
 
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
 " the text after non-word characters is (e.g. check for "foo" in "bar.foo")
-fun s:GetSnippet(word, ft)
+fun s:GetSnippet(scope, ft)
 	let word = a:word
 	wh !exists('s:snippet')
-		if exists('s:snippets["'.a:ft.'"]["'.word.'"]')
-			let s:snippet = s:snippets[a:ft][word]
-		elseif exists('s:multi_snips["'.a:ft.'"]["'.word.'"]')
-			let s:snippet = s:ChooseSnippet(a:ft, word)
+		if exists('s:snippets["'.a:scope.'"]["'.word.'"]')
+			let s:snippet = s:snippets[a:scope][word]
+		elseif exists('s:multi_snips["'.a:scope.'"]["'.word.'"]')
+			let s:snippet = s:ChooseSnippet(a:scope, word)
 		else
 			if match(word, '\W') == -1 | break | endif
 			let word = substitute(word, '.\{-}\W', '', '')

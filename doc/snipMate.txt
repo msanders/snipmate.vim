@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: March 8, 2009
+Last Change: March 15, 2009
 
 |snipMate-description|   Description
 |snipMate-usage|         Usage
@@ -43,10 +43,10 @@ There are currently two ways to make snippets: file-based and command-based.
 File-based snippets are simply *.snippet files named after the trigger of
 the snippet placed in the directory of the filetype
 (<filetype>/<trigger>.snippet); command-based snippets are snippets defined
-using the |Snipp| and |GlobalSnip| commands. File-based snippets have the
-advantage of being easier to read, but do not support special characters in
-snippet triggers, while command-based snippets are obviously convenient for
-short snippets but can quickly get unreadable.
+using the |Snipp| , |BufferSnip|, and |GlobalSnip| commands. File-based
+snippets have the advantage of being easier to read, but do not support
+special characters in snippet triggers, while command-based snippets are
+obviously convenient for short snippets but can quickly get unreadable.
 
                                                             *command-snippets*
 ------------------------------------------------------------------------------
@@ -69,33 +69,35 @@ snipMate: >
 
 This ensures dotted filetypes (see 'filetype') are dealt with correctly.
 
-                                                          *Snipp* *GlobalSnip*
-Snipp and GlobalSnip Commands~
+                                             *Snipp* *BufferSnip* *GlobalSnip*
+Snipp, BufferSnip, and GlobalSnip Commands~
 
 Snippets are added via the "Snipp" and "GlobalSnip" commands. The syntax for
 these are "Snipp <trigger> <text>"; e.g.: >
 
  exe "Snipp trigger The cursor will be placed at the end of this sentence."
  exe "GlobalSnip another_trigger foo"
+ exe "BufferSnip bar This snippet only works for the current buffer."
 
-"Snipp" creates snippets local to the buffer, while "GlobalSnip" creates
-global snippets. "Snipp" is used instead of "Snip" to avoid conflicts with the
-imaps.vim vim script that uses that command name.
+"Snipp" creates snippets for the current filetype, "GlobalSnip" creates global
+snippets, and "BufferSnip" creates snippets for the current buffer. "Snipp"
+is used instead of "Snip" to avoid conflicts with the imaps.vim vim script
+that uses that command name.
 
-These commands are conveniently bound to snippets themselves; "snip" and
-"gsnip", respectively. So to expand a Snipp command with double quotes,
-just type snip<tab>. Single quote Snipp and GlobalSnip commands are bound
-to the snippets "snipp" and "gsnipp". See |literal-string| for the
-difference between single and double quotes.
+These commands are conveniently bound to snippets themselves; "snip", "bsnip",
+and "gsnip", respectively (in vim files). So to expand a Snipp command with
+double quotes, just type snip<tab>. Single quote Snipp and GlobalSnip
+commands are bound to the snippets "snipp", "bsnipp" and "gsnipp". See
+|literal-string| for the difference between single and double quotes.
 
-                                           *multi_snip* *Snipp!* *GlobalSnip!*
-To specify that a snippet can have multiple matches, use the Snipp or
-GlobalSnip command followed by a bang (!). The syntax for these are
-'Snipp! <trigger> "<name>" <text>'. (Note that the name must be
-enclosed in double quotes). E.g.: >
+                             *multi_snip* *Snipp!* *BufferSnip!* *GlobalSnip!*
+To specify that a snippet can have multiple matches, use the Snipp,
+BufferSnip, or GlobalSnip command followed by a bang (!). The syntax for these
+are 'Snipp! <trigger> "<name>" <text>'. (Note that the name must be enclosed
+in double quotes). E.g.: >
 
- exe 'Snip! trigger "Snippet name #1" expand_this_text'
- exe 'Snip! trigger "Snippet name #2" expand_THIS_text!'
+ exe 'Snipp! trigger "Snippet name #1" expand_this_text'
+ exe 'Snipp! trigger "Snippet name #2" expand_THIS_text!'
 
 In this example, when "trigger<tab>" is typed, a numbered menu containing all
 of the names for the "trigger" will be shown; when the user presses the
