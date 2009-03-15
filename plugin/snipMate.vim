@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.71
+" Version:       0.72
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -26,14 +26,9 @@ fun! Filename(...)
 	return !a:0 || a:1 == '' ? filename : substitute(a:1, '$1', filename, 'g')
 endf
 
-" Escapes special characters in snippet triggers
-fun s:Hash(text)
-	return substitute(a:text, '\W', '\="_".char2nr(submatch(0))."_"', 'g')
-endf
-
 fun s:MakeSnippet(text, ft, multisnip)
 	let space = stridx(a:text, ' ')
-	let trigger = s:Hash(strpart(a:text, 0, space))
+	let trigger = strpart(a:text, 0, space)
 	if a:multisnip
 		let space += 2
 		let quote  = stridx(a:text, '"', space)
@@ -103,7 +98,7 @@ fun s:ChooseSnippet(ft, trigger)
 		let i += 1
 	endfor
 	if i == 2 | return s:multi_snips[a:ft][a:trigger][0][1] | endif
-	let num = inputlist(snippet)-1
+	let num = inputlist(snippet) - 1
 	return num < i-1 ? s:multi_snips[a:ft][a:trigger][num][1] : ''
 endf
 
@@ -142,7 +137,7 @@ endf
 
 fun s:GetSuperTabSID()
 	let old = @a
-	redir @a | exe 'sil fun /SuperTab$' | redir END
+	redir @a | sil exe 'fun /SuperTab$' | redir END
 	let s:sid = matchstr(@a, '<SNR>\d\+\ze_SuperTab(command)')
 	let @a = old
 endf
@@ -150,19 +145,18 @@ endf
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
 " the text after non-word characters is (e.g. check for "foo" in "bar.foo")
 fun s:GetSnippet(word, ft)
-	let origWord = a:word
+	let word = a:word
 	wh !exists('s:snippet')
-		let word = s:Hash(origWord)
 		if exists('s:snippets["'.a:ft.'"]["'.word.'"]')
 			let s:snippet = s:snippets[a:ft][word]
 		elseif exists('s:multi_snips["'.a:ft.'"]["'.word.'"]')
 			let s:snippet = s:ChooseSnippet(a:ft, word)
 		else
-			if match(origWord, '\W') == -1 | break | endif
-			let origWord = substitute(origWord, '.\{-}\W', '', '')
+			if match(word, '\W') == -1 | break | endif
+			let word = substitute(word, '.\{-}\W', '', '')
 		endif
 	endw
-	return origWord
+	return word
 endf
 
 fun s:ExpandSnippet(col)
@@ -176,6 +170,7 @@ fun s:ExpandSnippet(col)
 	let snip = split(substitute(s:snippet, '$\d\|${\d.\{-}}', '', 'g'), "\n", 1)
 
 	let line = getline(lnum)
+	let afterCursor = strpart(line, col - 1)
 	if afterCursor != "\t" && afterCursor != ' '
 		let line = strpart(line, 0, col - 1)
 		let snip[-1] .= afterCursor
@@ -290,7 +285,7 @@ fun s:BuildTabStops(lnum, col, indent)
 	let withoutVars = substitute(s:snippet, '$\d', '', 'g')
 	wh stridx(s:snippet, '${'.i) != -1
 		let beforeTabStop = matchstr(withoutVars, '^.*\ze${'.i)
-		let withoutOthers = substitute(withoutVars, '$\d\|${'.i.'\@!\d.\{-}}', '', 'g')
+		let withoutOthers = substitute(withoutVars, '${'.i.'\@!\d.\{-}}', '', 'g')
 		let snipPos += [[a:lnum + s:Count(beforeTabStop, "\n"),
 						\ a:indent + len(matchstr(withoutOthers,
 						\ "^.*\\(\n\\|^\\)\\zs.*\\ze${".i)), -1]]
@@ -452,13 +447,13 @@ endf
 
 fun s:SelectWord()
 	let s:origWordLen = s:snipPos[s:curPos][2]
-	let s:oldWord     = strpart(getline('.'), s:snipPos[s:curPos][1]-1,
+	let s:oldWord     = strpart(getline('.'), s:snipPos[s:curPos][1] - 1,
 								\ s:origWordLen)
 	let s:prevLen[1] -= s:origWordLen
 	if !empty(s:snipPos[s:curPos][3])
 		let s:update    = 1
 		let s:endSnip   = -1
-		let s:startSnip = s:snipPos[s:curPos][1]-1
+		let s:startSnip = s:snipPos[s:curPos][1] - 1
 	endif
 	if !s:origWordLen | return '' | endif
 	let l = col('.') != 1 ? 'l' : ''
@@ -466,7 +461,7 @@ fun s:SelectWord()
 		return "\<esc>".l.'v'.s:origWordLen."l\<c-g>"
 	endif
 	return s:origWordLen == 1 ? "\<esc>".l.'gh'
-							\ : "\<esc>".l.'v'.(s:origWordLen-1)."l\<c-g>"
+							\ : "\<esc>".l.'v'.(s:origWordLen - 1)."l\<c-g>"
 endf
 
 " This updates the snippet as you type when text needs to be inserted
