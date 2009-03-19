@@ -146,12 +146,12 @@ endf
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
 " the text after non-word characters is (e.g. check for "foo" in "bar.foo")
 fun s:GetSnippet(scope, ft)
-	let word = a:word
+	let word = a:scope
 	wh !exists('s:snippet')
-		if exists('s:snippets["'.a:scope.'"]["'.word.'"]')
-			let s:snippet = s:snippets[a:scope][word]
-		elseif exists('s:multi_snips["'.a:scope.'"]["'.word.'"]')
-			let s:snippet = s:ChooseSnippet(a:scope, word)
+		if exists('s:snippets["'.a:ft.'"]["'.word.'"]')
+			let s:snippet = s:snippets[a:ft][word]
+		elseif exists('s:multi_snips["'.a:ft.'"]["'.word.'"]')
+			let s:snippet = s:ChooseSnippet(a:ft, word)
 		else
 			if match(word, '\W') == -1 | break | endif
 			let word = substitute(word, '.\{-}\W', '', '')
