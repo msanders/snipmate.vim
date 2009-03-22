@@ -118,8 +118,8 @@ fun! TriggerSnippet()
 	endif
 
 	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
-	for filetype in [bufnr('%')] + split(&ft, '\.') + ['_']
-		let trigger = s:GetSnippet(word, filetype)
+	for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
+		let trigger = s:GetSnippet(word, scope)
 		if exists('s:snippet') | break | endif
 	endfor
 
@@ -556,8 +556,8 @@ fun s:UpdateSnip(...)
 				let i += 1
 			endif
 
-			call setline(pos[0], substitute(getline(pos[0]), '\%'.pos[1].'c'.
-						\ s:oldWord, newWord, ''))
+			call setline(pos[0], substitute(getline(pos[0]), '\%'.pos[1].'c\V'.
+						\ escape(s:oldWord, '\'), escape(newWord, '\'), ''))
 		endfor
 		if oldStartSnip != s:startSnip
 			call cursor('.', startCol + s:startSnip - oldStartSnip)
