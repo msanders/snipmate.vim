@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Converts command-based snippets to new file-based snippet syntax
+# Converts command-based snippet to new file-based snippet syntax
 # NOTE: This is only meant to help, it is not perfect! Check the file 
 # afterwards to make sure it's correct.
 
@@ -9,9 +9,9 @@ import os
 
 def Usage():
     print """\
-Usage: convertSnips.py -h or --help          Print this help and exit
-   or: convertSnips.py inputfile             Print .snippets file
-   or: convertSnips.py inputfile outputfile  Output to file"""
+Usage: convertSnip.py -h or --help          Print this help and exit
+   or: convertSnip.py inputfile             Print .snippets file
+   or: convertSnip.py inputfile outputfile  Output to file"""
 
 def FindSnippet(line):
     """\
@@ -64,7 +64,7 @@ def Output(lines, file = None):
         try:
             output = open(file, 'w')
         except IOError, error:
-            raise SystemExit('convertSnips.py: %s' % error)
+            raise SystemExit('convertSnip.py: %s' % error)
         output.write(outputLines)
     else:
         print outputLines,
@@ -78,7 +78,7 @@ def main(argv = None):
     try:
         input = open(argv[0], 'r')
     except IOError, error:
-        raise SystemExit('convertSnips.py: %s' % error)
+        raise SystemExit('convertSnip.py: %s' % error)
 
     snippet = -1
     for line in input.readlines():
