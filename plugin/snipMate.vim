@@ -55,7 +55,6 @@ fun s:MakeSnippet(text, scope, multisnip)
 endf
 
 fun! ExtractSnips(dir, ft)
-	let slash = !&ssl && (has('win16') || has('win32') || has('win64')) ? '\\' : '/'
 	for path in split(globpath(a:dir, '*'), "\n")
 		if isdirectory(path)
 			let pathname = fnamemodify(path, ':t')
