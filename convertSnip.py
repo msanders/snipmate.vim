@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Converts command-based snippet to new file-based snippet syntax
+# Converts command-based snippets to new file-based snippet syntax
 # NOTE: This is only meant to help, it is not perfect! Check the file 
 # afterwards to make sure it's correct.
 
@@ -9,9 +9,9 @@ import os
 
 def Usage():
     print """\
-Usage: convertSnip.py -h or --help          Print this help and exit
-   or: convertSnip.py inputfile             Print .snippets file
-   or: convertSnip.py inputfile outputfile  Output to file"""
+Usage: convertSnips.py -h or --help          Print this help and exit
+   or: convertSnips.py inputfile             Print .snippets file
+   or: convertSnips.py inputfile outputfile  Output to file"""
 
 def FindSnippet(line):
     """\
@@ -24,7 +24,7 @@ def FindSnippet(line):
     text = "\t" + snippet.group(4)
 
     if snippet.group(2): # Process multi-snippet
-        endSnip = re.search('\s*\\\\"(.*?)\\\\"\s*(.*)', text)
+        endSnip = re.search(r'\s*\\"(.*?)\\"\s*(.*)', text)
 
         if not endSnip:
             endSnip = re.search('\s*"(.*?)"\s*(.*)', text)
@@ -55,16 +55,16 @@ def Output(lines, file = None):
     outputLines = ''
     for snippet in lines:
         for line in snippet.split("\\n"):
-            line = re.sub('\\\\t', "\t", line)
-            line = re.sub('\\\\\\\\', '\\\\', line)
+            line = re.sub(r'\\t', '\t', line)
+            line = re.sub(r'\\\\', r'\\', line)
             if not re.match('^(\#|snippet)', line):
                 line = "\t" + line
             outputLines += line + "\n"
     if file:
         try:
             output = open(file, 'w')
-        except IOError, error:
-            raise SystemExit('convertSnip.py: %s' % error)
+        except IOError, e:
+            raise SystemExit('convertSnips.py: %s' % e)
         output.write(outputLines)
     else:
         print outputLines,
@@ -77,17 +77,17 @@ def main(argv = None):
 
     try:
         input = open(argv[0], 'r')
-    except IOError, error:
-        raise SystemExit('convertSnip.py: %s' % error)
+    except IOError, e:
+        raise SystemExit('convertSnips.py: %s' % e)
 
     snippet = -1
     for line in input.readlines():
         if snippet == -1:
             snippet = ProcessLine(line)
         else:
-            concat = re.search("^\s+(\\\\\s*)?(\.\s*)?['\"](.*)['\"]", line)
+            concat = re.search(r"^\s+(\\\s*)?(\.\s*)?['\"](.*)['\"]", line)
             if concat:
-                newLines[-1] += "\\n" + concat.group(3) # Add concatenated lines
+                newLines[-1] += "\n" + concat.group(3) # Add concatenated lines
             else:
                 snippet = ProcessLine(line)
 
