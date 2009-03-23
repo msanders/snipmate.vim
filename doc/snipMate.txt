@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: March 15, 2009
+Last Change: March 22, 2009
 
 |snipMate-description|   Description
 |snipMate-usage|         Usage
@@ -37,122 +37,26 @@ highlighted and all the matches specified in the snippet will
 be updated.
 
 ==============================================================================
-USAGE                                                         *snipMate-usage*
+SYNTAX                                                        *snippet-syntax*
 
-There are currently two ways to make snippets: file-based and command-based.
-File-based snippets are simply *.snippet files named after the trigger of
-the snippet placed in the directory of the filetype
-(<filetype>/<trigger>.snippet); command-based snippets are snippets defined
-using the |Snipp| , |BufferSnip|, and |GlobalSnip| commands. File-based
-snippets have the advantage of being easier to read, but do not support
-special characters in snippet triggers, while command-based snippets are
-obviously convenient for short snippets but can quickly get unreadable.
+Snippets can be defined in two ways. They can be in their own file, named
+after their trigger in 'snippets/<filetype>/<trigger>.snippet', or they can be
+defined together in a 'snippets/<filetype>.snippets' file.
 
-                                                            *command-snippets*
-------------------------------------------------------------------------------
-Command Snippets~
+The syntax for snippets in *.snippets files is the following: >
 
-Command-based snippets should be installed in the 'after' directory, typically
-located in '~/.vim/after' (see |vimfiles|). Filetype specific snippets should
-be installed in 'after/ftplugin', such as 'after/ftplugin/<filetype>_snips.vim'.
-See |ftplugins|. Global snippets should be installed in 'after/plugin'.
-To ensure user snippets are not lost when upgrading the plugin, name them
-using an ending other than "snips" such as "<filetype>_mysnips.vim"
+ snippet trigger
+ 	expanded text
+	more expanded text
 
-                                       *g:snippet_filetype* *snippet_filetype*
-Partly due to the addition of file-based snippets, it is now necessary to
-define the current filetype for snippets at the top of command-based snippet
-files. For instance, at the top of the 'c_snips.vim' file included with
-snipMate: >
+Note that the first hard tab after the snippet trigger is required, and not
+expanded in the actual snippet. The syntax for *.snippet files is the same,
+only without the trigger declaration and starting indentation.
 
- let snippet_filetype = 'c'
+Also note that snippets must be defined using hard tabs. They can be expanded
+to spaces later if desired (see |snipMate-indenting|).
 
-This ensures dotted filetypes (see 'filetype') are dealt with correctly.
-
-                                             *Snipp* *BufferSnip* *GlobalSnip*
-Snipp, BufferSnip, and GlobalSnip Commands~
-
-Snippets are added via the "Snipp" and "GlobalSnip" commands. The syntax for
-these are "Snipp <trigger> <text>"; e.g.: >
-
- exe "Snipp trigger The cursor will be placed at the end of this sentence."
- exe "GlobalSnip another_trigger foo"
- exe "BufferSnip bar This snippet only works for the current buffer."
-
-"Snipp" creates snippets for the current filetype, "GlobalSnip" creates global
-snippets, and "BufferSnip" creates snippets for the current buffer. "Snipp"
-is used instead of "Snip" to avoid conflicts with the imaps.vim vim script
-that uses that command name.
-
-These commands are conveniently bound to snippets themselves; "snip", "bsnip",
-and "gsnip", respectively (in vim files). So to expand a Snipp command with
-double quotes, just type snip<tab>. Single quote Snipp and GlobalSnip
-commands are bound to the snippets "snipp", "bsnipp" and "gsnipp". See
-|literal-string| for the difference between single and double quotes.
-
-                             *multi_snip* *Snipp!* *BufferSnip!* *GlobalSnip!*
-To specify that a snippet can have multiple matches, use the Snipp,
-BufferSnip, or GlobalSnip command followed by a bang (!). The syntax for these
-are 'Snipp! <trigger> "<name>" <text>'. (Note that the name must be enclosed
-in double quotes). E.g.: >
-
- exe 'Snipp! trigger "Snippet name #1" expand_this_text'
- exe 'Snipp! trigger "Snippet name #2" expand_THIS_text!'
-
-In this example, when "trigger<tab>" is typed, a numbered menu containing all
-of the names for the "trigger" will be shown; when the user presses the
-corresponding number, that snippet will then be expanded.
-
-To create a create a snippet with multiple matches using file-based snippets,
-simply place all the snippets in a subdirectory with the trigger name, i.e.
-'snippets/<filetype>/<trigger>/<name>.snippet'.
-
-To ensure snipMate.vim is loaded, 'compatible' is not set, and your snippet
-file is only loaded once make sure to add: >
-
- if !exists('g:loaded_snips') || exists('s:did_my_snips')
-     finish
- endif
- let s:did_my_snips = 1
-
-to the top of your snippets files. The snippet "guard" comes with snipMate to
-automate this if you'd rather not type it all out.
-
-------------------------------------------------------------------------------
-
-                                                               *file-snippets*
-File Snippets ~
-------------------------------------------------------------------------------
-
-                                 *'snippets'* *g:snippets_dir*
-File-based snippets are by default looked for in the 'snippets' directory
-inside your home '.vim' directory, typically located in
-'~/.vim/snippets/<filetype>' on *nix or '$HOME\vimfiles\snippets\<filetype>'
-on Windows. To change that location or add another one, change the
-g:snippets_dir variable in your |.vimrc| to your preferred directory, or use
-the |ExtractSnips()|function. NOTE: g:snippets_dir must end in a backslash or
-forward slash.
-
-File-based snippets have the same syntax as command-based snippets; just make
-sure to use hard tabs instead of spaces in the files for indenting. They can
-be automatically converted later if desired (see |snipMate-indenting|).
-
-ExtractSnips({directory}, {filetype})                         *ExtractSnips()*
-
-ExtractSnips() extracts *.snippet files from the specified directory and
-defines them as snippets for the given filetype; to define a global snippet,
-use '_' for the {filetype} argument.
-
-                                                                *ResetSnips()*
-The ResetSnips() function removes all snippets from memory. This is useful to
-put at the top of a snippet setup file for file-based snippets if you would
-like to |:source| it multiple times.
-
-------------------------------------------------------------------------------
-
-==============================================================================
-SYNTAX                                       *snipMate-syntax* *snipMate-${#}*
-
+                                                               *snipMate-${#}*
 Tab stops ~
 
 By default, the cursor is placed at the end of a snippet. To specify where the
@@ -224,18 +128,65 @@ empty string if it hasn't. The second returns the filename if it's been named,
 and "name" if it hasn't. The third returns the filename followed by "_foo" if
 it has been named, and an empty string if it hasn't.
 
-                                          *snipMate-settings* *g:snips_author*
+                                                                   *multi_snip*
+To specify that a snippet can have multiple matches in a *.snippets file, use
+this syntax: >
+
+ snippet trigger A description of snippet #1
+ 	expand this text
+ snippet trigger A description of snippet #2
+ 	expand THIS text!
+
+In this example, when "trigger<tab>" is typed, a numbered menu containing all
+of the descriptions of the "trigger" will be shown; when the user presses the
+corresponding number, that snippet will then be expanded.
+
+To create a create a snippet with multiple matches using *.snippet files,
+simply place all the snippets in a subdirectory with the trigger name:
+'snippets/<filetype>/<trigger>/<name>.snippet'.
+
+==============================================================================
+USAGE                                                         *snipMate-usage*
+
+                                                 *'snippets'* *g:snippets_dir*
+Snippets are by default looked for in the 'snippets' directory inside your
+home '.vim' directory, typically located at '~/.vim/snippets/' on *nix or
+'$HOME\vimfiles\snippets\' on Windows. To change that location or add another
+one, change the g:snippets_dir variable in your |.vimrc| to your preferred
+directory, or use the |ExtractSnips()|function.  NOTE: g:snippets_dir must
+end in a slash.
+
+ExtractSnipsFile({directory}, {filetype})     *ExtractSnipsFile()* *.snippets*
+
+ExtractSnipsFile() extracts the specified *.snippets file for the given
+filetype. A .snippets file contains multiple snippet declarations for the
+filetype. It is further explained above, in |snippet-syntax|.
+
+ExtractSnips({directory}, {filetype})             *ExtractSnips()* *.snippet*
+
+ExtractSnips() extracts *.snippet files from the specified directory and
+defines them as snippets for the given filetype. The directory tree should
+look like this: 'snippets/<filetype>/<trigger>.snippet'. If the snippet has
+multiple matches, it should look like this:
+'snippets/<filetype>/<trigger>/<name>.snippet' (see |multi_snip|).
+
+                                                                *ResetSnips()*
+The ResetSnips() function removes all snippets from memory. This is useful to
+put at the top of a snippet setup file for if you would like to |:source| it
+multiple times.
+
+==============================================================================
+SETTINGS                                  *snipMate-settings* *g:snips_author*
 The g:snips_author string (similar to $TM_FULLNAME in TextMate) should be set
 to your name; it can then be used in snippets to automatically add it. E.g.: >
 
  let g:snips_author = 'Hubert Farnsworth'
  exe 'Snipp name `g:snips_author`'
 <
-
                                      *snipMate-expandtab* *snipMate-indenting*
-If you would like your snippets to use spaces instead of tabs, just enable
-'expandtab' and set 'softtabstop' to your preferred amount of spaces. If
-'softtabstop' is not set, 'shiftwidth' is used instead.
+If you would like your snippets to be expanded using spaces instead of tabs,
+just enable 'expandtab' and set 'softtabstop' to your preferred amount of
+spaces. If 'softtabstop' is not set, 'shiftwidth' is used instead.
 
                                                               *snipMate-remap*
 snipMate does not come with a setting to customize the trigger key, but you

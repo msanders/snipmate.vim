@@ -15,9 +15,15 @@ endif
 let loaded_snips = 1
 if !exists('snips_author') | let snips_author = 'Me' | endif
 
-com! -nargs=+ -bang Snipp call s:MakeSnippet(<q-args>, snippet_filetype, <bang>0)
-com! -nargs=+ -bang BufferSnip call s:MakeSnippet(<q-args>, bufnr('%'), <bang>0)
-com! -nargs=+ -bang GlobalSnip call s:MakeSnippet(<q-args>, '_', <bang>0)
+au FileType objc,cpp,cs let &ft = expand('<amatch>').'.c'
+au FileType xhtml let &ft = expand('<amatch>').'.html'
+au BufRead,BufNewFile *.snippets\= set ft=snippet
+au FileType snippet setl noet fdm=indent
+
+" These are just here to avoid errors, for now
+com! -nargs=+ -bang Snipp
+com! -nargs=+ -bang GlobalSnip
+com! -nargs=+ -bang BufferSnip
 
 let s:snippets = {} | let s:multi_snips = {}
 
@@ -27,30 +33,16 @@ fun! Filename(...)
 	return !a:0 || a:1 == '' ? filename : substitute(a:1, '$1', filename, 'g')
 endf
 
-fun s:MakeSnippet(text, scope, multisnip)
-	let space = stridx(a:text, ' ')
-	let trigger = strpart(a:text, 0, space)
-	if a:multisnip
-		let space += 2
-		let quote  = stridx(a:text, '"', space)
-		let name   = strpart(a:text, space, quote-space)
-		let space  = stridx(a:text, ' ', quote)
-		let var    = 's:multi_snips'
-	else
-		let var = 's:snippets'
-	endif
+fun! MakeSnip(scope, trigger, content, ...)
+	let multisnip = a:0 && a:1 != ''
+	let var = multisnip ? 's:multi_snips' : 's:snippets'
 	if !has_key({var}, a:scope) | let {var}[a:scope] = {} | endif
-	let end = strpart(a:text, space + 1)
-
-	if end == '' || space == '' || (a:multisnip && name == '')
-		echom 'Error in snipMate.vim: Snippet '.a:text.' is undefined.'
-	elseif !has_key({var}[a:scope], trigger)
-		let {var}[a:scope][trigger] = a:multisnip ? [[name, end]] : end
-	elseif a:multisnip | let {var}[a:scope][trigger] += [[name, end]]
+	if !has_key({var}[a:scope], a:trigger)
+		let {var}[a:scope][a:trigger] = multisnip ? [[a:1, a:content]] : a:content
+	elseif multisnip | let {var}[a:scope][a:trigger] += [[a:1, a:content]]
 	else
-		echom 'Warning in snipMate.vim: Snippet '.strpart(a:text, 0, stridx(a:text, ' '))
-				\ .' is already defined. See :h multi_snip for help on snippets'
-				\ .' with multiple matches.'
+		echom 'Warning in snipMate.vim: Snippet '.a:trigger.' is already defined.'
+				\ .' See :h multi_snip for help on snippets with multiple matches.'
 	endif
 endf
 
@@ -65,11 +57,10 @@ fun! ExtractSnips(dir, ft)
 			call s:ProcessFile(path, a:ft)
 		endif
 	endfor
-	let g:did_ft_{a:ft} = 1
 endf
 
-" Processes a snippet file; optionally add the name of the parent directory
-" for a snippet with multiple matches.
+" Processes a single-snippet file; optionally add the name of the parent
+" directory for a snippet with multiple matches.
 fun s:ProcessFile(file, ft, ...)
 	let keyword = fnamemodify(a:file, ':t:r')
 	if keyword  == '' | return | endif
@@ -78,8 +69,38 @@ fun s:ProcessFile(file, ft, ...)
 	catch /E484/
 		echom "Error in snipMate.vim: couldn't read file: ".a:file
 	endtry
-	return a:0 ? s:MakeSnippet(a:1.' "'.keyword.'" '.text, a:ft, 1)
-			\  : s:MakeSnippet(keyword.' '.text, a:ft, 0)
+	return a:0 ? MakeSnip(a:ft, a:1, text, keyword)
+			\  : MakeSnip(a:ft, keyword, text)
+endf
+
+fun! ExtractSnipsFile(file)
+	if !filereadable(a:file)
+		return echom "Error in snipMate.vim: couldn't read file: ".a:file
+	endif
+	let text = readfile(a:file)
+	let ft = fnamemodify(a:file, ':t:r')
+	let inSnip = 0
+	for line in text + ["\n"]
+		if inSnip && (line == '' || strpart(line, 0, 1) == "\t")
+			let content .= strpart(line, 1)."\n"
+			continue
+		elseif inSnip
+			call MakeSnip(ft, trigger, content[:-2], name)
+			let inSnip = 0
+		endif
+
+		if stridx(line, 'snippet') == 0
+			let inSnip = 1
+			let trigger = strpart(line, 8)
+			let name = ''
+			let space = stridx(trigger, ' ') + 1
+			if space " Process multi snip
+				let name = strpart(trigger, space)
+				let trigger = strpart(trigger, 0, space - 1)
+			endif
+			let content = ''
+		endif
+	endfor
 endf
 
 fun! ResetSnippets()
@@ -105,7 +126,8 @@ endf
 fun! TriggerSnippet()
 	if pumvisible() " Update snippet if completion is used, or deal with supertab
 		if exists('s:sid') | return "\<c-n>" | endif
-		call feedkeys("\<esc>a", 'n') | call s:UpdateChangedSnip(0)
+		call feedkeys("\<esc>a", 'n')
+		return ''
 	endif
 	if !exists('s:sid') && exists('g:SuperTabMappingForward')
 				\ && g:SuperTabMappingForward == "<tab>"
@@ -149,7 +171,7 @@ fun s:GetSnippet(word, scope)
 	wh !exists('s:snippet')
 		if exists('s:snippets["'.a:scope.'"]['''.word.''']')
 			let s:snippet = s:snippets[a:scope][word]
-		elseif exists('s:multi_snips["'.a:scope.'"]["'.word.'"]')
+		elseif exists('s:multi_snips["'.a:scope.'"]['''.word.''']')
 			let s:snippet = s:ChooseSnippet(a:scope, word)
 		else
 			if match(word, '\W') == -1 | break | endif
@@ -317,7 +339,7 @@ fun s:BuildTabStops(lnum, col, indent)
 	else
 		let s:snipPos = snipPos
 	endif
-	return i-1
+	return i - 1
 endf
 
 fun s:JumpTabStop()
