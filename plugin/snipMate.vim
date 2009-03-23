@@ -58,12 +58,12 @@ fun! ExtractSnips(dir, ft)
 	let slash = !&ssl && (has('win16') || has('win32') || has('win64')) ? '\\' : '/'
 	for path in split(globpath(a:dir, '*'), "\n")
 		if isdirectory(path)
+			let pathname = fnamemodify(path, ':t')
 			for snipFile in split(globpath(path, '*.snippet'), "\n")
-				call s:ProcessFile(snipFile, a:ft, slash,
-								\  strpart(path, strridx(path, slash) + 1))
+				call s:ProcessFile(snipFile, a:ft, pathname)
 			endfor
-		else
-			call s:ProcessFile(path, a:ft, slash)
+		elseif fnamemodify(path, ':e') == 'snippet'
+			call s:ProcessFile(path, a:ft)
 		endif
 	endfor
 	let g:did_ft_{a:ft} = 1
@@ -71,8 +71,8 @@ endf
 
 " Processes a snippet file; optionally add the name of the parent directory
 " for a snippet with multiple matches.
-fun s:ProcessFile(file, ft, slash, ...)
-	let keyword = matchstr(a:file, '.*'.a:slash.'\zs.*\ze\.snippet')
+fun s:ProcessFile(file, ft, ...)
+	let keyword = fnamemodify(a:file, ':t:r')
 	if keyword  == '' | return | endif
 	try
 		let text = join(readfile(a:file), "\n")
