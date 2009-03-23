@@ -23,11 +23,11 @@ if empty(snippets_dir) | finish | endif
 if isdirectory(snippets_dir.'_')
 	call ExtractSnips(snippets_dir.'_', '_')
 endif
-au FileType * call s:GetSnippets()
-fun s:GetSnippets()
+au FileType * call GetSnippets(g:snippets_dir)
+fun GetSnippets(dir)
 	for ft in split(&ft, '\.')
-		if !exists('g:did_ft_'.ft) && isdirectory(g:snippets_dir.ft)
-			call ExtractSnips(g:snippets_dir.ft, ft)
+		if !exists('g:did_ft_'.ft) && isdirectory(a:dir.ft)
+			call ExtractSnips(a:dir.ft, ft)
 		endif
 	endfor
 endf
