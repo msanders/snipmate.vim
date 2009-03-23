@@ -14,7 +14,7 @@ snor <left> <esc>bi
 
 " By default load snippets in ~/.vim/snippets/<filetype>
 if !exists('snippets_dir')
-	let snippets_dir = $HOME.'/'.finddir('snippets', &rtp).'/'
+	let snippets_dir = finddir('snippets', &rtp).'/'
 endif
 if empty(snippets_dir) | finish | endif
 
