@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: March 22, 2009
+Last Change: March 23, 2009
 
 |snipMate-description|   Description
 |snipMate-usage|         Usage
@@ -17,24 +17,22 @@ This plugin only works if 'compatible' is not set.
 ==============================================================================
 DESCRIPTION                                             *snipMate-description*
 
-snipMate.vim implements some of TextMate's snippets features in
-Vim. A snippet is a piece of often-typed text that you can
-insert into your document using a trigger word followed by a <tab>.
+snipMate.vim implements some of TextMate's snippets features in Vim. A
+snippet is a piece of often-typed text that you can insert into your
+document using a trigger word followed by a <tab>.
 
-For instance, in a C file using the default installation of
-snipMate.vim, if you type "for<tab>" in insert mode,
-it will expand a typical for loop in C: >
+For instance, in a C file using the default installation of snipMate.vim, if
+you type "for<tab>" in insert mode, it will expand a typical for loop in C: >
 
  for (i = 0; i < count; i++) {
 
  }
 
 
-To go to the next item in the loop, simply <tab>
-over to it; if there is repeated code, such as the "i" variable
-in this example, you can simply start typing once it's
-highlighted and all the matches specified in the snippet will
-be updated.
+To go to the next item in the loop, simply <tab> over to it; if there is
+repeated code, such as the "i" variable in this example, you can simply
+start typing once it's highlighted and all the matches specified in the
+snippet will be updated.
 
 ==============================================================================
 SYNTAX                                                        *snippet-syntax*
@@ -64,7 +62,10 @@ cursor is to be placed next, use "${#}", where the # is the number of the tab
 stop. E.g., to place the cursor first on the id of a <div> tag, and then allow
 the user to press <tab> to go to the middle of it:
  >
- exe "Snipp div <div id=\"${1}\">\n\t${2}\n</div>"
+ snippet div
+ 	<div id="${1}">
+		${2}
+	</div>
 <
                         *snipMate-placeholders* *snipMate-${#:}* *snipMate-$#*
 Placeholders ~
@@ -73,7 +74,10 @@ Placeholder text can be supplied using "${#:text}", where # is the number of
 the tab stop. This text then can be copied throughout the snippet using "$#",
 given # is the same number as used before. So, to make a C for loop: >
 
- exe "Snipp for for (${2:i}; $2 < ${1:count}; $1++) {\n\t${4}\n}"
+ snippet for
+ 	for (${2:i}; $2 < ${1:count}; $1++) {
+		${4}
+	}
 
 This will cause "count" to first be selected and change if the user starts
 typing. When <tab> is pressed, the "i" in ${2}'s position will be selected;
@@ -83,7 +87,8 @@ NOTE: "$#" syntax is used only for variables, not for tab stops as in TextMate.
 
 Variables within variables are also possible. For instance: >
 
- exe 'Snipp opt <option value="${1:option}">${2:$1}</option>'
+ snippet opt
+ 	<option value="${1:option}">${2:$1}</option>
 
 Will, as usual, cause "option" to first be selected and update all the $1
 variables if the user starts typing. Since one of these variables is inside of
@@ -93,7 +98,8 @@ allowing the user to change it if he wishes.
 To copy a value throughout a snippet without supplying default text, simply
 use the "${#:}" construct without the text; e.g.: >
 
- exe 'Snipp foo${1:}bar$1'
+ snippet foo
+ 	${1:}bar$1
 <                                                          *snipMate-commands*
 Interpolated Vim Script ~
 
@@ -101,7 +107,8 @@ Snippets can also contain Vim script commands that are executed (via |eval()|)
 when the snippet is inserted. Commands are given inside backticks (`...`); for
 TextMates's functionality, use the |system()| function. E.g.: >
 
- exe 'Snipp date `system("date +%Y-%m-%d")`'
+ snippet date
+ 	`system("date +%Y-%m-%d")`
 
 will insert the current date, assuming you are on a Unix system. Note that you
 can also (and should) use |strftime()| for this example.
@@ -118,10 +125,12 @@ has not been named. "$1" in the first argument is replaced with the filename;
 if you only want the filename to be returned, the first argument can be left
 blank. Examples: >
 
- exe 'Snipp filename `Filename()`'
- exe 'Snipp filename_with_default `Filename("", "name")`'
- exe 'Snipp filename_foo `Filename("$1_foo")`'
-
+ snippet filename
+ 	`Filename()`
+ snippet filename_with_default
+ 	`Filename('', 'name')`
+ snippet filename_foo
+ 	`filename('$1_foo')`
 
 The first example returns the filename if it the file has been named, and an
 empty string if it hasn't. The second returns the filename if it's been named,
@@ -181,7 +190,8 @@ The g:snips_author string (similar to $TM_FULLNAME in TextMate) should be set
 to your name; it can then be used in snippets to automatically add it. E.g.: >
 
  let g:snips_author = 'Hubert Farnsworth'
- exe 'Snipp name `g:snips_author`'
+ snippet name
+ 	`g:snips_author`
 <
                                      *snipMate-expandtab* *snipMate-indenting*
 If you would like your snippets to be expanded using spaces instead of tabs,
