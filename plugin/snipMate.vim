@@ -127,7 +127,7 @@ fun! TriggerSnippet()
 	if pumvisible() " Update snippet if completion is used, or deal with supertab
 		if exists('s:sid') | return "\<c-n>" | endif
 		call feedkeys("\<esc>a", 'n')
-		return ''
+		return exists('s:snipPos') ? '' : "\<tab>"
 	endif
 	if !exists('s:sid') && exists('g:SuperTabMappingForward')
 				\ && g:SuperTabMappingForward == "<tab>"
