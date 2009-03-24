@@ -125,7 +125,9 @@ endf
 
 fun! TriggerSnippet()
 	if pumvisible() " Update snippet if completion is used, or deal with supertab
-		if exists('s:sid') | return "\<c-n>" | endif
+		if exists('s:sid')
+			return exists('b:complType') ? b:complType : "\<c-n>"
+		endif
 		call feedkeys("\<esc>a", 'n')
 		return exists('s:snipPos') ? '' : "\<tab>"
 	endif
