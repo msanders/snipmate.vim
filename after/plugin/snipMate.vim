@@ -26,9 +26,10 @@ if filereadable(snippets_dir.'_.snippets')
 endif
 
 au FileType * call GetSnippets(g:snippets_dir)
+let g:did_ft = {}
 fun GetSnippets(dir)
 	for ft in split(&ft, '\.')
-		if !exists('g:did_ft_'.ft)
+		if !has_key(g:did_ft, ft)
 			if isdirectory(a:dir.ft)
 				call ExtractSnips(a:dir.ft, ft)
 			endif
@@ -36,7 +37,7 @@ fun GetSnippets(dir)
 				call ExtractSnipsFile(a:dir.ft.'.snippets')
 			endif
 		endif
-		let g:did_ft_{ft} = 1
+		let g:did_ft[ft] = 1
 	endfor
 endf
 " vim:noet:sw=4:ts=4:ft=vim

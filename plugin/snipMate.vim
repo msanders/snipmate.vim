@@ -104,7 +104,7 @@ fun! ExtractSnipsFile(file)
 endf
 
 fun! ResetSnippets()
-	let s:snippets = {} | let s:multi_snips = {}
+	let s:snippets = {} | let s:multi_snips = {} | let g:did_ft = {}
 endf
 
 fun s:RemoveSnippet()
