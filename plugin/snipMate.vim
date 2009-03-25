@@ -120,7 +120,7 @@ fun s:ChooseSnippet(scope, trigger)
 	endfor
 	if i == 2 | return s:multi_snips[a:scope][a:trigger][0][1] | endif
 	let num = inputlist(snippet) - 1
-	return num < i-1 ? s:multi_snips[a:scope][a:trigger][num][1] : ''
+	return num == -1 ? '' : s:multi_snips[a:scope][a:trigger][num][1]
 endf
 
 fun! TriggerSnippet()
@@ -149,7 +149,7 @@ fun! TriggerSnippet()
 	" If word is a trigger for a snippet, delete the trigger & expand the snippet.
 	if exists('s:snippet')
 		if s:snippet == '' " If user cancelled a multi snippet, quit.
-			return unl s:snippet
+			unl s:snippet | return ''
 		endif
 		let col = col('.') - len(trigger)
 		sil exe 's/'.escape(trigger, '.^$/\*[]').'\%#//'
