@@ -119,16 +119,20 @@ fun! GetSnippets(dir)
 endf
 
 fun! TriggerSnippet()
+	if exists('g:SuperTabMappingForward')
+		if g:SuperTabMappingForward == "<tab>"
+			let g:SuperTabKey = "\<c-n>"
+		elseif g:SuperTabMappingBackward == "<tab>"
+			let g:SuperTabKey = '\<c-p>'
+		endif
+	endif
+
 	if pumvisible() " Update snippet if completion is used, or deal with supertab
-		if exists('s:sid')
-			return exists('b:complType') ? b:complType : "\<c-n>"
+		if exists('g:SuperTabKey')
+			call feedkeys(g:SuperTabKey) | return ''
 		endif
 		call feedkeys("\<esc>a", 'n') " Close completion menu
 		call feedkeys("\<tab>") | return ''
-	endif
-	if !exists('s:sid') && exists('g:SuperTabMappingForward')
-				\ && g:SuperTabMappingForward == "<tab>"
-		call s:GetSuperTabSID()
 	endif
 
 	if exists('g:snipPos') | return snipMate#jumpTabStop() | endif
@@ -148,14 +152,7 @@ fun! TriggerSnippet()
 		sil exe 's/'.escape(trigger, '.^$/\*[]').'\%#//'
 		return snipMate#expandSnip(col)
 	endif
-	return exists('s:sid') ? {s:sid}_SuperTab('n') : "\<tab>"
-endf
-
-fun s:GetSuperTabSID()
-	let old = @a
-	redir @a | sil exe 'fun /SuperTab$' | redir END
-	let s:sid = matchstr(@a, '<SNR>\d\+\ze_SuperTab(command)')
-	let @a = old
+	return exists('g:SuperTabKey') ? g:SuperTabKey : "\<tab>"
 endf
 
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
