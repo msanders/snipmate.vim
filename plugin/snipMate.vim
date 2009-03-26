@@ -16,14 +16,9 @@ let loaded_snips = 1
 if !exists('snips_author') | let snips_author = 'Me' | endif
 
 au FileType objc,cpp,cs let &ft = expand('<amatch>').'.c'
-au FileType xhtml let &ft = expand('<amatch>').'.html'
+au FileType xhtml let &ft = 'xhtml.html'
 au BufRead,BufNewFile *.snippets\= set ft=snippet
 au FileType snippet setl noet fdm=indent
-
-" These are just here to avoid errors, for now
-com! -nargs=+ -bang Snipp
-com! -nargs=+ -bang GlobalSnip
-com! -nargs=+ -bang BufferSnip
 
 let s:snippets = {} | let s:multi_snips = {}
 
@@ -122,7 +117,7 @@ fun! TriggerSnippet()
 		if g:SuperTabMappingForward == "<tab>"
 			let g:SuperTabKey = "\<c-n>"
 		elseif g:SuperTabMappingBackward == "<tab>"
-			let g:SuperTabKey = '\<c-p>'
+			let g:SuperTabKey = "\<c-p>"
 		endif
 	endif
 
