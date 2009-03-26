@@ -123,8 +123,8 @@ fun! TriggerSnippet()
 		if exists('s:sid')
 			return exists('b:complType') ? b:complType : "\<c-n>"
 		endif
-		call feedkeys("\<esc>a", 'n')
-		return exists('g:snipPos') ? '' : "\<tab>"
+		call feedkeys("\<esc>a", 'n') " Close completion menu
+		call feedkeys("\<tab>") | return ''
 	endif
 	if !exists('s:sid') && exists('g:SuperTabMappingForward')
 				\ && g:SuperTabMappingForward == "<tab>"
