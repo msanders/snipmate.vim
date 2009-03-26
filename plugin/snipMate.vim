@@ -73,7 +73,7 @@ endf
 fun! ExtractSnipsFile(file)
 	if !filereadable(a:file) | return | endif
 	let text = readfile(a:file)
-	let ft = fnamemodify(a:file, ':t:r')
+	let ft = substitute(fnamemodify(a:file, ':t:r'), '\(.\{-}\)-.*', '\1', '')
 	let inSnip = 0
 	for line in text + ["\n"]
 		if inSnip && (line == '' || strpart(line, 0, 1) == "\t")
