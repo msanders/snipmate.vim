@@ -136,10 +136,6 @@ fun! TriggerSnippet()
 		call s:GetSuperTabSID()
 	endif
 
-	if exists('s:snipPos') && s:endSnip == s:snipPos[s:curPos][1]+s:snipPos[s:curPos][2]
-		return s:JumpTabStop() " Don't treat placeholder text as a trigger.
-	endif
-
 	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
 	for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
 		let trigger = s:GetSnippet(word, scope)
@@ -211,15 +207,6 @@ fun s:ExpandSnippet(col)
 	" Autoindent snippet according to previous indentation
 	let indent = matchend(line, '^.\{-}\ze\(\S\|$\)') + 1
 	call append(lnum, map(snip[1:], "'".strpart(line, 0, indent - 1)."'.v:val"))
-
-	if exists('s:snipPos') && stridx(s:snippet, '${1') != -1
-		if exists('s:update')
-			call s:UpdateSnip(len(snip[-1]) - len(afterCursor))
-			call s:UpdatePlaceholderTabStops()
-		else
-			call s:UpdateTabStops(len(snip) - 1, len(snip[-1]) - len(afterCursor))
-		endif
-	endif
 
 	let snipLen = s:BuildTabStops(lnum, col - indent, indent)
 	unl s:snippet
@@ -336,11 +323,7 @@ fun s:BuildTabStops(lnum, col, indent)
 		let i += 1
 	endw
 
-	if exists('s:snipPos') " Build a nested snippet
-		let s:snipPos = extend(s:snipPos, snipPos, s:curPos + 1)
-	else
-		let s:snipPos = snipPos
-	endif
+	let s:snipPos = snipPos
 	return i - 1
 endf
 
