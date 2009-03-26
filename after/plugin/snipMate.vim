@@ -12,11 +12,10 @@ snor ' b<bs>'
 snor <right> <esc>a
 snor <left> <esc>bi
 
-" By default load snippets in ~/.vim/snippets/<filetype>
-if !exists('snippets_dir')
-	let snippets_dir = fnamemodify(finddir('snippets', &rtp), ':p')
+" By default load snippets in snippets_dir
+if empty(snippets_dir) || !isdirectory(snippets_dir)
+	finish
 endif
-if empty(snippets_dir) | finish | endif
 
 if isdirectory(snippets_dir.'_')
 	call ExtractSnips(snippets_dir.'_', '_')
@@ -26,18 +25,4 @@ if filereadable(snippets_dir.'_.snippets')
 endif
 
 au FileType * call GetSnippets(g:snippets_dir)
-let g:did_ft = {}
-fun GetSnippets(dir)
-	for ft in split(&ft, '\.')
-		if !has_key(g:did_ft, ft)
-			if isdirectory(a:dir.ft)
-				call ExtractSnips(a:dir.ft, ft)
-			endif
-			if filereadable(a:dir.ft.'.snippets')
-				call ExtractSnipsFile(a:dir.ft.'.snippets')
-			endif
-		endif
-		let g:did_ft[ft] = 1
-	endfor
-endf
 " vim:noet:sw=4:ts=4:ft=vim
