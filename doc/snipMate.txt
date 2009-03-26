@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: March 23, 2009
+Last Change: March 26, 2009
 
 |snipMate-description|   Description
 |snipMate-usage|         Usage
@@ -53,6 +53,18 @@ only without the trigger declaration and starting indentation.
 
 Also note that snippets must be defined using hard tabs. They can be expanded
 to spaces later if desired (see |snipMate-indenting|).
+
+"#" is used as a line-comment character in *.snippets files; however, they can
+only be used outside of a snippet declaration. E.g.: >
+
+ # this is a correct comment
+ snippet trigger
+ 	expanded text
+ snippet another_trigger
+ 	# this doesn't work!
+	expanded text
+<
+This should hopefully be obvious with the included syntax highlighting.
 
                                                                *snipMate-${#}*
 Tab stops ~
