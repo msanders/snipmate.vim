@@ -23,7 +23,11 @@ au FileType snippet setl noet fdm=indent
 let s:snippets = {} | let s:multi_snips = {}
 
 if !exists('snippets_dir')
-	let snippets_dir = fnamemodify(finddir('snippets', &rtp), ':p')
+	let snippets_dir = $HOME.(has('win16') || has('win32') || has('win64') ?
+					\ '\vimfiles\snippets\' : '/.vim/snippets/')
+	if !isdirectory(snippets_dir)
+		let snippets_dir = fnamemodify(finddir('snippets', &rtp), ':p')
+	endif
 endif
 
 fun! MakeSnip(scope, trigger, content, ...)
