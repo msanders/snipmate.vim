@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.74
+" Version:       0.75
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -150,7 +150,8 @@ fun! TriggerSnippet()
 		sil exe 's/'.escape(trigger, '.^$/\*[]').'\%#//'
 		return snipMate#expandSnip(col)
 	endif
-	return exists('g:SuperTabKey') ? g:SuperTabKey : "\<tab>"
+	return exists('g:SuperTabKey') && getline('.')[col('.')-2] =~ '\S' 
+				\ ? g:SuperTabKey : "\<tab>"
 endf
 
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
