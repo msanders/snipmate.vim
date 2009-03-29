@@ -36,7 +36,7 @@ fun snipMate#expandSnip(col)
 	" Autoindent snippet according to previous indentation
 	let indent = matchend(line, '^.\{-}\ze\(\S\|$\)') + 1
 	call append(lnum, map(snip[1:], "'".strpart(line, 0, indent - 1)."'.v:val"))
-	if &fen | exe lnum.','.(lnum + len(snip) - 1).'foldopen' | endif
+	if &fen | sil! exe lnum.','.(lnum + len(snip) - 1).'foldopen' | endif
 
 	let snipLen = s:BuildTabStops(lnum, col - indent, indent)
 	unl g:snippet
