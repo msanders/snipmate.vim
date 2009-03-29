@@ -103,8 +103,8 @@ fun! ResetSnippets()
 endf
 
 let g:did_ft = {}
-fun! GetSnippets(dir)
-	for ft in split(&ft, '\.')
+fun! GetSnippets(dir, filetype)
+	for ft in split(a:filetype, '\.')
 		if has_key(g:did_ft, ft) | continue | endif
 		for path in split(globpath(a:dir, ft.'/')."\n".
 						\ globpath(a:dir, ft.'-*/'), "\n")

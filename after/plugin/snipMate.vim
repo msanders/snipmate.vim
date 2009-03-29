@@ -17,12 +17,7 @@ if empty(snippets_dir) || !isdirectory(snippets_dir)
 	finish
 endif
 
-if isdirectory(snippets_dir.'_')
-	call ExtractSnips(snippets_dir.'_', '_')
-endif
-if filereadable(snippets_dir.'_.snippets')
-	call ExtractSnipsFile(snippets_dir.'_.snippets')
-endif
+call GetSnippets(snippets_dir, '_') " Get global snippets 
 
-au FileType * if &ft != 'help' | call GetSnippets(g:snippets_dir) | endif
+au FileType * if &ft != 'help' | call GetSnippets(snippets_dir, &ft) | endif
 " vim:noet:sw=4:ts=4:ft=vim
