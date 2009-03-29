@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.75
+" Version:       0.76
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -119,15 +119,15 @@ endf
 fun! TriggerSnippet()
 	if exists('g:SuperTabMappingForward')
 		if g:SuperTabMappingForward == "<tab>"
-			let g:SuperTabKey = "\<c-n>"
+			let SuperTabKey = "\<c-n>"
 		elseif g:SuperTabMappingBackward == "<tab>"
-			let g:SuperTabKey = "\<c-p>"
+			let SuperTabKey = "\<c-p>"
 		endif
 	endif
 
 	if pumvisible() " Update snippet if completion is used, or deal with supertab
-		if exists('g:SuperTabKey')
-			call feedkeys(g:SuperTabKey) | return ''
+		if exists('SuperTabKey')
+			call feedkeys(SuperTabKey) | return ''
 		endif
 		call feedkeys("\<esc>a", 'n') " Close completion menu
 		call feedkeys("\<tab>") | return ''
@@ -149,9 +149,11 @@ fun! TriggerSnippet()
 		let col = col('.') - len(trigger)
 		sil exe 's/'.escape(trigger, '.^$/\*[]').'\%#//'
 		return snipMate#expandSnip(col)
+	elseif exists('SuperTabKey')
+		call feedkeys(SuperTabKey)
+		return ''
 	endif
-	return exists('g:SuperTabKey') && getline('.')[col('.')-2] =~ '\S' 
-				\ ? g:SuperTabKey : "\<tab>"
+	return "\<tab>"
 endf
 
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
