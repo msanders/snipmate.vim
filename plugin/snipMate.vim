@@ -106,10 +106,12 @@ let g:did_ft = {}
 fun! GetSnippets(dir)
 	for ft in split(&ft, '\.')
 		if has_key(g:did_ft, ft) | continue | endif
-		for path in split(globpath(a:dir, ft.'\(-*\)\=/'), '\n')
+		for path in split(globpath(a:dir, ft.'/')."\n".
+						\ globpath(a:dir, ft.'-*/'), "\n")
 			call ExtractSnips(path, ft)
 		endfor
-		for path in split(globpath(a:dir, ft.'\(-*\)\=.snippets'), '\n')
+		for path in split(globpath(a:dir, ft.'.snippets')."\n".
+						\ globpath(a:dir, ft.'-*.snippets'), "\n")
 			call ExtractSnipsFile(path)
 		endfor
 		let g:did_ft[ft] = 1
