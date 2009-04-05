@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.77
+" Version:       0.78
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -15,8 +15,6 @@ endif
 let loaded_snips = 1
 if !exists('snips_author') | let snips_author = 'Me' | endif
 
-au FileType objc,cpp,cs let &ft = expand('<amatch>').'.c'
-au FileType xhtml let &ft = 'xhtml.html'
 au BufRead,BufNewFile *.snippets\= set ft=snippet
 au FileType snippet setl noet fdm=indent
 
@@ -70,17 +68,16 @@ fun s:ProcessFile(file, ft, ...)
 			\  : MakeSnip(a:ft, keyword, text)
 endf
 
-fun! ExtractSnipsFile(file)
+fun! ExtractSnipsFile(file, ft)
 	if !filereadable(a:file) | return | endif
 	let text = readfile(a:file)
-	let ft = fnamemodify(a:file, ':t:r:s?-.*??')
 	let inSnip = 0
 	for line in text + ["\n"]
 		if inSnip && (line == '' || strpart(line, 0, 1) == "\t")
 			let content .= strpart(line, 1)."\n"
 			continue
 		elseif inSnip
-			call MakeSnip(ft, trigger, content[:-2], name)
+			call MakeSnip(a:ft, trigger, content[:-2], name)
 			let inSnip = 0
 		endif
 
@@ -103,18 +100,28 @@ fun! ResetSnippets()
 endf
 
 let g:did_ft = {}
-fun! GetSnippets(dir, filetype)
-	for ft in split(a:filetype, '\.')
+fun! GetSnippets(dir, filetypes)
+	for ft in split(a:filetypes, '\.')
 		if has_key(g:did_ft, ft) | continue | endif
-		for path in split(globpath(a:dir, ft.'/')."\n".
-						\ globpath(a:dir, ft.'-*/'), "\n")
-			call ExtractSnips(path, ft)
-		endfor
-		for path in split(globpath(a:dir, ft.'.snippets')."\n".
-						\ globpath(a:dir, ft.'-*.snippets'), "\n")
-			call ExtractSnipsFile(path)
-		endfor
+		call s:DefineSnips(a:dir, ft, ft)
+		if ft == 'objc' || ft == 'cpp' || ft == 'cs'
+			call s:DefineSnips(a:dir, 'c', ft)
+		elseif ft == 'xhtml'
+			call s:DefineSnips(a:dir, 'html', 'xhtml')
+		endif
 		let g:did_ft[ft] = 1
+	endfor
+endf
+
+" Define "aliasft" snippets for the filetype "realft".
+fun s:DefineSnips(dir, aliasft, realft)
+	for path in split(globpath(a:dir, a:aliasft.'/')."\n".
+					\ globpath(a:dir, a:aliasft.'-*/'), "\n")
+		call ExtractSnips(path, a:realft)
+	endfor
+	for path in split(globpath(a:dir, a:aliasft.'.snippets')."\n".
+					\ globpath(a:dir, a:aliasft.'-*.snippets'), "\n")
+		call ExtractSnipsFile(path, a:realft)
 	endfor
 endf
 
