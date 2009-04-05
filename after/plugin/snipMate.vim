@@ -13,7 +13,7 @@ snor <right> <esc>a
 snor <left> <esc>bi
 
 " By default load snippets in snippets_dir
-if empty(snippets_dir) || !isdirectory(snippets_dir)
+if empty(snippets_dir)
 	finish
 endif
 

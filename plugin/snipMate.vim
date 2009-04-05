@@ -21,7 +21,7 @@ au FileType snippet setl noet fdm=indent
 let s:snippets = {} | let s:multi_snips = {}
 
 if !exists('snippets_dir')
-	let snippets_dir = split(globpath(&rtp, 'snippets/'), "\n")[0]
+	let snippets_dir = substitute(globpath(&rtp, 'snippets/'), "\n", ',', 'g')
 endif
 
 fun! MakeSnip(scope, trigger, content, ...)
