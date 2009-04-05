@@ -187,15 +187,18 @@ fun s:UpdatePlaceholderTabStops()
 		if changeLen != 0
 			let lnum = line('.')
 			let len = len(s:origPos)
-			for pos in g:snipPos[(s:curPos + 1):]
+
+			for pos in g:snipPos[s:curPos + 1:]
 				let i = 0 | let j = 0 | let k = 0
 				let endSnip = pos[2] + pos[1] - 1
+				" Subtract changeLen to each tab stop that was after any of
+				" the current tab stop's placeholders.
 				wh i < len && s:origPos[i][0] <= pos[0]
 					if pos[0] == s:origPos[i][0]
 						if pos[1] > s:origPos[i][1]
 								\ || (pos[2] == -1 && pos[1] == s:origPos[i][1])
 							let j += 1
-						elseif s:origPos[i][1] < endSnip " Parse variables within placeholders
+						elseif s:origPos[i][1] < endSnip
 							let k += 1
 						endif
 					endif
@@ -205,8 +208,9 @@ fun s:UpdatePlaceholderTabStops()
 					let j += 1
 				endif
 				let pos[1] -= changeLen*j
-				let pos[2] -= changeLen*k
+				let pos[2] -= changeLen*k " Parse variables within placeholders
 
+				" Do the same to any placeholders in the other tab stops.
 				if pos[2] != -1
 					for nPos in pos[3]
 						let i = 0 | let j = 0
@@ -219,7 +223,6 @@ fun s:UpdatePlaceholderTabStops()
 						if nPos[0] == lnum && nPos[1] > s:origSnipPos
 							let j += 1
 						endif
-						if nPos[0] > s:origPos[0][0] | break | endif
 						let nPos[1] -= changeLen*j
 					endfor
 				endif
