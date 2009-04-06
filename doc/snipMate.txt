@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: March 26, 2009
+Last Change: April 6, 2009
 
 |snipMate-description|   Description
 |snipMate-usage|         Usage
@@ -170,12 +170,13 @@ simply place all the snippets in a subdirectory with the trigger name:
 USAGE                                                         *snipMate-usage*
 
                                                  *'snippets'* *g:snippets_dir*
-Snippets are by default looked for in the 'snippets' directory inside your
-home '.vim' directory, typically located at '~/.vim/snippets/' on *nix or
+Snippets are by default looked for any 'snippets' directory in your
+'runtimepath'. Typically, it is located at '~/.vim/snippets/' on *nix or
 '$HOME\vimfiles\snippets\' on Windows. To change that location or add another
 one, change the g:snippets_dir variable in your |.vimrc| to your preferred
-directory, or use the |ExtractSnips()|function.  NOTE: g:snippets_dir must
-end in a slash.
+directory, or use the |ExtractSnips()|function. This will be used by the
+|globpath()| function, and so accepts the same syntax as it (e.g.,
+comma-separated paths).
 
 ExtractSnipsFile({directory}, {filetype})     *ExtractSnipsFile()* *.snippets*
 
@@ -191,10 +192,10 @@ look like this: 'snippets/<filetype>/<trigger>.snippet'. If the snippet has
 multiple matches, it should look like this:
 'snippets/<filetype>/<trigger>/<name>.snippet' (see |multi_snip|).
 
-                                                                *ResetSnips()*
-The ResetSnips() function removes all snippets from memory. This is useful to
-put at the top of a snippet setup file for if you would like to |:source| it
-multiple times.
+                                                            *ResetSnippets()*
+The ResetSnippets() function removes all snippets from memory. This is useful
+to put at the top of a snippet setup file for if you would like to |:source|
+it multiple times.
 
 ==============================================================================
 SETTINGS                                  *snipMate-settings* *g:snips_author*
