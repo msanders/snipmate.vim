@@ -77,8 +77,8 @@ fun s:ProcessSnippet()
 	" This helps tell the position of the tab stops later.
 	let g:snippet = substitute(g:snippet, '${\d:\(.\{-}\)}', '&\1', 'g')
 
-	" Update the g:snippet so that all the $# become
-	" the text after the colon in their associated ${#}.
+	" Update the g:snippet so that all the $# become the text after
+	" the colon in their associated ${#}.
 	" (e.g. "${1:foo}" turns all "$1"'s into "foo")
 	let i = 1
 	wh stridx(g:snippet, '${'.i) != -1
@@ -133,7 +133,7 @@ fun s:BuildTabStops(lnum, col, indent)
 
 		" Get all $# matches in another list, if ${#:name} is given
 		if stridx(withoutVars, '${'.i.':') != -1
-			let j = i-1
+			let j = i - 1
 			let snipPos[j][2] = len(matchstr(withoutVars, '${'.i.':\zs.\{-}\ze}'))
 			let snipPos[j] += [[]]
 			let withoutOthers = substitute(g:snippet, '${\d.\{-}}\|$'.i.'\@!\d', '', 'g')
@@ -178,106 +178,89 @@ fun snipMate#jumpTabStop()
 endf
 
 fun s:UpdatePlaceholderTabStops()
+	let changeLen = s:origWordLen - g:snipPos[s:curPos][2]
+	unl s:startSnip s:origWordLen s:update
+	if !exists('s:origPos') | return | endif
 	" Update tab stops in snippet if text has been added via "$#",
 	" e.g. in "${1:foo}bar$1${2}"
-	if exists('s:origPos')
-		let changeLen = s:origWordLen - g:snipPos[s:curPos][2]
+	if changeLen != 0
+		let curLine = line('.')
 
-		" This could probably be more efficent...
-		if changeLen != 0
-			let lnum = line('.')
-			let len = len(s:origPos)
-
-			for pos in g:snipPos[s:curPos + 1:]
-				let i = 0 | let j = 0 | let k = 0
-				let endSnip = pos[2] + pos[1] - 1
-				" Subtract changeLen to each tab stop that was after any of
-				" the current tab stop's placeholders.
-				wh i < len && s:origPos[i][0] <= pos[0]
-					if pos[0] == s:origPos[i][0]
-						if pos[1] > s:origPos[i][1]
-								\ || (pos[2] == -1 && pos[1] == s:origPos[i][1])
-							let j += 1
-						elseif s:origPos[i][1] < endSnip
-							let k += 1
-						endif
+		for pos in g:snipPos[s:curPos + 1:]
+			let changed = pos[0] == curLine && pos[1] > s:origSnipPos ? 1 : 0
+			let changedVars = 0
+			let endPlaceholder = pos[2] - 1 + pos[1]
+			" Subtract changeLen from each tab stop that was after any of
+			" the current tab stop's placeholders.
+			for [lnum, col] in s:origPos
+				if lnum > pos[0] | break | endif
+				if pos[0] == lnum
+					if pos[1] > col || (pos[2] == -1 && pos[1] == col)
+						let changed += 1
+					elseif col < endPlaceholder
+						let changedVars += 1
 					endif
-					let i += 1
-				endw
-				if pos[0] == lnum && pos[1] > s:origSnipPos
-					let j += 1
-				endif
-				let pos[1] -= changeLen*j
-				let pos[2] -= changeLen*k " Parse variables within placeholders
-
-				" Do the same to any placeholders in the other tab stops.
-				if pos[2] != -1
-					for nPos in pos[3]
-						let i = 0 | let j = 0
-						wh i < len && s:origPos[i][0] <= nPos[0]
-							if nPos[0] == s:origPos[i][0] && nPos[1] > s:origPos[i][1]
-								let j += 1
-							endif
-							let i += 1
-						endw
-						if nPos[0] == lnum && nPos[1] > s:origSnipPos
-							let j += 1
-						endif
-						let nPos[1] -= changeLen*j
-					endfor
 				endif
 			endfor
-		endif
-		unl s:endSnip s:origPos s:origSnipPos
+			let pos[1] -= changeLen * changed
+			let pos[2] -= changeLen * changedVars " Parse variables within placeholders
+                                                  " e.g., "${1:foo} ${2:$1bar}"
+
+			if pos[2] == -1 | continue | endif
+			" Do the same to any placeholders in the other tab stops.
+			for nPos in pos[3]
+				let changed = nPos[0] == curLine && nPos[1] > s:origSnipPos ? 1 : 0
+				for [lnum, col] in s:origPos
+					if nPos[0] == lnum && nPos[1] > col
+						let changed += 1
+					endif
+				endfor
+				let nPos[1] -= changeLen * changed
+			endfor
+		endfor
 	endif
-	unl s:startSnip s:origWordLen s:update
+	unl s:endSnip s:origPos s:origSnipPos
 endf
 
 fun s:UpdateTabStops(...)
 	let changeLine = a:0 ? a:1 : s:endSnipLine - g:snipPos[s:curPos][0]
 	let changeCol  = a:0 > 1 ? a:2 : s:endSnip - g:snipPos[s:curPos][1]
 	if exists('s:origWordLen')
-		let changeCol -= s:origWordLen | unl s:origWordLen
+		let changeCol -= s:origWordLen
+		unl s:origWordLen
 	endif
-	" There's probably a more efficient way to do this as well...
 	let lnum = g:snipPos[s:curPos][0]
 	let col  = g:snipPos[s:curPos][1]
 	" Update the line number of all proceeding tab stops if <cr> has
 	" been inserted.
 	if changeLine != 0
-		for pos in g:snipPos[(s:curPos + 1):]
+		for pos in g:snipPos[s:curPos + 1:]
 			if pos[0] >= lnum
-				if pos[0] == lnum
-					let pos[1] += changeCol
-				endif
+				if pos[0] == lnum | let pos[1] += changeCol | endif
 				let pos[0] += changeLine
 			endif
-			if pos[2] != -1
-				for nPos in pos[3]
-					if nPos[0] >= lnum
-						if nPos[0] == lnum
-							let nPos[1] += changeCol
-						endif
-						let nPos[0] += changeLine
-					endif
-				endfor
-			endif
+			if pos[2] == -1 | continue | endif
+			for nPos in pos[3]
+				if nPos[0] >= lnum
+					if nPos[0] == lnum | let nPos[1] += changeCol | endif
+					let nPos[0] += changeLine
+				endif
+			endfor
 		endfor
 	elseif changeCol != 0
 		" Update the column of all proceeding tab stops if text has
 		" been inserted/deleted in the current line.
-		for pos in g:snipPos[(s:curPos + 1):]
+		for pos in g:snipPos[s:curPos + 1:]
 			if pos[1] >= col && pos[0] == lnum
 				let pos[1] += changeCol
 			endif
-			if pos[2] != -1
-				for nPos in pos[3]
-					if nPos[0] > lnum | break | endif
-					if nPos[0] == lnum && nPos[1] >= col
-						let nPos[1] += changeCol
-					endif
-				endfor
-			endif
+			if pos[2] == -1 | continue | endif
+			for nPos in pos[3]
+				if nPos[0] > lnum | break | endif
+				if nPos[0] == lnum && nPos[1] >= col
+					let nPos[1] += changeCol
+				endif
+			endfor
 		endfor
 	endif
 endf
@@ -366,40 +349,38 @@ fun s:UpdateSnip(...)
 	" happen with the getline('.')[(s:startSnip):(s:endSnip)] syntax
 	let newWordLen = a:0 ? a:1 : s:endSnip - s:startSnip + 1
 	let newWord    = strpart(getline('.'), s:startSnip, newWordLen)
-	if newWord != s:oldWord
-		let changeLen    = g:snipPos[s:curPos][2] - newWordLen
-		let curLine      = line('.')
-		let startCol     = col('.')
-		let oldStartSnip = s:startSnip
-		let updateSnip   = changeLen != 0
-		let i            = 0
+	if newWord == s:oldWord | return | endif
 
-		for pos in g:snipPos[s:curPos][3]
-			if updateSnip
-				let start = s:startSnip
-				if pos[0] == curLine && pos[1] <= start
-					let s:startSnip -= changeLen
-					let s:endSnip -= changeLen
-				endif
-				for nPos in g:snipPos[s:curPos][3][(i):]
-					if nPos[0] == pos[0]
-						if nPos[1] > pos[1] || (nPos == [curLine, pos[1]] &&
-												\ nPos[1] > start)
-							let nPos[1] -= changeLen
-						endif
-					elseif nPos[0] > pos[0] | break | endif
-				endfor
-				let i += 1
-			endif
+	let changeLen      = g:snipPos[s:curPos][2] - newWordLen
+	let curLine        = line('.')
+	let startCol       = col('.')
+	let oldStartSnip   = s:startSnip
+	let updateTabStops = changeLen != 0
+	let i              = 0
 
-			call setline(pos[0], substitute(getline(pos[0]), '\%'.pos[1].'c\V'.
-						\ escape(s:oldWord, '\'), escape(newWord, '\'), ''))
-		endfor
-		if oldStartSnip != s:startSnip
-			call cursor('.', startCol + s:startSnip - oldStartSnip)
+	for [lnum, col] in g:snipPos[s:curPos][3]
+		call setline(lnum, substitute(getline(lnum), '\%'.(col - changeLen).
+					\ 'c\V'.escape(s:oldWord, '\'), escape(newWord, '\'), ''))
+
+		if !updateTabStops | continue | endif
+		let start = s:startSnip
+		if lnum == curLine && col <= start
+			let s:startSnip -= changeLen
+			let s:endSnip -= changeLen
 		endif
-
-		let s:oldWord = newWord
-		let g:snipPos[s:curPos][2] = newWordLen
+		for nPos in g:snipPos[s:curPos][3][(i):]
+			if nPos[0] > lnum | break | endif " Remember, this part is in order.
+			if nPos[0] == lnum && (nPos[1] > col ||
+						\ (nPos[1] > start && nPos == [curLine, col]))
+				let nPos[1] -= changeLen
+			endif
+		endfor
+		let i += 1
+	endfor
+	if oldStartSnip != s:startSnip
+		call cursor(0, startCol + s:startSnip - oldStartSnip)
 	endif
+
+	let s:oldWord = newWord
+	let g:snipPos[s:curPos][2] = newWordLen
 endf
