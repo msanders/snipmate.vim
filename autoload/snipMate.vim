@@ -182,7 +182,7 @@ fun s:UpdatePlaceholderTabStops()
 		let curLine = line('.')
 
 		for pos in g:snipPos[s:curPos + 1:]
-			let changed = pos[0] == curLine && pos[1] > s:origSnipPos ? 1 : 0
+			let changed = pos[0] == curLine && pos[1] > s:origSnipPos
 			let changedVars = 0
 			let endPlaceholder = pos[2] - 1 + pos[1]
 			" Subtract changeLen from each tab stop that was after any of
@@ -204,8 +204,9 @@ fun s:UpdatePlaceholderTabStops()
 			if pos[2] == -1 | continue | endif
 			" Do the same to any placeholders in the other tab stops.
 			for nPos in pos[3]
-				let changed = nPos[0] == curLine && nPos[1] > s:origSnipPos ? 1 : 0
+				let changed = nPos[0] == curLine && nPos[1] > s:origSnipPos
 				for [lnum, col] in s:origPos
+					if lnum > nPos[0] | break | endif
 					if nPos[0] == lnum && nPos[1] > col
 						let changed += 1
 					endif
