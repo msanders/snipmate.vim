@@ -222,9 +222,9 @@ fun s:UpdatePlaceholderTabStops()
 	unl s:endSnip s:origPos s:origSnipPos
 endf
 
-fun s:UpdateTabStops(...)
-	let changeLine = a:0 ? a:1 : s:endSnipLine - g:snipPos[s:curPos][0]
-	let changeCol  = a:0 > 1 ? a:2 : s:endSnip - g:snipPos[s:curPos][1]
+fun s:UpdateTabStops()
+	let changeLine = s:endSnipLine - g:snipPos[s:curPos][0]
+	let changeCol  = s:endSnip - g:snipPos[s:curPos][1]
 	if exists('s:origWordLen')
 		let changeCol -= s:origWordLen
 		unl s:origWordLen
@@ -295,7 +295,7 @@ endf
 au CursorMovedI * call s:UpdateChangedSnip(0)
 au InsertEnter * call s:UpdateChangedSnip(1)
 fun s:UpdateChangedSnip(entering)
-	if exists('s:update')
+	if exists('s:update') " If modifying a placeholder
 		if !exists('s:origPos') && s:curPos + 1 < s:snipLen
 			" Save the old snippet & word length before it's updated
 			" s:startSnip must be saved too, in case text is added
@@ -320,7 +320,7 @@ fun s:UpdateChangedSnip(entering)
 			return s:RemoveSnippet()
 		endif
 
-		call s:UpdateSnip()
+		call s:UpdateVars()
 		let s:prevLen[1] = col('$')
 	elseif exists('g:snipPos')
 		let col        = col('.')
@@ -344,12 +344,14 @@ fun s:UpdateChangedSnip(entering)
 	endif
 endf
 
-fun s:UpdateSnip(...)
-	" Using strpart() here avoids a bug if s:endSnip was negative that would
-	" happen with the getline('.')[(s:startSnip):(s:endSnip)] syntax
-	let newWordLen = a:0 ? a:1 : s:endSnip - s:startSnip + 1
+" This updates the variables in a snippet when a placeholder has been edited.
+" (e.g., each "$1" in "${1:foo} $1bar $1bar")
+fun s:UpdateVars()
+	let newWordLen = s:endSnip - s:startSnip + 1
 	let newWord    = strpart(getline('.'), s:startSnip, newWordLen)
-	if newWord == s:oldWord | return | endif
+	if newWord == s:oldWord || empty(g:snipPos[s:curPos][3])
+		return
+	endif
 
 	let changeLen      = g:snipPos[s:curPos][2] - newWordLen
 	let curLine        = line('.')
@@ -359,23 +361,29 @@ fun s:UpdateSnip(...)
 	let i              = 0
 
 	for [lnum, col] in g:snipPos[s:curPos][3]
-		call setline(lnum, substitute(getline(lnum), '\%'.(col - changeLen).
-					\ 'c\V'.escape(s:oldWord, '\'), escape(newWord, '\'), ''))
-
-		if !updateTabStops | continue | endif
-		let start = s:startSnip
-		if lnum == curLine && col <= start
-			let s:startSnip -= changeLen
-			let s:endSnip -= changeLen
-		endif
-		for nPos in g:snipPos[s:curPos][3][(i):]
-			if nPos[0] > lnum | break | endif " Remember, this part is in order.
-			if nPos[0] == lnum && (nPos[1] > col ||
-						\ (nPos[1] > start && nPos == [curLine, col]))
-				let nPos[1] -= changeLen
+		if updateTabStops
+			let start = s:startSnip
+			if lnum == curLine && col <= start
+				let s:startSnip -= changeLen
+				let s:endSnip -= changeLen
 			endif
-		endfor
-		let i += 1
+			for nPos in g:snipPos[s:curPos][3][(i):]
+				" This list is in ascending order, so quit if we've gone too far.
+				if nPos[0] > lnum | break | endif 
+				if nPos[0] == lnum && nPos[1] > col
+					let nPos[1] -= changeLen
+				endif
+			endfor
+			if lnum == curLine && col > start
+				let col -= changeLen
+				let g:snipPos[s:curPos][3][i][1] = col
+			endif
+			let i += 1
+		endif
+
+		" "Very nomagic" is used here to allow special characters.
+		call setline(lnum, substitute(getline(lnum), '\%'.col.'c\V'.
+						\ escape(s:oldWord, '\'), escape(newWord, '\'), ''))
 	endfor
 	if oldStartSnip != s:startSnip
 		call cursor(0, startCol + s:startSnip - oldStartSnip)
