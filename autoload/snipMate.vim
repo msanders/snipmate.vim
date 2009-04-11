@@ -16,7 +16,7 @@ fun snipMate#expandSnip(col)
 		unl g:snippet | return '' " Avoid an error if the snippet is now empty
 	endif
 
-	let snip = split(substitute(g:snippet, '$\d\|${\d.\{-}}', '', 'g'), "\n", 1)
+	let snip = split(substitute(g:snippet, '$\d\+\|${\d\+.\{-}}', '', 'g'), "\n", 1)
 
 	let line = getline(lnum)
 	let afterCursor = strpart(line, col - 1)
@@ -75,7 +75,7 @@ fun s:ProcessSnippet()
 	" Place all text after a colon in a tab stop after the tab stop
 	" (e.g. "${#:foo}" becomes "${:foo}foo").
 	" This helps tell the position of the tab stops later.
-	let g:snippet = substitute(g:snippet, '${\d:\(.\{-}\)}', '&\1', 'g')
+	let g:snippet = substitute(g:snippet, '${\d\+:\(.\{-}\)}', '&\1', 'g')
 
 	" Update the g:snippet so that all the $# become the text after
 	" the colon in their associated ${#}.
@@ -118,39 +118,37 @@ endf
 "     composed the same way as the parent; the first item is the line number,
 "     and the second is the column.
 fun s:BuildTabStops(lnum, col, indent)
-	let snipPos = []
+	let g:snipPos = []
 	let i = 1
-	let withoutVars = substitute(g:snippet, '$\d', '', 'g')
+	let withoutVars = substitute(g:snippet, '$\d\+', '', 'g')
 	wh stridx(g:snippet, '${'.i) != -1
-		let beforeTabStop = matchstr(withoutVars, '^.*\ze${'.i)
-		let withoutOthers = substitute(withoutVars, '${'.i.'\@!\d.\{-}}', '', 'g')
-		let snipPos += [[a:lnum + s:Count(beforeTabStop, "\n"),
+		let beforeTabStop = matchstr(withoutVars, '^.*\ze${'.i.'\D')
+		let withoutOthers = substitute(withoutVars, '${'.i.'\@!\d\+.\{-}}', '', 'g')
+		let g:snipPos += [[a:lnum + s:Count(beforeTabStop, "\n"),
 						\ a:indent + len(matchstr(withoutOthers,
-						\ "^.*\\(\n\\|^\\)\\zs.*\\ze${".i)), -1]]
-		if snipPos[i-1][0] == a:lnum
-			let snipPos[i-1][1] += a:col
+						\ "^.*\\(\n\\|^\\)\\zs.*\\ze${".i.'\D')), -1]]
+		if g:snipPos[i-1][0] == a:lnum
+			let g:snipPos[i-1][1] += a:col
 		endif
 
 		" Get all $# matches in another list, if ${#:name} is given
 		if stridx(withoutVars, '${'.i.':') != -1
 			let j = i - 1
-			let snipPos[j][2] = len(matchstr(withoutVars, '${'.i.':\zs.\{-}\ze}'))
-			let snipPos[j] += [[]]
-			let withoutOthers = substitute(g:snippet, '${\d.\{-}}\|$'.i.'\@!\d', '', 'g')
-			wh stridx(withoutOthers, '$'.i) != -1
-				let beforeMark = matchstr(withoutOthers, '^.\{-}\ze$'.i)
+			let g:snipPos[j][2] = len(matchstr(withoutVars, '${'.i.':\zs.\{-}\ze}'))
+			let g:snipPos[j] += [[]]
+			let withoutOthers = substitute(g:snippet, '${\d\+.\{-}}\|$'.i.'\@!\d\+', '', 'g')
+			wh match(withoutOthers, '$'.i.'\D') != -1
+				let beforeMark = matchstr(withoutOthers, '^.\{-}\ze$'.i.'\D')
 				let linecount = a:lnum + s:Count(beforeMark, "\n")
-				let snipPos[j][3] += [[linecount,
+				let g:snipPos[j][3] += [[linecount,
 							\ a:indent + (linecount > a:lnum
 							\ ? len(matchstr(beforeMark, "^.*\n\\zs.*"))
 							\ : a:col + len(beforeMark))]]
-				let withoutOthers = substitute(withoutOthers, '$'.i, '', '')
+				let withoutOthers = substitute(withoutOthers, '$'.i.'\ze\D', '', '')
 			endw
 		endif
 		let i += 1
 	endw
-
-	let g:snipPos = snipPos
 	return i - 1
 endf
 
