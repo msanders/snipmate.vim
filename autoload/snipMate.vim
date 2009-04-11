@@ -8,21 +8,19 @@ fun s:RemoveSnippet()
 	unl g:snipPos s:curPos s:snipLen s:endSnip s:endSnipLine s:prevLen
 endf
 
-fun snipMate#expandSnip(col)
+fun snipMate#expandSnip(snip, col)
 	let lnum = line('.') | let col = a:col
 
-	call s:ProcessSnippet()
-	if g:snippet == ''
-		unl g:snippet | return '' " Avoid an error if the snippet is now empty
-	endif
+	let snippet = s:ProcessSnippet(a:snip)
+	if snippet == '' | return '' | endif
 
-	let snip = split(substitute(g:snippet, '$\d\+\|${\d\+.\{-}}', '', 'g'), "\n", 1)
+	let snipLines = split(substitute(snippet, '$\d\+\|${\d\+.\{-}}', '', 'g'), "\n", 1)
 
 	let line = getline(lnum)
 	let afterCursor = strpart(line, col - 1)
 	if afterCursor != "\t" && afterCursor != ' '
 		let line = strpart(line, 0, col - 1)
-		let snip[-1] .= afterCursor
+		let snipLines[-1] .= afterCursor
 	else
 		let afterCursor = ''
 		" For some reason the cursor needs to move one right after this
@@ -31,18 +29,16 @@ fun snipMate#expandSnip(col)
 		endif
 	endif
 
-	call setline(lnum, line.snip[0])
+	call setline(lnum, line.snipLines[0])
 
 	" Autoindent snippet according to previous indentation
 	let indent = matchend(line, '^.\{-}\ze\(\S\|$\)') + 1
-	call append(lnum, map(snip[1:], "'".strpart(line, 0, indent - 1)."'.v:val"))
-	if &fen | sil! exe lnum.','.(lnum + len(snip) - 1).'foldopen' | endif
+	call append(lnum, map(snipLines[1:], "'".strpart(line, 0, indent - 1)."'.v:val"))
+	if &fen | sil! exe lnum.','.(lnum + len(snipLines) - 1).'foldopen' | endif
 
-	let snipLen = s:BuildTabStops(lnum, col - indent, indent)
-	unl g:snippet
+	let [g:snipPos, s:snipLen] = s:BuildTabStops(snippet, lnum, col - indent, indent)
 
-	if snipLen
-		let s:snipLen     = snipLen
+	if s:snipLen
 		let s:curPos      = 0
 		let s:endSnip     = g:snipPos[s:curPos][1]
 		let s:endSnipLine = g:snipPos[s:curPos][0]
@@ -51,48 +47,49 @@ fun snipMate#expandSnip(col)
 		let s:prevLen = [line('$'), col('$')]
 		if g:snipPos[s:curPos][2] != -1 | return s:SelectWord() | endif
 	else
-		unl g:snipPos
+		unl g:snipPos s:snipLen
 		" Place cursor at end of snippet if no tab stop is given
-		let newlines = len(snip) - 1
-		call cursor(lnum + newlines, indent + len(snip[-1]) - len(afterCursor)
+		let newlines = len(snipLines) - 1
+		call cursor(lnum + newlines, indent + len(snipLines[-1]) - len(afterCursor)
 					\ + (newlines ? 0: col - 1))
 	endif
 	return ''
 endf
 
-fun s:ProcessSnippet()
+fun s:ProcessSnippet(snip)
+	let snippet = a:snip
 	" Evaluate eval (`...`) expressions.
 	" Using a loop here instead of a regex fixes a bug with nested "\=".
-	if stridx(g:snippet, '`') != -1
-		wh match(g:snippet, '`.\{-}`') != -1
-			let g:snippet = substitute(g:snippet, '`.\{-}`',
-						\ substitute(eval(matchstr(g:snippet, '`\zs.\{-}\ze`')),
+	if stridx(snippet, '`') != -1
+		wh match(snippet, '`.\{-}`') != -1
+			let snippet = substitute(snippet, '`.\{-}`',
+						\ substitute(eval(matchstr(snippet, '`\zs.\{-}\ze`')),
 						\ "\n\\%$", '', ''), '')
 		endw
-		let g:snippet = substitute(g:snippet, "\r", "\n", 'g')
+		let snippet = substitute(snippet, "\r", "\n", 'g')
 	endif
 
 	" Place all text after a colon in a tab stop after the tab stop
 	" (e.g. "${#:foo}" becomes "${:foo}foo").
 	" This helps tell the position of the tab stops later.
-	let g:snippet = substitute(g:snippet, '${\d\+:\(.\{-}\)}', '&\1', 'g')
+	let snippet = substitute(snippet, '${\d\+:\(.\{-}\)}', '&\1', 'g')
 
-	" Update the g:snippet so that all the $# become the text after
+	" Update the a:snip so that all the $# become the text after
 	" the colon in their associated ${#}.
 	" (e.g. "${1:foo}" turns all "$1"'s into "foo")
 	let i = 1
-	wh stridx(g:snippet, '${'.i) != -1
-		let s = matchstr(g:snippet, '${'.i.':\zs.\{-}\ze}')
+	wh stridx(snippet, '${'.i) != -1
+		let s = matchstr(snippet, '${'.i.':\zs.\{-}\ze}')
 		if s != ''
-			let g:snippet = substitute(g:snippet, '$'.i, '&'.s, 'g')
+			let snippet = substitute(snippet, '$'.i, '&'.s, 'g')
 		endif
 		let i += 1
 	endw
 
 	if &et " Expand tabs to spaces if 'expandtab' is set.
-		let g:snippet = substitute(g:snippet, '\t',
-						\ repeat(' ', &sts ? &sts : &sw), 'g')
+		return substitute(snippet, '\t', repeat(' ', &sts ? &sts : &sw), 'g')
 	endif
+	return snippet
 endf
 
 fun s:Count(haystack, needle)
@@ -117,30 +114,30 @@ endf
 "     the matches of "$#", to be replaced with the placeholder. This list is
 "     composed the same way as the parent; the first item is the line number,
 "     and the second is the column.
-fun s:BuildTabStops(lnum, col, indent)
-	let g:snipPos = []
+fun s:BuildTabStops(snip, lnum, col, indent)
+	let snipPos = []
 	let i = 1
-	let withoutVars = substitute(g:snippet, '$\d\+', '', 'g')
-	wh stridx(g:snippet, '${'.i) != -1
+	let withoutVars = substitute(a:snip, '$\d\+', '', 'g')
+	wh stridx(a:snip, '${'.i) != -1
 		let beforeTabStop = matchstr(withoutVars, '^.*\ze${'.i.'\D')
 		let withoutOthers = substitute(withoutVars, '${'.i.'\@!\d\+.\{-}}', '', 'g')
-		let g:snipPos += [[a:lnum + s:Count(beforeTabStop, "\n"),
+		let snipPos += [[a:lnum + s:Count(beforeTabStop, "\n"),
 						\ a:indent + len(matchstr(withoutOthers,
 						\ "^.*\\(\n\\|^\\)\\zs.*\\ze${".i.'\D')), -1]]
-		if g:snipPos[i-1][0] == a:lnum
-			let g:snipPos[i-1][1] += a:col
+		if snipPos[i-1][0] == a:lnum
+			let snipPos[i-1][1] += a:col
 		endif
 
 		" Get all $# matches in another list, if ${#:name} is given
 		if stridx(withoutVars, '${'.i.':') != -1
 			let j = i - 1
-			let g:snipPos[j][2] = len(matchstr(withoutVars, '${'.i.':\zs.\{-}\ze}'))
-			let g:snipPos[j] += [[]]
-			let withoutOthers = substitute(g:snippet, '${\d\+.\{-}}\|$'.i.'\@!\d\+', '', 'g')
+			let snipPos[j][2] = len(matchstr(withoutVars, '${'.i.':\zs.\{-}\ze}'))
+			let snipPos[j] += [[]]
+			let withoutOthers = substitute(a:snip, '${\d\+.\{-}}\|$'.i.'\@!\d\+', '', 'g')
 			wh match(withoutOthers, '$'.i.'\D') != -1
 				let beforeMark = matchstr(withoutOthers, '^.\{-}\ze$'.i.'\D')
 				let linecount = a:lnum + s:Count(beforeMark, "\n")
-				let g:snipPos[j][3] += [[linecount,
+				let snipPos[j][3] += [[linecount,
 							\ a:indent + (linecount > a:lnum
 							\ ? len(matchstr(beforeMark, "^.*\n\\zs.*"))
 							\ : a:col + len(beforeMark))]]
@@ -149,7 +146,7 @@ fun s:BuildTabStops(lnum, col, indent)
 		endif
 		let i += 1
 	endw
-	return i - 1
+	return [snipPos, i - 1]
 endf
 
 fun snipMate#jumpTabStop()
@@ -179,8 +176,8 @@ fun s:UpdatePlaceholderTabStops()
 	let changeLen = s:origWordLen - g:snipPos[s:curPos][2]
 	unl s:startSnip s:origWordLen s:update
 	if !exists('s:origPos') | return | endif
-	" Update tab stops in snippet if text has been added via "$#",
-	" e.g. in "${1:foo}bar$1${2}"
+	" Update tab stops in snippet if text has been added via "$#"
+	" (e.g., in "${1:foo}bar$1${2}").
 	if changeLen != 0
 		let curLine = line('.')
 

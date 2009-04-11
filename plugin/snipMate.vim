@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.78
+" Version:       0.79
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -142,19 +142,17 @@ fun! TriggerSnippet()
 
 	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
 	for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
-		let trigger = s:GetSnippet(word, scope)
-		if exists('g:snippet') | break | endif
+		let [trigger, snippet] = s:GetSnippet(word, scope)
+		" If word is a trigger for a snippet, delete the trigger & expand 
+		" the snippet.
+		if snippet != ''
+			let col = col('.') - len(trigger)
+			sil exe 's/\V'.escape(trigger, '/').'\%#//'
+			return snipMate#expandSnip(snippet, col)
+		endif
 	endfor
 
-	" If word is a trigger for a snippet, delete the trigger & expand the snippet.
-	if exists('g:snippet')
-		if g:snippet == '' " If user cancelled a multi snippet, quit.
-			unl g:snippet | return ''
-		endif
-		let col = col('.') - len(trigger)
-		sil exe 's/'.escape(trigger, '.^$/\*[]').'\%#//'
-		return snipMate#expandSnip(col)
-	elseif exists('SuperTabKey')
+	if exists('SuperTabKey')
 		call feedkeys(SuperTabKey)
 		return ''
 	endif
@@ -164,18 +162,18 @@ endf
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
 " the text after non-word characters is (e.g. check for "foo" in "bar.foo")
 fun s:GetSnippet(word, scope)
-	let word = a:word
-	wh !exists('g:snippet')
+	let word = a:word | let snippet = ''
+	wh snippet == ''
 		if exists('s:snippets["'.a:scope.'"]["'.escape(word, '\"').'"]')
-			let g:snippet = s:snippets[a:scope][word]
+			let snippet = s:snippets[a:scope][word]
 		elseif exists('s:multi_snips["'.a:scope.'"]["'.escape(word, '\"').'"]')
-			let g:snippet = s:ChooseSnippet(a:scope, word)
+			let snippet = s:ChooseSnippet(a:scope, word)
 		else
 			if match(word, '\W') == -1 | break | endif
 			let word = substitute(word, '.\{-}\W', '', '')
 		endif
 	endw
-	return word
+	return [word, snippet]
 endf
 
 fun s:ChooseSnippet(scope, trigger)
