@@ -2,7 +2,7 @@
 """
 File: convertSnips.py
 Author: Michael Sanders
-Description: Converts command-based snippets to new file-based snippet syntax.
+Description: Converts deprecated command-based snippets to file-based snippets.
 NOTE: This is only meant to help, it is not perfect! Check the file afterwards
 to make sure it's correct.
 """
@@ -12,6 +12,11 @@ import sys, re
 def usage():
     """Print usage message and exit."""
     print """\
+converSnips.py -
+This is meant to help migrate old command-based snippets to file-based snippets.
+It can only convert from the old, deprecated snipMate format, not from
+snippetsEmu or any other snippet plugin.
+
 Usage: convertSnips.py -h or --help              Print this help and exit
    or: convertSnips.py [inputfile]               Print .snippets file
    or: convertSnips.py [inputfile] [outputfile]  Output to file"""
