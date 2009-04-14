@@ -10,6 +10,9 @@ snippet sel
 # @"..." string
 snippet s
 	@"${1}"${2}
+# Object
+snippet o
+	${1:NSObject} *${2:foo} = [${3:$1 alloc}];${5}
 # NSLog(...)
 snippet log
 	NSLog(@"${1}"${2});${3}
@@ -136,11 +139,10 @@ snippet fora
 		${4}
 	}
 snippet forarray
-	unsigned int	${1:object}Count = [${2:array} count];
+	unsigned int ${1:object}Count = [${2:array} count];
 	
-	for (unsigned int index = 0; index < $1Count; index++)
-	{
-		${3:id}	$1 = [$2 $1AtIndex:index];
+	for (unsigned int index = 0; index < $1Count; index++) {
+		${3:id} $1 = [$2 $1AtIndex:index];
 		${4}
 	}
 # IBOutlet
