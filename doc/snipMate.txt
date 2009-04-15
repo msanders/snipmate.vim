@@ -240,7 +240,6 @@ snipMate.vim has the following features among others:
   - (New) File-based snippets are supported.
   - (New) Triggers after non-word delimiters are expanded, e.g. "foo"
     in "bar.foo".
-  - (New) Nested snippets are possible.
 
 ==============================================================================
 DISADVANTAGES                                         *snipMate-disadvantages*
