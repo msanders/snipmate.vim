@@ -127,12 +127,12 @@ snippet objacc
 		return $2;
 	}
 	
-	- (void) set$2:($1)
+	- (void)set$2:($1)${3:new$2}
 	{
-		$1 old$2 = $2;
-		$2 = [aValue retain];
-		[old$2 release];
-	}
+		[$3 retain];
+		[$2 release];
+		$2 = $3;
+	}${4}
 # for (object in array)
 snippet fora
 	for (${1:Class} *${2:Object} in ${3:array}) {
@@ -165,3 +165,10 @@ snippet rel
 # autorelease
 snippet arel
 	[${1:foo} autorelease];
+# Throw an exception
+snippet except
+	NSException *${1:badness};
+	$1 = [NSException exceptionWithName:@"${2:$1Name}"
+	                             reason:@"${3}"
+	                           userInfo:nil];
+	[$1 raise];
