@@ -8,6 +8,7 @@
 "                For more help see snipMate.txt; you can do this by using:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
+"                TOFIX: objc - md<esc>koiba
 
 if exists('loaded_snips') || &cp || version < 700
 	finish
@@ -163,7 +164,7 @@ endf
 " the text after non-word characters is (e.g. check for "foo" in "bar.foo")
 fun s:GetSnippet(word, scope)
 	let word = a:word | let snippet = ''
-	wh snippet == ''
+	while snippet == ''
 		if exists('s:snippets["'.a:scope.'"]["'.escape(word, '\"').'"]')
 			let snippet = s:snippets[a:scope][word]
 		elseif exists('s:multi_snips["'.a:scope.'"]["'.escape(word, '\"').'"]')
@@ -186,5 +187,35 @@ fun s:ChooseSnippet(scope, trigger)
 	if i == 2 | return s:multi_snips[a:scope][a:trigger][0][1] | endif
 	let num = inputlist(snippet) - 1
 	return num == -1 ? '' : s:multi_snips[a:scope][a:trigger][num][1]
+endf
+
+fun ShowAvailableSnips()
+	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
+	let words = [word]
+	if stridx(word, '.')
+		let words += split(word, '\.')
+		if word[len(word) - 1] == '.' | let words += [''] | endif
+	endif
+	let matchpos = 0
+	let matches = []
+	for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
+		let triggers = exists('s:snippets["'.scope.'"]') ? keys(s:snippets[scope]) : []
+		if exists('s:multi_snips["'.scope.'"]')
+			let triggers += keys(s:multi_snips[scope])
+		endif
+		for trigger in triggers
+			for word in words
+				if word == ''
+					let matches += [trigger] " Show all matches if word is empty
+				elseif trigger =~ '^'.word
+					let matches += [trigger]
+					let len = len(word)
+					if len > matchpos | let matchpos = len | endif
+				endif
+			endfor
+		endfor
+	endfor
+	call complete(col('.') - matchpos, matches)
+	return ''
 endf
 " vim:noet:sw=4:ts=4:ft=vim

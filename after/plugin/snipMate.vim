@@ -7,6 +7,7 @@ let s:did_snips_mappings = 1
 
 ino <silent> <tab> <c-r>=TriggerSnippet()<cr>
 snor <silent> <tab> <esc>i<right><c-r>=TriggerSnippet()<cr>
+ino <silent> <c-r><tab> <c-r>=ShowAvailableSnips()<cr>
 snor <bs> b<bs>
 snor ' b<bs>'
 snor <right> <esc>a
