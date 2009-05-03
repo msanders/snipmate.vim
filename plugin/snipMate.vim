@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.79
+" Version:       0.8
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -8,7 +8,6 @@
 "                For more help see snipMate.txt; you can do this by using:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-"                TOFIX: objc - md<esc>koiba
 
 if exists('loaded_snips') || &cp || version < 700
 	finish
@@ -193,8 +192,7 @@ fun ShowAvailableSnips()
 	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
 	let words = [word]
 	if stridx(word, '.')
-		let words += split(word, '\.')
-		if word[len(word) - 1] == '.' | let words += [''] | endif
+		let words += split(word, '\.', 1)
 	endif
 	let matchpos = 0
 	let matches = []
