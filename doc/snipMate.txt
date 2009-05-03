@@ -198,6 +198,10 @@ The ResetSnippets() function removes all snippets from memory. This is useful
 to put at the top of a snippet setup file for if you would like to |:source|
 it multiple times.
 
+                                             *list-snippets* *i_CTRL-R_<Tab>*
+If you would like to see what snippets are available, simply type <c-r><tab>
+in the current buffer to show a list via |popupmenu-completion|.
+
 ==============================================================================
 SETTINGS                                  *snipMate-settings* *g:snips_author*
 
@@ -219,12 +223,12 @@ can remap it easily in the two lines it's defined in the 'after' directory
 under 'plugin/snipMate.vim'. For instance, to change the trigger key
 to shift-tab, just change this: >
 
- ino <tab> <c-r>=ExpandSnippet()<cr>
- snor <tab> <esc>i<right><c-r>=ExpandSnippet()<cr>
+ ino <tab> <c-r>=TriggerSnippet()<cr>
+ snor <tab> <esc>i<right><c-r>=TriggerSnippet()<cr>
 
 to this: >
- ino <s-tab> <c-r>=ExpandSnippet()<cr>
- snor <s-tab> <esc>i<right><c-r>=ExpandSnippet()<cr>
+ ino <s-tab> <c-r>=TriggerSnippet()<cr>
+ snor <s-tab> <esc>i<right><c-r>=TriggerSnippet()<cr>
 
 ==============================================================================
 FEATURES                                                   *snipMate-features*
@@ -242,7 +246,6 @@ snipMate.vim has the following features among others:
   - (New) File-based snippets are supported.
   - (New) Triggers after non-word delimiters are expanded, e.g. "foo"
     in "bar.foo".
-  - (New) Nested snippets are possible.
 
 ==============================================================================
 DISADVANTAGES                                         *snipMate-disadvantages*
