@@ -50,6 +50,16 @@ snippet clm
 		return self;
 	}
 	@end
+# Interface
+snippet int
+	@interface
+	${1}
+	@end
+# Implementation
+snippet impl
+	@implementation
+	${1}
+	@end
 snippet ibo
 	IBOutlet ${1:NSSomeClass} *${2:$1};
 # Category
@@ -151,7 +161,7 @@ snippet prop
 	@property (${1:retain}) ${2:NSSomeClass} *${3:$2};${4}
 # @synthesize (Objective-C 2.0)
 snippet syn
-	@synthesize ${1:NSSomeClass};${2}
+	@synthesize ${1:property};${2}
 # [[ alloc] init]
 snippet alloc
 	[[${1:foo} alloc] init]${2};${3}
@@ -165,6 +175,11 @@ snippet rel
 # autorelease
 snippet arel
 	[${1:foo} autorelease];
+# autorelease pool
+snippet pool
+	NSAutoReleasePool *${1:pool} = [[NSAutoReleasePool alloc] init];
+	${2:/* code */}
+	[$1 release];
 # Throw an exception
 snippet except
 	NSException *${1:badness};
