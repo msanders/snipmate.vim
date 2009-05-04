@@ -379,7 +379,7 @@ fun s:UpdateVars()
 
 		" "Very nomagic" is used here to allow special characters.
 		call setline(lnum, substitute(getline(lnum), '\%'.col.'c\V'.
-						\ escape(s:oldWord, '\'), escape(newWord, '\'), ''))
+						\ escape(s:oldWord, '\'), escape(newWord, '\&'), ''))
 	endfor
 	if oldStartSnip != s:startSnip
 		call cursor(0, startCol + s:startSnip - oldStartSnip)
