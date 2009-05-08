@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: April 6, 2009
+Last Change: May 8, 2009
 
 |snipMate-description|   Description
 |snipMate-syntax|        Snippet syntax
@@ -163,7 +163,7 @@ In this example, when "trigger<tab>" is typed, a numbered menu containing all
 of the descriptions of the "trigger" will be shown; when the user presses the
 corresponding number, that snippet will then be expanded.
 
-To create a create a snippet with multiple matches using *.snippet files,
+To create a snippet with multiple matches using *.snippet files,
 simply place all the snippets in a subdirectory with the trigger name:
 'snippets/<filetype>/<trigger>/<name>.snippet'.
 
