@@ -18,50 +18,36 @@ snippet log
 	NSLog(@"${1}"${2});${3}
 # Class
 snippet objc
-	@interface ${1:`Filename('', 'object')`} : ${2:NSObject}
+	@interface ${1:`Filename('', 'someClass')`} : ${2:NSObject}
 	{
 	}
 	@end
 	
 	@implementation $1
-	- (id) init
-	{
-		if (self = [super init])
-		{${3}
-		}
-		return self;
-	}
+	${3}
 	@end
 # Class Interface
-snippet clh
-	@interface ${1:`Filename('', 'object')`} : ${2:NSObject}
-	{${3}
+snippet int
+	@interface ${1:`Filename('', 'someClass')`}
+	{${2}
 	}
-	${4}
+	${3}
 	@end
 # Class Implementation
-snippet clm
-	@implementation ${1:`Filename('', 'object')`} : ${2:NSObject}
+snippet impl
+	@implementation ${1:`Filename('', 'someClass')`}
+	${2}
+	@end
+snippet init
 	- (id)init
 	{
 		if ((self = [super init]))
-		{$0
+		{${1}
 		}
 		return self;
 	}
-	@end
-# Interface
-snippet int
-	@interface
-	${1}
-	@end
-# Implementation
-snippet impl
-	@implementation
-	${1}
-	@end
 snippet ibo
-	IBOutlet ${1:NSSomeClass} *${2:$1};
+	IBOutlet ${1:NSSomeClass} *${2:$1};${3}
 # Category
 snippet cat
 	@interface ${1:NSObject} (${2:Category})
@@ -177,7 +163,7 @@ snippet arel
 	[${1:foo} autorelease];
 # autorelease pool
 snippet pool
-	NSAutoReleasePool *${1:pool} = [[NSAutoReleasePool alloc] init];
+	NSAutoreleasePool *${1:pool} = [[NSAutoreleasePool alloc] init];
 	${2:/* code */}
 	[$1 release];
 # Throw an exception
