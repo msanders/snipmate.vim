@@ -1,7 +1,7 @@
 # #!/usr/bin/ruby
 snippet #!
 	#!/usr/bin/ruby
-	
+
 # New Block
 snippet =b
 	=begin rdoc
@@ -11,7 +11,7 @@ snippet y
 	:yields: ${1:arguments}
 snippet rb
 	#!/usr/bin/env ruby -wKU
-	
+
 snippet req
 	require "${1}"${2}
 snippet #
@@ -68,24 +68,24 @@ snippet cla class .. initialize .. end
 		def initialize(${2:args})
 			${3}
 		end
-	
-	
+
+
 	end
 snippet cla class .. < ParentClass .. initialize .. end
 	class ${1:`substitute(Filename(), '^.', '\u&', '')`} < ${2:ParentClass}
 		def initialize(${3:args})
 			${4}
 		end
-	
-	
+
+
 	end
 snippet cla ClassName = Struct .. do .. end
 	${1:`substitute(Filename(), '^.', '\u&', '')`} = Struct.new(:${2:attr_names}) do
 		def ${3:method_name}
 			${4}
 		end
-	
-	
+
+
 	end
 snippet cla class BlankSlate .. initialize .. end
 	class ${1:BlankSlate}
@@ -99,11 +99,11 @@ snippet cla-
 	class ${1:`substitute(Filename(), '^.', '\u&', '')`} < DelegateClass(${2:ParentClass})
 		def initialize(${3:args})
 			super(${4:del_obj})
-	
+
 			${5}
 		end
-	
-	
+
+
 	end
 snippet mod module .. end
 	module ${1:`substitute(Filename(), '^.', '\u&', '')`}
@@ -112,7 +112,7 @@ snippet mod module .. end
 snippet mod module .. module_function .. end
 	module ${1:`substitute(Filename(), '^.', '\u&', '')`}
 		module_function
-	
+
 		${2}
 	end
 snippet mod module .. ClassMethods .. end
@@ -120,8 +120,16 @@ snippet mod module .. ClassMethods .. end
 		module ClassMethods
 			${2}
 		end
-	
-		
+
+		module InstanceMethods
+
+		end
+
+		def self.included(receiver)
+			receiver.extend         ClassMethods
+			receiver.send :include, InstanceMethods
+		end
+	end
 # attr_reader
 snippet r
 	attr_reader :${1:attr_names}
@@ -134,14 +142,14 @@ snippet rw
 # include Enumerable
 snippet Enum
 	include Enumerable
-	
+
 	def each(&block)
 		${1}
 	end
 # include Comparable
 snippet Comp
 	include Comparable
-	
+
 	def <=>(other)
 		${1}
 	end
@@ -188,7 +196,7 @@ snippet file File.read()
 	File.read(${1:"path/to/file"})${2}
 snippet Dir Dir.global() { |file| .. }
 	Dir.glob(${1:"dir/glob/*"}) { |${2:file}| ${3} }
-snippet Dir Dir[''..'']
+snippet Dir Dir[".."]
 	Dir[${1:"glob/**/*.rb"}]${2}
 snippet dir
 	Filename.dirname(__FILE__)
@@ -301,9 +309,9 @@ snippet unif
 # option_parse {}
 snippet optp
 	require "optparse"
-	
+
 	options = {${1:default => "args"}}
-	
+
 	ARGV.options do |opts|
 		opts.banner = "Usage: #{File.basename($PROGRAM_NAME)}
 snippet opt
@@ -313,9 +321,9 @@ snippet opt
 	end
 snippet tc
 	require "test/unit"
-	
+
 	require "${1:library_file_name}"
-	
+
 	class Test${2:$1} < Test::Unit::TestCase
 		def test_${3:case_name}
 			${4}
@@ -323,7 +331,7 @@ snippet tc
 	end
 snippet ts
 	require "test/unit"
-	
+
 	require "tc_${1:test_case_file}"
 	require "tc_${2:test_case_file}"${3}
 snippet as
