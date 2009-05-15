@@ -24,7 +24,7 @@ fun snipMate#expandSnip(snip, col)
 	else
 		let afterCursor = ''
 		" For some reason the cursor needs to move one right after this
-		if line != '' && col == 1 && &ve !~ 'all\|onemore'
+		if line != '' && col == 1 && &ve != 'all' && &ve != 'onemore'
 			let col += 1
 		endif
 	endif
@@ -230,6 +230,7 @@ fun s:UpdateTabStops()
 	" Update the line number of all proceeding tab stops if <cr> has
 	" been inserted.
 	if changeLine != 0
+		let changeLine -= 1
 		for pos in g:snipPos[s:curPos + 1:]
 			if pos[0] >= lnum
 				if pos[0] == lnum | let pos[1] += changeCol | endif
@@ -365,7 +366,7 @@ fun s:UpdateVars()
 			endif
 			for nPos in g:snipPos[s:curPos][3][(i):]
 				" This list is in ascending order, so quit if we've gone too far.
-				if nPos[0] > lnum | break | endif 
+				if nPos[0] > lnum | break | endif
 				if nPos[0] == lnum && nPos[1] > col
 					let nPos[1] -= changeLen
 				endif
@@ -388,3 +389,4 @@ fun s:UpdateVars()
 	let s:oldWord = newWord
 	let g:snipPos[s:curPos][2] = newWordLen
 endf
+" vim:noet:sw=4:ts=4:ft=vim
