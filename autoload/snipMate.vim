@@ -14,7 +14,7 @@ fun snipMate#expandSnip(snip, col)
 	let snippet = s:ProcessSnippet(a:snip)
 	if snippet == '' | return '' | endif
 
-	let snipLines = split(substitute(snippet, '$\d\+\|${\d\+.\{-}}', '', 'g'), "\n", 1)
+	let snipLines = split(s:RemoveTabStops(substitute(snippet, '$\d\+', '', 'g')), "\n", 1)
 
 	let line = getline(lnum)
 	let afterCursor = strpart(line, col - 1)
@@ -69,18 +69,15 @@ fun s:ProcessSnippet(snip)
 		let snippet = substitute(snippet, "\r", "\n", 'g')
 	endif
 
-	" Place all text after a colon in a tab stop after the tab stop
-	" (e.g. "${#:foo}" becomes "${:foo}foo").
-	" This helps tell the position of the tab stops later.
-	let snippet = substitute(snippet, '${\d\+:\(.\{-}\)}', '&\1', 'g')
-
-	" Update the a:snip so that all the $# become the text after
-	" the colon in their associated ${#}.
+	" Update a:snip so that all the $# become the text after the colon in their
+	" associated ${#}.
 	" (e.g. "${1:foo}" turns all "$1"'s into "foo")
 	let i = 1
 	while stridx(snippet, '${'.i) != -1
-		let s = matchstr(snippet, '${'.i.':\zs.\{-}\ze}')
+		let s = s:GetPlaceholder(snippet, i)
 		if s != ''
+			" Take care of nested placeholders by removing the surrounding ${:}
+			let s = s:RemoveTabStops(s)
 			let snippet = substitute(snippet, '$'.i, s.'&', 'g')
 		endif
 		let i += 1
@@ -90,6 +87,52 @@ fun s:ProcessSnippet(snip)
 		return substitute(snippet, '\t', repeat(' ', &sts ? &sts : &sw), 'g')
 	endif
 	return snippet
+endf
+
+" Removes tab stops, leaving only its placeholder; e.g., "${1:baz}" becomes
+" simply "baz".
+fun s:RemoveTabStops(snippet)
+	let snippet = a:snippet
+	while match(snippet, '${\d\+') != -1
+		let snippet = substitute(snippet, '${\d\+:\=\([^{}]\{-}\)}', '\1', 'g')
+	endw
+	return snippet
+endf
+
+" Removes all tab stops except the one specified.
+fun s:RemoveAllExcept(snippet, skip)
+	let i = 1
+	let snippet = a:snippet
+	while stridx(snippet, '${'.i) != -1
+		if i != a:skip
+			let s = s:GetPlaceholder(snippet, i)
+			let snippet = s == ''
+						\ ? substitute(snippet, '${'.i.'}', '', '')
+			            \ : substitute(snippet, '${'.i.':\('.s.'\)}', '\1', '')
+		endif
+		let i += 1
+	endw
+	return snippet
+endf
+
+" Returns the placeholder for a given tabstop, nested placeholders and all.
+fun s:GetPlaceholder(snippet, tabstop)
+	let portion = matchstr(a:snippet, '${'.a:tabstop.':.*}')
+	let portion = strpart(portion, 0, s:SearchPair(portion, '{', '}'))
+	return strpart(portion, stridx(portion, ':') + 1)
+endf
+
+" Returns the end of the nested start-end pair in the given string.
+fun s:SearchPair(string, start, end)
+	let start = stridx(a:string, a:start)
+	let end = -1
+	while 1
+		let start = stridx(a:string, a:start, start + 1)
+		let end = stridx(a:string, a:end, end + 1)
+		if start == -1 || end < start
+			return end
+		endif
+	endw
 endf
 
 fun s:Count(haystack, needle)
@@ -118,22 +161,24 @@ fun s:BuildTabStops(snip, lnum, col, indent)
 	let snipPos = []
 	let i = 1
 	let withoutVars = substitute(a:snip, '$\d\+', '', 'g')
+	let noTabStops = s:RemoveTabStops(a:snip)
 	while stridx(a:snip, '${'.i) != -1
 		let beforeTabStop = matchstr(withoutVars, '^.*\ze${'.i.'\D')
-		let withoutOthers = substitute(withoutVars, '${\('.i.'\D\)\@!\d\+.\{-}}', '', 'g')
+		let withoutOthers = s:RemoveAllExcept(withoutVars, i)
 
 		let j = i - 1
 		call add(snipPos, [0, 0, -1])
 		let snipPos[j][0] = a:lnum + s:Count(beforeTabStop, "\n")
-		let snipPos[j][1] = a:indent + len(matchstr(withoutOthers, '.*\(\n\|^\)\zs.*\ze${'.i.'\D'))
+		let snipPos[j][1] = a:indent + len(matchstr(withoutOthers, '.*\(\n\|^\)\zs.*\ze${'.i))
 		if snipPos[j][0] == a:lnum | let snipPos[j][1] += a:col | endif
 
 		" Get all $# matches in another list, if ${#:name} is given
 		if stridx(withoutVars, '${'.i.':') != -1
-			let snipPos[j][2] = len(matchstr(withoutVars, '${'.i.':\zs.\{-}\ze}'))
+			let snipPos[j][2] = len(s:RemoveTabStops(s:GetPlaceholder(withoutVars, i)))
 			let dots = repeat('.', snipPos[j][2])
 			call add(snipPos[j], [])
-			let withoutOthers = substitute(a:snip, '${\d\+.\{-}}\|$'.i.'\@!\d\+', '', 'g')
+
+			let withoutOthers = substitute(noTabStops, '$'.i.'\@!\d\+', '', 'g')
 			while match(withoutOthers, '$'.i.'\D') != -1
 				let beforeMark = matchstr(withoutOthers, '^.\{-}\ze'.dots.'$'.i.'\D')
 				call add(snipPos[j][3], [0, 0])
@@ -157,6 +202,10 @@ fun snipMate#jumpTabStop()
 	endif
 
 	let s:curPos += 1
+	if exists('s:skip') " If a nested placeholder has been added, skip past it.
+		let s:curPos += s:skip
+		unl s:skip
+	endif
 	if s:curPos == s:snipLen
 		let sMode = s:endSnip == g:snipPos[s:curPos-1][1]+g:snipPos[s:curPos-1][2]
 		call s:RemoveSnippet()
@@ -292,9 +341,15 @@ endf
 au CursorMovedI * call s:UpdateChangedSnip(0)
 au InsertEnter * call s:UpdateChangedSnip(1)
 fun s:UpdateChangedSnip(entering)
+	" If tab stop has been modified, delete any nested placeholders it has.
+	if exists('s:origWordLen') && !exists('s:skip')
+	                         \ && col('$') - (s:prevLen[1] + s:origWordLen)
+		call s:DeleteNestedPlaceholders()
+	endif
+
 	if exists('s:update') " If modifying a placeholder
 		if !exists('s:origPos') && s:curPos + 1 < s:snipLen
-			" Save the old snippet & word length before it's updated
+			" Save the old snippet & word length before it's updated.
 			" s:startSnip must be saved too, in case text is added
 			" before the snippet (e.g. in "foo$1${2}bar${1:foo}").
 			let s:origSnipPos = s:startSnip
@@ -339,6 +394,20 @@ fun s:UpdateChangedSnip(entering)
 			call s:RemoveSnippet()
 		endif
 	endif
+endf
+
+fun s:DeleteNestedPlaceholders()
+	let s:skip = 0
+	let lnum = line('.')
+	let endPlaceholder = g:snipPos[s:curPos][1] + g:snipPos[s:curPos][2]
+	let startPlaceholder = g:snipPos[s:curPos][1]
+	for tabstop in g:snipPos[(s:curPos + 1):]
+		if tabstop[0] != lnum ||
+		 \ tabstop[1] > endPlaceholder || tabstop[1] < startPlaceholder
+			break
+		endif
+		let s:skip += 1
+	endfor
 endf
 
 " This updates the variables in a snippet when a placeholder has been edited.
