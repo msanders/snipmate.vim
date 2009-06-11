@@ -1,6 +1,8 @@
 snippet #!
 	#!/usr/bin/python
 
+snippet imp
+	import ${1:module}
 # Module Docstring
 snippet docs
 	'''
@@ -27,9 +29,12 @@ snippet def
 	def ${1:fname}(${2:`indent('.') ? 'self' : ''`}):
 		"""${3:docstring for $1}"""
 		${4:pass}
+snippet deff
+	def ${1:fname}(${2:`indent('.') ? 'self' : ''`}):
+		${3}
 # New Method
 snippet defs
-	def ${1:mname}(self, ${2:arg})):
+	def ${1:mname}(self, ${2:arg}):
 		${3:pass}
 # New Property
 snippet property
@@ -39,8 +44,6 @@ snippet property
 			${3:return self._$1}
 		def fset(self, value):
 			${4:self._$1 = value}
-
-# Self
 snippet .
 	self.
 snippet try Try/Except
