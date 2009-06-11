@@ -44,6 +44,9 @@ snippet property
 			${3:return self._$1}
 		def fset(self, value):
 			${4:self._$1 = value}
+# Lambda
+snippet ld
+	${1:var} = lambda ${2:vars} : ${3:action}
 snippet .
 	self.
 snippet try Try/Except
