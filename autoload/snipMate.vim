@@ -5,7 +5,8 @@ fun! Filename(...)
 endf
 
 fun s:RemoveSnippet()
-	unl g:snipPos s:curPos s:snipLen s:endSnip s:endSnipLine s:prevLen
+	unl g:snipPos s:curPos s:snipLen s:endSnip s:endSnipLine s:prevLen s:lastBuf
+	aug! snipMateAutocmds
 endf
 
 fun snipMate#expandSnip(snip, col)
@@ -39,6 +40,12 @@ fun snipMate#expandSnip(snip, col)
 	let [g:snipPos, s:snipLen] = s:BuildTabStops(snippet, lnum, col - indent, indent)
 
 	if s:snipLen
+		aug snipMateAutocmds
+			au CursorMovedI * call s:UpdateChangedSnip(0)
+			au InsertEnter * call s:UpdateChangedSnip(1)
+		aug END
+		let s:lastBuf = bufnr(0)
+
 		let s:curPos      = 0
 		let s:endSnip     = g:snipPos[s:curPos][1]
 		let s:endSnipLine = g:snipPos[s:curPos][0]
@@ -289,8 +296,6 @@ endf
 "
 " It also automatically quits the snippet if the cursor is moved out of it
 " while in insert mode.
-au CursorMovedI * call s:UpdateChangedSnip(0)
-au InsertEnter * call s:UpdateChangedSnip(1)
 fun s:UpdateChangedSnip(entering)
 	if exists('s:update') " If modifying a placeholder
 		if !exists('s:origPos') && s:curPos + 1 < s:snipLen
@@ -336,6 +341,7 @@ fun s:UpdateChangedSnip(entering)
 		" Delete snippet if cursor moves out of it in insert mode
 		if (lnum == s:endSnipLine && (col > s:endSnip || col < g:snipPos[s:curPos][1]))
 			\ || lnum > s:endSnipLine || lnum < g:snipPos[s:curPos][0]
+			\ || bufnr(0) != s:lastBuf
 			call s:RemoveSnippet()
 		endif
 	endif
