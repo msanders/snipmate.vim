@@ -141,14 +141,14 @@ fun s:BuildTabStops(snip, lnum, col, indent)
 			let dots = repeat('.', snipPos[j][2])
 			call add(snipPos[j], [])
 			let withoutOthers = substitute(a:snip, '${\d\+.\{-}}\|$'.i.'\@!\d\+', '', 'g')
-			while match(withoutOthers, '$'.i.'\D') != -1
-				let beforeMark = matchstr(withoutOthers, '^.\{-}\ze'.dots.'$'.i.'\D')
+			while match(withoutOthers, '$'.i.'\(\D\|$\)') != -1
+				let beforeMark = matchstr(withoutOthers, '^.\{-}\ze'.dots.'$'.i.'\(\D\|$\)')
 				call add(snipPos[j][3], [0, 0])
 				let snipPos[j][3][-1][0] = a:lnum + s:Count(beforeMark, "\n")
 				let snipPos[j][3][-1][1] = a:indent + (snipPos[j][3][-1][0] > a:lnum
 				                           \ ? len(matchstr(beforeMark, '.*\n\zs.*'))
 				                           \ : a:col + len(beforeMark))
-				let withoutOthers = substitute(withoutOthers, '$'.i.'\ze\D', '', '')
+				let withoutOthers = substitute(withoutOthers, '$'.i.'\ze\(\D\|$\)', '', '')
 			endw
 		endif
 		let i += 1
