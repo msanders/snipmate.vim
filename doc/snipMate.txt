@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: May 8, 2009
+Last Change: July 12, 2009
 
 |snipMate-description|   Description
 |snipMate-syntax|        Snippet syntax
@@ -33,7 +33,7 @@ you type "for<tab>" in insert mode, it will expand a typical for loop in C: >
 To go to the next item in the loop, simply <tab> over to it; if there is
 repeated code, such as the "i" variable in this example, you can simply
 start typing once it's highlighted and all the matches specified in the
-snippet will be updated.
+snippet will be updated. To go in reverse, use <shift-tab>.
 
 ==============================================================================
 SYNTAX                                                        *snippet-syntax*
@@ -62,7 +62,7 @@ only be used outside of a snippet declaration. E.g.: >
  snippet trigger
  	expanded text
  snippet another_trigger
- 	# this doesn't work!
+ 	# this isn't a comment!
 	expanded text
 <
 This should hopefully be obvious with the included syntax highlighting.
@@ -221,14 +221,14 @@ spaces. If 'softtabstop' is not set, 'shiftwidth' is used instead.
 snipMate does not come with a setting to customize the trigger key, but you
 can remap it easily in the two lines it's defined in the 'after' directory
 under 'plugin/snipMate.vim'. For instance, to change the trigger key
-to shift-tab, just change this: >
+to CTRL-J, just change this: >
 
  ino <tab> <c-r>=TriggerSnippet()<cr>
  snor <tab> <esc>i<right><c-r>=TriggerSnippet()<cr>
 
 to this: >
- ino <s-tab> <c-r>=TriggerSnippet()<cr>
- snor <s-tab> <esc>i<right><c-r>=TriggerSnippet()<cr>
+ ino <c-j> <c-r>=TriggerSnippet()<cr>
+ snor <c-j> <esc>i<right><c-r>=TriggerSnippet()<cr>
 
 ==============================================================================
 FEATURES                                                   *snipMate-features*
@@ -243,15 +243,15 @@ snipMate.vim has the following features among others:
   - Snippets can have multiple matches.
   - Snippets can be out of order. For instance, in a do...while loop, the
     condition can be added before the code.
-  - (New) File-based snippets are supported.
-  - (New) Triggers after non-word delimiters are expanded, e.g. "foo"
+  - [New] File-based snippets are supported.
+  - [New] Triggers after non-word delimiters are expanded, e.g. "foo"
     in "bar.foo".
+  - [New] <shift-tab> can now be used to jump tab stops in reverse order.
 
 ==============================================================================
 DISADVANTAGES                                         *snipMate-disadvantages*
 
 snipMate.vim currently has the following disadvantages to TextMate's snippets:
-    - There is no way to go back a tab stop, like shift-tab in TextMate.
     - There is no $0; the order of tab stops must be explicitly stated.
     - Placeholders within placeholders are not possible. E.g.: >
 
@@ -275,5 +275,7 @@ To contact the author (Michael Sanders), please email:
  msanders42+snipmate <at> gmail <dot> com
 
 I greatly appreciate any suggestions or improvements offered for the script.
+
+==============================================================================
 
 vim:tw=78:ts=8:ft=help:norl:
