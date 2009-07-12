@@ -297,7 +297,9 @@ endf
 " It also automatically quits the snippet if the cursor is moved out of it
 " while in insert mode.
 fun s:UpdateChangedSnip(entering)
-	if exists('s:update') " If modifying a placeholder
+	if exists('g:snipPos') && bufnr(0) != s:lastBuf
+		call s:RemoveSnippet()
+	elseif exists('s:update') " If modifying a placeholder
 		if !exists('s:origPos') && s:curPos + 1 < s:snipLen
 			" Save the old snippet & word length before it's updated
 			" s:startSnip must be saved too, in case text is added
@@ -341,7 +343,6 @@ fun s:UpdateChangedSnip(entering)
 		" Delete snippet if cursor moves out of it in insert mode
 		if (lnum == s:endSnipLine && (col > s:endSnip || col < g:snipPos[s:curPos][1]))
 			\ || lnum > s:endSnipLine || lnum < g:snipPos[s:curPos][0]
-			\ || bufnr(0) != s:lastBuf
 			call s:RemoveSnippet()
 		endif
 	endif
