@@ -1,6 +1,6 @@
 # main()
 snippet main
-	int main(int argc, char const* argv[])
+	int main(int argc, const char *argv[])
 	{
 		${1}
 		return 0;
@@ -18,16 +18,24 @@ snippet Def
 	#endif${3}
 snippet def
 	#define 
+snippet ifdef
+	#ifdef ${1:FOO}
+		${2:#define }
+	#endif
+snippet #if
+	#if ${1:FOO}
+		${2}
+	#endif
 # Header Include-Guard
 # (the randomizer code is taken directly from TextMate; it could probably be
 # cleaner, I don't know how to do it in vim script)
 snippet once
 	#ifndef ${1:`toupper(Filename('', 'UNTITLED').'_'.system("/usr/bin/ruby -e 'print (rand * 2821109907455).round.to_s(36)'"))`}
-	
+
 	#define $1
-	
+
 	${2}
-	
+
 	#endif /* end of include guard: $1 */
 # If Condition
 snippet if
@@ -67,9 +75,12 @@ snippet fun
 	{
 		${4:/* code */}
 	}
+# Function Declaration
+snippet fund
+	${1:void} ${2:function_name}(${3});${4}
 # Typedef
 snippet td
-	typedef ${1:int} ${2:MyCustomType};
+	typedef ${1:int} ${2:MyCustomType};${3}
 # Struct
 snippet st
 	struct ${1:`Filename('$1_t', 'name')`} {
@@ -77,9 +88,14 @@ snippet st
 	}${3: /* optional variable list */};${4}
 # Typedef struct
 snippet tds
-	typedef struct ${2:$1 }{
+	typedef struct ${2:_$1 }{
 		${3:/* data */}
 	} ${1:`Filename('$1_t', 'name')`};
+# Typdef enum
+snippet tde
+	typedef enum {
+		${1:/* data */}
+	} ${2:foo};
 # printf
 # unfortunately version this isn't as nice as TextMates's, given the lack of a
 # dynamic `...`
@@ -88,3 +104,7 @@ snippet pr
 # fprintf (again, this isn't as nice as TextMate's version, but it works)
 snippet fpr
 	fprintf(${1:stderr}, "${2:%s}\n"${3});${4}
+snippet .
+	[${1}]${2}
+snippet un
+	unsigned
