@@ -24,7 +24,11 @@ snippet cl
 	public:
 		$1 (${2:arguments});
 		virtual ~$1 ();
-	
+
 	private:
 		${3:/* data */}
 	};
+snippet fori
+	for (int ${2:i} = 0; $2 < ${1:count}; $2${3:++}) {
+		${4:/* code */}
+	}
