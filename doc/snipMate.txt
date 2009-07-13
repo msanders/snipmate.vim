@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: July 12, 2009
+Last Change: July 13, 2009
 
 |snipMate-description|   Description
 |snipMate-syntax|        Snippet syntax
@@ -40,7 +40,12 @@ SYNTAX                                                        *snippet-syntax*
 
 Snippets can be defined in two ways. They can be in their own file, named
 after their trigger in 'snippets/<filetype>/<trigger>.snippet', or they can be
-defined together in a 'snippets/<filetype>.snippets' file.
+defined together in a 'snippets/<filetype>.snippets' file. Note that dotted
+'filetype' syntax is supported -- e.g., you can use >
+
+	:set ft=html.eruby
+
+to activate snippets for both HTML and eRuby for the current file.
 
 The syntax for snippets in *.snippets files is the following: >
 
