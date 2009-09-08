@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 File: convertSnips.py
 Author: Michael Sanders
