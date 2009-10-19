@@ -1,0 +1,205 @@
+snippet reset
+	/* Reset for ALL */
+	html, body, div, span, applet, object, iframe,
+	h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+	a, abbr, acronym, address, big, cite, code,
+	del, dfn, em, font, img, ins, kbd, q, s, samp,
+	small, strike, strong, sub, sup, tt, var,
+	b, u, i, center,
+	dl, dt, dd, ol, ul, li,
+	fieldset, form, label, legend,
+	table, caption, tbody, tfoot, thead, tr, th, td {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		outline: 0;
+		font-size: 100%;
+		vertical-align: baseline;
+		background: transparent;
+	}
+	body {
+			line-height: 1;
+	}
+	ol, ul {
+			list-style: none;
+	}
+	blockquote, q {
+			quotes: none;
+	}
+
+	/* remember to define focus styles! */
+	:focus {
+			outline: 0;
+	}
+
+	/* remember to highlight inserts somehow! */
+	ins {
+			text-decoration: none;
+	}
+	del {
+			text-decoration: line-through;
+	}
+
+	/* tables still need 'cellspacing="0"' in the markup */
+	table {
+			border-collapse: collapse;
+				border-spacing: 0;
+	}
+	$0
+
+snippet backgroundattach
+	background-attachment: ${1:scroll/fixed};
+snippet background
+	background-color: #${1:DDD};
+snippet backgroundcolor
+	background-color: ${1:green};
+snippet backgroundrgb
+	background-color: rgb(${1:255},${2:255},${3:255});
+snippet background
+	background: #${1:DDD} url($2) ${3:repeat/repeat-x/repeat-y/no-repeat} ${4:scroll/fixed} ${5:top letft/top center/top right/center left/center center/center right/bottom left/bottom center/bottom right/x-% y-%/x-pos y-pos};
+snippet backgroundtrans
+	background-color: transparent;
+snippet backgroundnone
+	background-image: none;
+snippet backgroundurl
+	background-image: url($1);
+snippet backgroundpos
+	background-position: ${1:top letft/top center/top right/center left/center center/center right/bottom left/bottom center/bottom right/x-% y-%/x-pos y-pos};
+snippet backgroundrepeat
+	background-repeat: ${1:repeat/repeat-x/repeat-y/no-repeat};
+snippet borderbottom
+	border-bottom-color: #${1:999};
+snippet borderbottom
+	border-bottom: ${1:1}px ${2:solid} #${3:999};
+snippet borderbottom
+	border-bottom-style: ${1:none/hidden/dotted/dashed/solid/double/groove/ridge/inset/outset};
+snippet borderbottom
+	border-bottom-width: ${1:1}px ${2:solid} #${3:999};
+snippet bordercolor
+	border-color: ${1:999};
+snippet borderright
+	border-right-color: #${1:999};
+snippet borderleft
+	border-left: ${1:1}px ${2:solid} #${3:999};
+snippet borderleft
+	border-left-style: ${1:none/hidden/dotted/dashed/solid/double/groove/ridge/inset/outset};
+snippet borderleft
+	border-left-width: ${1:1}px ${2:solid} #${3:999};
+snippet borderright
+	border-right-color: #${1:999};
+snippet borderright
+	border-right: ${1:1}px ${2:solid} #${3:999};
+snippet borderright
+	border-right-style: ${1:none/hidden/dotted/dashed/solid/double/groove/ridge/inset/outset};
+snippet borderright
+	border-right-width: ${1:1}px ${2:solid} #${3:999};
+snippet border
+	border: ${1:1px} ${2:solid} #${3:999};
+snippet borderstyle
+	border-style: ${1:none/hidden/dotted/dashed/solid/double/groove/ridge/inset/outset};
+snippet bordertop
+	border-top-color: #${1:999};
+snippet bordertop
+	border-top: ${1:1}px ${2:solid} #${3:999};
+snippet bordertop
+	border-top-style: ${1:none/hidden/dotted/dashed/solid/double/groove/ridge/inset/outset};
+snippet bordertop
+	border-top-width: ${1:1}px ${2:solid} #${3:999};
+snippet borderwidth
+	border-color: ${1:1px};
+snippet clear
+	clear: ${1:left/right/both/none};
+snippet color
+	color: #${1:DDD};
+snippet colorname
+	color: ${1:red};
+snippet colorrgb
+	color: rgb(${1:255},${2:255},${3:255});
+snippet cursor
+	cursor: ${1:default/auto/crosshair/pointer/move/*-resize/text/wait/help};
+snippet cursor
+	cursor: url($1);
+snippet display
+	display: block;
+snippet display
+	display: ${1:none/inline/block/list-item/run-in/compact/marker};
+snippet display
+	display: inline;
+snippet display
+	display: ${1:table/inline-table/table-row-group/table-header-group/table-footer-group/table-row/table-column-group/table-column/table-cell/table-caption};
+snippet float
+	float: ${1:left/right/none};
+snippet font
+	font-family: ${1:Arial, "MS Trebuchet"}, ${2:sans-}serif;
+snippet font
+	font: ${1:75%} ${2:"Lucida Grande", "Trebuchet MS", Verdana,} ${3:sans-}serif;
+snippet fontsize
+	font-size: ${1:100%};
+snippet fontstyle
+	font-style: ${1:normal/italic/oblique};
+snippet font
+	font: ${1:normal/italic/oblique} ${2:normal/small-caps} ${3:normal/bold} ${4:1em/1.5em} ${5:Arial}, ${6:sans-}serif;
+snippet font
+	font-variant: ${1:normal/small-caps};
+snippet fontweight
+	font-weight: ${1:normal/bold};
+snippet letter
+	letter-spacing: ${1}em;
+snippet letter
+	letter-spacing: ${1}px;
+snippet list
+	list-style-image: url($1);
+snippet list
+	list-style-position: ${1:inside/outside};
+snippet list
+	list-style-type: ${1:cjk-ideographic/hiragana/katakana/hiragana-iroha/katakana-iroha};
+snippet list
+	list-style-type: ${1:none/disc/circle/square};
+snippet list
+	list-style-type: ${1:decimal/decimal-leading-zero/zero};
+snippet list
+	list-style-type: ${1:hebrew/armenian/georgian};
+snippet list
+	list-style: ${1:none/disc/circle/square/decimal/zero} ${2:inside/outside} url($3);
+snippet list
+	list-style-type: ${1:lower-roman/uppert-roman/lower-alpha/upper-alpha/lower-greek/lower-latin/upper-latin};
+snippet margin
+	margin: ${1:20px};
+snippet marginbottom
+	margin-bottom: ${1:20px};
+snippet marginleft
+	margin-left: ${1:20px};
+snippet marginright
+	margin-right: ${1:20px};
+snippet margintop
+	margin-top: ${1:20px};
+snippet margin
+	margin: ${1:20px} ${2:0px} ${3:40px} ${4:0px};
+snippet margin
+	margin: ${1:20px} ${2:0px};
+snippet padding
+	padding: ${1:20px};
+snippet padding
+	padding: ${1:20px} ${2:0px} ${3:40px} ${4:0px};
+snippet padding
+	padding: ${1:20px} ${2:0px};
+snippet position
+	position: ${1:static/relative/absolute/fixed};
+snippet {
+	{
+		/* $1 */
+		$0
+snippet textalign
+	text-align: ${1:left/right/center/justify};
+snippet textdecoration
+	text-decoration: ${1:none/underline/overline/line-through/blink};
+snippet text
+	text-indent: ${1:10p}x;
+snippet vertical
+	vertical-align: ${1:baseline/sub/super/top/text-top/middle/bottom/text-bottom/length/%};
+snippet word
+	word-spacing: ${1:10px};
+snippet word
+	word-spacing: normal;
+snippet z
+	z-index: ${1};
