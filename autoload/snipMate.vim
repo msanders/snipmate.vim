@@ -75,15 +75,17 @@ endf
 " Prepare snippet to be processed by s:BuildTabStops
 fun s:ProcessSnippet(snip)
 	let snippet = a:snip
-	" Evaluate eval (`...`) expressions.
+	" Evaluate eval (`...`) expressions. 
+	" Backquotes prefixed with a backslash are ignored.
 	" Using a loop here instead of a regex fixes a bug with nested "\=".
 	if stridx(snippet, '`') != -1
-		while match(snippet, '`.\{-}`') != -1
-			let snippet = substitute(snippet, '`.\{-}`',
-						\ substitute(eval(matchstr(snippet, '`\zs.\{-}\ze`')),
-						\ "\n\\%$", '', ''), '')
+		while match(snippet, '[^\\]`.\{-}[^\\]`') != -1
+			let snippet = substitute(snippet, '[^\\]\zs`.\{-}[^\\]`\ze',
+		                \ substitute(eval(matchstr(snippet, '[^\\]`\zs.\{-}[^\\]\ze`')),
+		                \ "\n\\%$", '', ''), '')
 		endw
 		let snippet = substitute(snippet, "\r", "\n", 'g')
+		let snippet = substitute(snippet, '\\`', '`', 'g')
 	endif
 
 	" Place all text after a colon in a tab stop after the tab stop
