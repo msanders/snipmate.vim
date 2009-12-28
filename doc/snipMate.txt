@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: July 13, 2009
+Last Change: December 27, 2009
 
 |snipMate-description|   Description
 |snipMate-syntax|        Snippet syntax
@@ -198,10 +198,20 @@ look like this: 'snippets/<filetype>/<trigger>.snippet'. If the snippet has
 multiple matches, it should look like this:
 'snippets/<filetype>/<trigger>/<name>.snippet' (see |multi_snip|).
 
-                                                            *ResetSnippets()*
-The ResetSnippets() function removes all snippets from memory. This is useful
-to put at the top of a snippet setup file for if you would like to |:source|
-it multiple times.
+ResetAllSnippets()                                       *ResetAllSnippets()*
+ResetAllSnippets() removes all snippets from memory. This is useful to put at
+the top of a snippet setup file for if you would like to |:source| it multiple
+times.
+
+ResetSnippets({filetype})                                   *ResetSnippets()*
+ResetSnippets() removes all snippets from memory for the given filetype.
+
+ReloadAllSnippets()                                     *ReloadAllSnippets()*
+ReloadAllSnippets() reloads all snippets for all filetypes. This is useful for
+testing and debugging.
+
+ReloadSnippets({filetype})                              *ReloadAllSnippets()*
+ReloadSnippets() reloads all snippets for the given filetype.
 
                                              *list-snippets* *i_CTRL-R_<Tab>*
 If you would like to see what snippets are available, simply type <c-r><tab>
