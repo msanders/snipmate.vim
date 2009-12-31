@@ -210,7 +210,7 @@ ReloadAllSnippets()                                     *ReloadAllSnippets()*
 ReloadAllSnippets() reloads all snippets for all filetypes. This is useful for
 testing and debugging.
 
-ReloadSnippets({filetype})                              *ReloadAllSnippets()*
+ReloadSnippets({filetype})                                 *ReloadSnippets()*
 ReloadSnippets() reloads all snippets for the given filetype.
 
                                              *list-snippets* *i_CTRL-R_<Tab>*
