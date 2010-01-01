@@ -181,7 +181,9 @@ fun! TriggerSnippet()
 		call feedkeys(SuperTabKey)
 		return ''
 	endif
-	return "\<tab>"
+	return word == ''
+	  \ ? "\<tab>"
+	  \ : "\<c-r>=ShowAvailableSnips()\<cr>"
 endf
 
 fun! BackwardsSnippet()
