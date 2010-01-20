@@ -18,23 +18,32 @@ if !exists('snips_author') | let snips_author = 'Me' | endif
 au BufRead,BufNewFile *.snippets\= set ft=snippet
 au FileType snippet setl noet fdm=indent
 
-let s:snippets = {} | let s:multi_snips = {}
+" bind local dict to global dict (debugging purposes)
+" you should use MakeSnip to add custom snippets
+if !exists('g:multi_snips')
+  let g:multi_snips = {}
+endif
+let s:multi_snips = g:multi_snips
 
 if !exists('snippets_dir')
 	let snippets_dir = substitute(globpath(&rtp, 'snippets/'), "\n", ',', 'g')
 endif
 
 fun! MakeSnip(scope, trigger, content, ...)
-	let multisnip = a:0 && a:1 != ''
-	let var = multisnip ? 's:multi_snips' : 's:snippets'
-	if !has_key({var}, a:scope) | let {var}[a:scope] = {} | endif
-	if !has_key({var}[a:scope], a:trigger)
-		let {var}[a:scope][a:trigger] = multisnip ? [[a:1, a:content]] : a:content
-	elseif multisnip | let {var}[a:scope][a:trigger] += [[a:1, a:content]]
-	else
-		echom 'Warning in snipMate.vim: Snippet '.a:trigger.' is already defined.'
-				\ .' See :h multi_snip for help on snippets with multiple matches.'
-	endif
+  let description = a:0 > 0 ? a:1 : "default"
+  if description == ""
+	let description = "default"
+  endif
+  let s:multi_snips[a:scope] = get(s:multi_snips, a:scope, {})
+  let scopeDict = s:multi_snips[a:scope]
+  let scopeDict[a:trigger] = get(scopeDict, a:trigger, {})
+  let triggerDict = scopeDict[a:trigger]
+  if has_key(triggerDict, description)
+	echom 'Warning in snipMate.vim: Snippet '.a:trigger.' is already defined.'
+			\ .' See :h multi_snip for help on snippets with multiple matches.'
+  endif
+  " override existing snippet. User may have reloaded something
+  let triggerDict[description] = a:content
 endf
 
 fun! ExtractSnips(dir, ft)
@@ -94,7 +103,7 @@ endf
 " Reset snippets for filetype.
 fun! ResetSnippets(ft)
 	let ft = a:ft == '' ? '_' : a:ft
-	for dict in [s:snippets, s:multi_snips, g:did_ft]
+	for dict in [s:multi_snips, g:did_ft]
 		if has_key(dict, ft)
 			unlet dict[ft]
 		endif
@@ -103,7 +112,7 @@ endf
 
 " Reset snippets for all filetypes.
 fun! ResetAllSnippets()
-	let s:snippets = {} | let s:multi_snips = {} | let g:did_ft = {}
+	let s:multi_snips = {} | let g:did_ft = {}
 endf
 
 " Reload snippets for filetype.
@@ -208,9 +217,7 @@ endf
 fun s:GetSnippet(word, scope)
 	let word = a:word | let snippet = ''
 	while snippet == ''
-		if exists('s:snippets["'.a:scope.'"]["'.escape(word, '\"').'"]')
-			let snippet = s:snippets[a:scope][word]
-		elseif exists('s:multi_snips["'.a:scope.'"]["'.escape(word, '\"').'"]')
+		if exists('s:multi_snips["'.a:scope.'"]["'.escape(word, '\"').'"]')
 			let snippet = s:ChooseSnippet(a:scope, word)
 			if snippet == '' | break | endif
 		else
@@ -226,14 +233,19 @@ endf
 
 fun s:ChooseSnippet(scope, trigger)
 	let snippet = []
+	let triggerDict = get(s:multi_snips[a:scope], a:trigger, {})
+	let keys = keys(triggerDict)
 	let i = 1
-	for snip in s:multi_snips[a:scope][a:trigger]
-		let snippet += [i.'. '.snip[0]]
+	for snip in keys
+		let snippet += [i.'. '.snip]
 		let i += 1
 	endfor
-	if i == 2 | return s:multi_snips[a:scope][a:trigger][0][1] | endif
-	let num = inputlist(snippet) - 1
-	return num == -1 ? '' : s:multi_snips[a:scope][a:trigger][num][1]
+	if i == 2
+	  let idx = 0
+	else
+	  let idx = inputlist(snippet) - 1
+	endif
+	return idx == -1 ? '' : triggerDict[keys[idx]]
 endf
 
 fun! ShowAvailableSnips()
@@ -247,11 +259,7 @@ fun! ShowAvailableSnips()
 	let matchlen = 0
 	let matches = []
 	for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
-		let triggers = has_key(s:snippets, scope) ? keys(s:snippets[scope]) : []
-		if has_key(s:multi_snips, scope)
-			let triggers += keys(s:multi_snips[scope])
-		endif
-		for trigger in triggers
+		for trigger in keys(get(s:multi_snips, scope, {}))
 			for word in words
 				if word == ''
 					let matches += [trigger] " Show all matches if word is empty
