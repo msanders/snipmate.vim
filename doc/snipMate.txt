@@ -57,8 +57,9 @@ Note that the first hard tab after the snippet trigger is required, and not
 expanded in the actual snippet. The syntax for *.snippet files is the same,
 only without the trigger declaration and starting indentation.
 
-Also note that snippets must be defined using hard tabs. They can be expanded
-to spaces later if desired (see |snipMate-indenting|).
+Also note that indentation within snippets must be defined using hard tabs.
+They can be expanded to spaces later if desired (see |snipMate-indenting|).
+You can retab a snippet by visually selecting the lines, then press <cr>.
 
 "#" is used as a line-comment character in *.snippets files; however, they can
 only be used outside of a snippet declaration. E.g.: >

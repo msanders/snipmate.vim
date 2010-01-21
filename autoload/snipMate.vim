@@ -545,5 +545,42 @@ fun! snipMate#GetSnippets(scopes, trigger)
 	return result
 endf
 
+" adds leading tab
+" and replaces leading spaces by tabs
+" see ftplugin/snippet.vim
+fun! snipMate#RetabSnip() range
+  let leadingTab = expand('%:e') == 'snippets'
+
+  let lines = getline(a:firstline, a:lastline)
+
+  " remove leading "\t"
+  let allIndented = 1
+  for l in lines
+	if l[0] != '\t' | let allIndented = 0 | endif
+  endfor
+
+  " retab
+  if allIndented
+	call map(lines, 'v:val[1:]')
+  endif
+
+  let leadingSp = filter(map(copy(lines),'matchstr(v:val,"^\\s*") '),'v:val !=""')
+  if !empty(leadingSp)
+	" lines containing leading spaces found
+	let smallestInd =  len(sort(leadingSp)[-1])
+	let ind = input('retab, spaces per tab: ', smallestInd)
+	for i in range(0, len(lines)-1)
+	  let ml = matchlist(lines[i], '^\(\s*\)\(.*\)')
+	  let lines[i] = repeat("\t", len(ml[1]) / ind)
+				 \ . repeat( " ", len(ml[1]) % ind)
+				 \ . ml[2]
+	endfor
+  endif
+  " readd tab
+  let tab = leadingTab ? "\t" : ""
+  for i in range(0,len(lines)-1)
+	call setline(a:firstline + i, tab.lines[i])
+  endfor
+endf
 
 " vim:noet:sw=4:ts=4:ft=vim
