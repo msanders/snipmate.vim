@@ -29,7 +29,4 @@ if empty(snippets_dir)
 	finish
 endif
 
-call GetSnippets(snippets_dir, '_') " Get global snippets
-
-au FileType * if &ft != 'help' | call GetSnippets(snippets_dir, &ft) | endif
 " vim:noet:sw=4:ts=4:ft=vim

@@ -1,3 +1,14 @@
+" config which can be overridden (shared lines)
+if !exists('g:snipMate')
+  let g:snipMate = {}
+endif
+let s:snipMate = g:snipMate
+
+" if filetype is objc, cpp, or cs also append snippets from scope 'c'
+" you can add multiple by separating scopes by ',', see s:ScopeAliases
+" TODO add documentation to doc/*
+let s:snipMate['scope_aliases'] = get(s:snipMate,'scope_aliases', {'objc'  :'c', 'cpp': 'c', 'cs':'c'} )
+
 fun! Filename(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return a:0 == 2 ? a:2 : '' | endif
@@ -432,4 +443,107 @@ fun s:UpdateVars()
 	let s:oldWord = newWord
 	let g:snipPos[s:curPos][2] = newWordLen
 endf
+
+" should be moved to utils or such?
+fun! snipMate#SetByPath(dict, path, value)
+	let d = a:dict
+	for p in a:path[:-2]
+		if !has_key(d,p) | let d[p] = {} | endif
+		let d = d[p]
+	endfor
+	let d[a:path[-1]] = a:value
+endf
+
+" reads a .snippets file
+" returns list of
+" ['triggername', 'name', 'contents']
+fun! snipMate#ReadSnippetsFile(file)
+	let result = []
+	if !filereadable(a:file) | return result | endif
+	let text = readfile(a:file)
+
+	let text = readfile(a:file)
+	let inSnip = 0
+	for line in text + ["\n"]
+		if inSnip && (line[0] == "\t" || line == '')
+			let content .= strpart(line, 1)."\n"
+			continue
+		elseif inSnip
+			call add(result, [trigger, name == '' ? 'default' : name, content[:-2]])
+			let inSnip = 0
+		endif
+
+		if line[:6] == 'snippet'
+			let inSnip = 1
+			let trigger = strpart(line, 8)
+			let name = ''
+			let space = stridx(trigger, ' ') + 1
+			if space " Process multi snip
+				let name = strpart(trigger, space)
+				let trigger = strpart(trigger, 0, space - 1)
+			endif
+			let content = ''
+		endif
+	endfor
+	return result
+endf
+
+
+let s:read_snippets_cached  = {'func' : function('snipMate#ReadSnippetsFile'), 'version': 3, 'use_file_cache':1}
+
+fun! s:ScopeAliases(list)
+  let result = []
+  let scope_aliases = get(s:snipMate,'scope_aliases', {})
+  for i in a:list
+	if has_key(scope_aliases, i)
+	  call add(result, split(scope_aliases[i],','))
+	endif
+  endfor
+  return result
+endf
+
+" return a dict of snippets found in runtimepath matching trigger
+" scopes: list of scopes. usually this is the filetype. eg ['c','cpp']
+" trigger may contain glob patterns. Thus use '*' to get all triggers
+fun! snipMate#GetSnippets(scopes, trigger)
+	let result = {}
+	let triggerR = substitute(a:trigger,'*','.*','g')
+	let scopes = a:scopes + s:ScopeAliases(a:scopes)
+	for scope in scopes
+
+		for r in split(&runtimepath,',')
+
+			" .snippets files (many snippets per file). cache result for
+			" performance reason
+			" assume everything is a file..
+			for snippetsF in split(glob(r.'/snippets/'.scope.'.snippets'),"\n")
+				for [trigger, name, contents] in cached_file_contents#CachedFileContents(snippetsF, s:read_snippets_cached, 0)
+					if trigger !~ triggerR | continue | endif
+					call snipMate#SetByPath(result, [trigger, name], contents)
+				endfor
+			endfor
+
+			" == one file per snippet: ==
+
+			" without name snippets/<filetype>/<trigger>.snippet
+			for f in split(glob(r.'/snippets/'.scope.'/'.a:trigger.'.snippet'),"\n")
+				let trigger = fnamemodify(f,':t:r')
+				" lazily read files as needed
+				call snipMate#SetByPath(result, [trigger, 'default'], funcref#Function('return readfile('.string(f).')'))
+			endfor
+			" add /snippets/trigger/*.snippet files (TODO)
+
+			" with name (multi-snip) snippets/<filetype>/<trigger>/<name>.snippet
+			for f in split(glob(r.'/snippets/'.scope.'/'.a:trigger.'/*.snippet'),"\n")
+				let name = fnamemodify(f,':t:r')
+				let trigger = fnamemodify(f,':h:t')
+				" lazily read files as needed
+				call snipMate#SetByPath(result, [trigger, name], funcref#Function('return readfile('.string(f).')'))
+			endfor
+		endfor
+	endfor
+	return result
+endf
+
+
 " vim:noet:sw=4:ts=4:ft=vim
