@@ -20,7 +20,7 @@ snippet main
 	
 	}
 snippet class
-	${1:public|internal} class ${2:class} ${3:extends } {
+	${1:public|internal} class ${2:name} ${3:extends } {
 		public function $2 (	) {
 			("start");
 		}
@@ -28,7 +28,7 @@ snippet class
 snippet all
 	package name {
 
-		${1:public|internal|final} class ${2:class} ${3:extends } {
+		${1:public|internal|final} class ${2:name} ${3:extends } {
 			private|public| static const FOO = "abc";
 			private|public| static var BAR = "abc";
 
@@ -74,29 +74,29 @@ snippet wh
 snippet do
 	do {
 		${2}
-	} while ({1:cond})
+	} while (${1:cond})
 snippet while
 	while ${1:cond}{
 		${2}
 	}
 snippet for enumerate names
-	for (${1:var} in ${2:object}{
+	for (${1:var} in ${2:object}){
 		${3}
 	}
 snippet for enumerate values
-	for each (${1:var} in ${2:object}{
+	for each (${1:var} in ${2:object}){
 		${3}
 	}
 snippet get_set
-	function get ${1:name} }
+	function get ${1:name} {
 		return ${2}
 	}
-	function set $1 (newValue) }
+	function set $1 (newValue) {
 		${3}
 	}
 snippet interface
 	interface name {
-		function method(${1}):${returntype};
+		function method(${1}):${2:returntype};
 	}
 snippet try
 	try {
