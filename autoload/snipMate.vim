@@ -496,7 +496,7 @@ fun! s:ScopeAliases(list)
   let scope_aliases = get(s:snipMate,'scope_aliases', {})
   for i in a:list
 	if has_key(scope_aliases, i)
-	  call add(result, split(scope_aliases[i],','))
+	  call extend(result, split(scope_aliases[i],','))
 	endif
   endfor
   return result
