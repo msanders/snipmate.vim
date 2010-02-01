@@ -421,3 +421,10 @@ snippet tas
 # block
 snippet b
 	{|${1:var}| ${2}}
+snippet begin
+	begin   
+		raise 'A test exception.'   
+	rescue Exception => e   
+		puts e.message   
+		puts e.backtrace.inspect   
+	end   
