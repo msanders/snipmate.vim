@@ -223,3 +223,8 @@ snippet try
 		${2}
 	} catch (${1:Exception} $e) {
 	}
+# lambda with closure
+snippet lambda
+	${1:static }function (${2:args}) use (${3:&$x, $y /*put vars in scope (closure) */}) {
+		${4}
+	};
