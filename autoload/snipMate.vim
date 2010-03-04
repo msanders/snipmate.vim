@@ -5,9 +5,16 @@ endif
 let s:snipMate = g:snipMate
 
 " if filetype is objc, cpp, or cs also append snippets from scope 'c'
-" you can add multiple by separating scopes by ',', see s:ScopeAliases
+" you can add multiple by separating scopes by ',', see s:AddScopeAliases
 " TODO add documentation to doc/*
-let s:snipMate['scope_aliases'] = get(s:snipMate,'scope_aliases', {'objc'  :'c', 'cpp': 'c', 'cs':'c'} )
+let s:snipMate['scope_aliases'] = get(s:snipMate,'scope_aliases',
+	  \ {'objc' :'c'
+	  \ ,'cpp': 'c'
+	  \ ,'cs':'c'
+	  \ ,'xhtml': 'html'
+	  \ ,'html': 'javascript'
+	  \ ,'php': 'html,javascript'
+	  \ } )
 
 fun! Filename(...)
 	let filename = expand('%:t:r')
@@ -491,15 +498,25 @@ endf
 
 let s:read_snippets_cached  = {'func' : function('snipMate#ReadSnippetsFile'), 'version': 3, 'use_file_cache':1}
 
-fun! s:ScopeAliases(list)
-  let result = []
+" adds scope aliases to list.
+" returns new list
+" the aliases of aliases are added recursively
+fun! s:AddScopeAliases(list)
+  let did = {}
   let scope_aliases = get(s:snipMate,'scope_aliases', {})
-  for i in a:list
-	if has_key(scope_aliases, i)
-	  call extend(result, split(scope_aliases[i],','))
-	endif
-  endfor
-  return result
+  let new = a:list
+  let new2 =  []
+  while !empty(new)
+	for i in new
+	  if !has_key(did, i)
+		let did[i] = 1
+		call extend(new2, split(get(scope_aliases,i,''),','))
+	  endif
+	endfor
+	let new = new2
+	let new2 = []
+  endwhile
+  return keys(did)
 endf
 
 " return a dict of snippets found in runtimepath matching trigger
@@ -508,7 +525,7 @@ endf
 fun! snipMate#GetSnippets(scopes, trigger)
 	let result = {}
 	let triggerR = substitute(a:trigger,'*','.*','g')
-	let scopes = a:scopes + s:ScopeAliases(a:scopes)
+	let scopes = s:AddScopeAliases(a:scopes)
 	for scope in scopes
 
 		for r in split(&runtimepath,',')
