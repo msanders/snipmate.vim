@@ -464,14 +464,12 @@ endf
 " reads a .snippets file
 " returns list of
 " ['triggername', 'name', 'contents']
+" if triggername is not set 'default' is assumed
 fun! snipMate#ReadSnippetsFile(file)
 	let result = []
 	if !filereadable(a:file) | return result | endif
-	let text = readfile(a:file)
-
-	let text = readfile(a:file)
 	let inSnip = 0
-	for line in text + ["\n"]
+	for line in readfile(a:file) + ["\n"]
 		if inSnip && (line[0] == "\t" || line == '')
 			let content .= strpart(line, 1)."\n"
 			continue
