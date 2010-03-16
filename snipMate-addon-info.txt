@@ -4,7 +4,8 @@
   "maintainer" : "Marc Weber <marco-oweber@gmx.de> (I mantain this fork only)",
   "repository" : {"type": "git", "url": "git://github.com/MarcWeber/snipMate.vim.git"},
   "dependencies" : {
-    "vim-addon-mw-utils": {}
+    "vim-addon-mw-utils": {},
+    "tlib": {}
   },
   "description" : "TextMate-style snippets for Vim - this fork loads snippets on demand lazily thus no need to reload any snippets ever"
 }

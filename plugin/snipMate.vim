@@ -132,11 +132,7 @@ fun s:ChooseSnippet(snippets)
 		let snippet += [i.'. '.snip]
 		let i += 1
 	endfor
-	if i == 2
-	  let idx = 0
-	else
-	  let idx = inputlist(snippet) - 1
-	endif
+	let idx = tlib#input#List('si','select snippet by name',snippet) -1
 	" if a:snippets[..] is a String Call returns it
 	" If it's a function or a function string the result is returned
 	if idx == -1

@@ -517,9 +517,64 @@ fun! s:AddScopeAliases(list)
   return keys(did)
 endf
 
+" returns dict of
+" { path: { 'type': one of 'snippet' 'snippets',
+"           'exists': 1 or 0
+"           " for single snippet files:
+"           'name': name of snippet
+"           'trigger': trigger of snippet
+"         }
+" }
+" use trigger = '*' to match all snippet files
+" use mustExist = 1 to return existing files only
+"
+"     mustExist = 0 is used by OpenSnippetFiles
+fun! snipMate#GetSnippetFiles(mustExist, scopes, trigger)
+  let result = {}
+  let triggerR = substitute(a:trigger,'*','.*','g')
+  let scopes = s:AddScopeAliases(a:scopes)
+
+  " collect existing files
+  for scope in scopes
+
+	for r in split(&runtimepath,',')
+	  " .snippets files (many snippets per file). cache result for
+	  " performance reason
+	  " assume everything is a file..
+	  let glob_p = r.'/snippets/'.scope.'.snippets'
+	  for snippetsF in split(glob(glob_p),"\n")
+		let result[snippetsF] = {'exists': 1, 'type': 'snippets'}
+	  endfor
+
+	  if !a:mustExist && !has_key(result, glob_p)
+		let result[glob_p] = {'exists': 0, 'type': 'snippets'}
+	  endif
+	  " == one file per snippet: ==
+
+	  " without name snippets/<filetype>/<trigger>.snippet
+	  for f in split(glob(r.'/snippets/'.scope.'/'.a:trigger.'.snippet'),"\n")
+		let trigger = fnamemodify(f,':t:r')
+		let result[f] = {'exists': 1, 'type': 'snippet', 'name': 'default', 'trigger': trigger}
+	  endfor
+	  " add /snippets/trigger/*.snippet files (TODO)
+
+	  " with name (multi-snip) snippets/<filetype>/<trigger>/<name>.snippet
+	  for f in split(glob(r.'/snippets/'.scope.'/'.a:trigger.'/*.snippet'),"\n")
+		let name = fnamemodify(f,':t:r')
+		let trigger = fnamemodify(f,':h:t')
+		let result[f] = {'exists': 1, 'type': 'snippet', 'name': name, 'trigger': trigger}
+	  endfor
+	endfor
+  endfor
+  return result
+endf
+
+
 " return a dict of snippets found in runtimepath matching trigger
 " scopes: list of scopes. usually this is the filetype. eg ['c','cpp']
 " trigger may contain glob patterns. Thus use '*' to get all triggers
+"
+" TODO refactor - this should call GetSnippetFiles
 fun! snipMate#GetSnippets(scopes, trigger)
 	let result = {}
 	let triggerR = substitute(a:trigger,'*','.*','g')
@@ -597,5 +652,28 @@ fun! snipMate#RetabSnip() range
 	call setline(a:firstline + i, tab.lines[i])
   endfor
 endf
+
+fun! snipMate#OpenSnippetFiles()
+  let scopes = s:AddScopeAliases([&ft])
+  let dict = snipMate#GetSnippetFiles(0, scopes, '*')
+  " sort by files wether they exist - put existing files first
+  let exists = []
+  let notExists = []
+  for [file, v] in items(dict)
+	let v['file'] = file
+	if v['exists']
+	  call add(exists, v)
+	else
+	  call add(notExists, v)
+	endif
+  endfor
+  let all = exists + notExists
+  let show = map(copy(all),'(v:val["exists"] ? "exists:" : "does not exist yet:")." ".v:val["file"]')
+  let select = tlib#input#List('mi', 'select files to be opened in splits', show)
+  for idx in select
+	exec 'sp '.all[idx - 1]['file']
+  endfor
+endf
+
 
 " vim:noet:sw=4:ts=4:ft=vim
