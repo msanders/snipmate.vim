@@ -14,6 +14,7 @@ let s:snipMate['scope_aliases'] = get(s:snipMate,'scope_aliases',
 	  \ ,'xhtml': 'html'
 	  \ ,'html': 'javascript'
 	  \ ,'php': 'html,javascript'
+	  \ ,'mxml': 'actionscript'
 	  \ } )
 
 fun! Filename(...)
