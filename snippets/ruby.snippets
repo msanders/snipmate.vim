@@ -502,3 +502,19 @@ snippet tas
 	task :${2:task_name => [:dependent, :tasks]} do
 		${3}
 	end
+
+#migrations
+snippet mac
+	add_column :${1:table_name}, :${2:column_name}, :${3:data_type}
+snippet mrc
+	remove_column :${1:table_name}, :${2:column_name}
+
+#rspec
+snippet it
+	it "should ${1:spec_name}" do
+		${2}
+	end
+snippet desc
+	describe ${1:class_name}
+		${2}
+	end
