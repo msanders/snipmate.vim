@@ -1,6 +1,6 @@
-# #!/usr/bin/ruby
+# #!/usr/bin/env ruby
 snippet #!
-	#!/usr/bin/ruby
+	#!/usr/bin/env ruby
 
 # New Block
 snippet =b
@@ -11,6 +11,11 @@ snippet y
 	:yields: ${1:arguments}
 snippet rb
 	#!/usr/bin/env ruby -wKU
+snippet beg
+	begin
+		${3}
+	rescue ${1:Exception} => ${2:e}
+	end
 
 snippet req
 	require "${1}"${2}
@@ -55,6 +60,10 @@ snippet while
 	while ${1:condition}
 		${2}
 	end
+snippet for
+	for ${1:e} in ${2:c}
+		${3}
+	end		
 snippet until
 	until ${1:condition}
 		${2}
@@ -222,6 +231,10 @@ snippet loo
 	loop { ${1} }
 snippet ea
 	each { |${1:e}| ${2} }
+snippet ead
+	each do |${1:e}|
+		${2}
+	end	
 snippet eab
 	each_byte { |${1:byte}| ${2} }
 snippet eac- each_char { |chr| .. }
@@ -230,24 +243,63 @@ snippet eac- each_cons(..) { |group| .. }
 	each_cons(${1:2}) { |${2:group}| ${3} }
 snippet eai
 	each_index { |${1:i}| ${2} }
+snippet eaid
+	each_index do |${1:i}|
+	end
 snippet eak
 	each_key { |${1:key}| ${2} }
+snippet eakd
+	each_key do |${1:key}|
+		${2}
+	end
 snippet eal
 	each_line { |${1:line}| ${2} }
+snippet eald
+	each_line do |${1:line}|
+		${2}
+	end		
 snippet eap
 	each_pair { |${1:name}, ${2:val}| ${3} }
+snippet eapd
+	each_pair do |${1:name}, ${2:val}|
+		${3}
+	end			
 snippet eas-
 	each_slice(${1:2}) { |${2:group}| ${3} }
+snippet easd-
+	each_slice(${1:2}) do |${2:group}|
+		${3}
+	end		
 snippet eav
 	each_value { |${1:val}| ${2} }
+snippet eavd
+	each_value do |${1:val}| 
+		${2}
+	end
 snippet eawi
 	each_with_index { |${1:e}, ${2:i}| ${3} }
+snippet eawid
+	each_with_index do |${1:e},${2:i}|
+		${3}
+	end
 snippet reve
 	reverse_each { |${1:e}| ${2} }
+snippet reved
+	reverse_each do |${1:e}|
+		${2}
+	end	
 snippet inj
 	inject(${1:init}) { |${2:mem}, ${3:var}| ${4} }
+snippet injd
+	inject(${1:init}) do |${2:mem}, ${3:var}|
+		${4}
+	end		
 snippet map
 	map { |${1:e}| ${2} }
+snippet mapd
+	map do |${1:e}| 
+		${2}
+	end		
 snippet mapwi-
 	enum_with_index.map { |${1:e}, ${2:i}| ${3} }
 snippet sor
@@ -264,30 +316,62 @@ snippet cl
 	classify { |${1:e}| ${2} }
 snippet col
 	collect { |${1:e}| ${2} }
+snippet cold
+	collect do |${1:e}|
+		${2}
+	end
 snippet det
 	detect { |${1:e}| ${2} }
+snippet detd
+	detect do |${1:e}|
+		${2}
+	end
 snippet fet
 	fetch(${1:name}) { |${2:key}| ${3} }
 snippet fin
 	find { |${1:e}| ${2} }
+snippet find
+	find do |${1:e}|
+		${2}
+	end		
 snippet fina
 	find_all { |${1:e}| ${2} }
+snippet finad
+	find_all do |${1:e}|
+		${2}
+	end			
 snippet gre
 	grep(${1:/pattern/}) { |${2:match}| ${3} }
 snippet sub
 	${1:g}sub(${2:/pattern/}) { |${3:match}| ${4} }
 snippet sca
 	scan(${1:/pattern/}) { |${2:match}| ${3} }
+snippet scad
+	scan(${1:/pattern/}) do |${2:match}|
+		${3}
+	end		
 snippet max
-	max { |a, b|, ${1} }
+	max { |a, b| ${1} }
 snippet min
-	min { |a, b|, ${1} }
+	min { |a, b| ${1} }
 snippet par
-	partition { |${1:e}|, ${2} }
+	partition { |${1:e}| ${2} }
+snippet pard
+	partition do |${1:e}|
+		${2}
+	end		
 snippet rej
-	reject { |${1:e}|, ${2} }
+	reject { |${1:e}| ${2} }
+snippet rejd
+	reject do |${1:e}|
+		${2}
+	end
 snippet sel
-	select { |${1:e}|, ${2} }
+	select { |${1:e}| ${2} }
+snippet seld
+	select do |${1:e}|
+		${2}
+	end		
 snippet lam
 	lambda { |${1:args}| ${2} }
 snippet do

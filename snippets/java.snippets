@@ -30,6 +30,10 @@ snippet sy
 	synchronized
 snippet im
 	import
+snippet imp
+	implements
+snippet ext
+	extends 
 snippet j.u
 	java.util
 snippet j.i
@@ -76,3 +80,16 @@ snippet cos
 	static public final String ${1:var} = "${2}";${3}
 snippet as
 	assert ${1:test} : "${2:Failure message}";${3}
+snippet try
+	try {
+		${3}
+	} catch(${1:Exception} ${2:e}) {
+	}
+snippet tryf
+	try {
+		${3}
+	} catch(${1:Exception} ${2:e}) {
+	} finally {
+	}
+snippet rst
+	ResultSet ${1:rst}${2: = null}${3};${4}

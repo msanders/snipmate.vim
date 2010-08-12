@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 snipMate                                       *snippet* *snippets* *snipMate*
-Last Change: July 13, 2009
+Last Change: December 27, 2009
 
 |snipMate-description|   Description
 |snipMate-syntax|        Snippet syntax
@@ -10,6 +10,7 @@ Last Change: July 13, 2009
 |snipMate-features|      Features
 |snipMate-disadvantages| Disadvantages to TextMate
 |snipMate-contact|       Contact
+|snipMate-license|       License
 
 For Vim version 7.0 or later.
 This plugin only works if 'compatible' is not set.
@@ -198,10 +199,20 @@ look like this: 'snippets/<filetype>/<trigger>.snippet'. If the snippet has
 multiple matches, it should look like this:
 'snippets/<filetype>/<trigger>/<name>.snippet' (see |multi_snip|).
 
-                                                            *ResetSnippets()*
-The ResetSnippets() function removes all snippets from memory. This is useful
-to put at the top of a snippet setup file for if you would like to |:source|
-it multiple times.
+ResetAllSnippets()                                       *ResetAllSnippets()*
+ResetAllSnippets() removes all snippets from memory. This is useful to put at
+the top of a snippet setup file for if you would like to |:source| it multiple
+times.
+
+ResetSnippets({filetype})                                   *ResetSnippets()*
+ResetSnippets() removes all snippets from memory for the given filetype.
+
+ReloadAllSnippets()                                     *ReloadAllSnippets()*
+ReloadAllSnippets() reloads all snippets for all filetypes. This is useful for
+testing and debugging.
+
+ReloadSnippets({filetype})                                 *ReloadSnippets()*
+ReloadSnippets() reloads all snippets for the given filetype.
 
                                              *list-snippets* *i_CTRL-R_<Tab>*
 If you would like to see what snippets are available, simply type <c-r><tab>
@@ -280,6 +291,31 @@ To contact the author (Michael Sanders), please email:
  msanders42+snipmate <at> gmail <dot> com
 
 I greatly appreciate any suggestions or improvements offered for the script.
+
+==============================================================================
+LICENSE                                                     *snipMate-license*
+
+snipMate is released under the MIT license:
+
+Copyright 2009-2010 Michael Sanders. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+The software is provided "as is", without warranty of any kind, express or
+implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement. In no event shall the
+authors or copyright holders be liable for any claim, damages or other
+liability, whether in an action of contract, tort or otherwise, arising from,
+out of or in connection with the software or the use or other dealings in the
+software.
 
 ==============================================================================
 

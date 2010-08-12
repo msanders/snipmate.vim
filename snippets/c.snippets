@@ -5,6 +5,12 @@ snippet main
 		${1}
 		return 0;
 	}
+snippet mainn
+	int main(void)
+	{
+		${1}
+		return 0;
+	}
 # #include <...>
 snippet inc
 	#include <${1:stdio}.h>${2}
@@ -17,7 +23,7 @@ snippet Def
 	#define ${1:SYMBOL} ${2:value}
 	#endif${3}
 snippet def
-	#define 
+	#define
 snippet ifdef
 	#ifdef ${1:FOO}
 		${2:#define }
@@ -27,10 +33,8 @@ snippet #if
 		${2}
 	#endif
 # Header Include-Guard
-# (the randomizer code is taken directly from TextMate; it could probably be
-# cleaner, I don't know how to do it in vim script)
 snippet once
-	#ifndef ${1:`toupper(Filename('', 'UNTITLED').'_'.system("/usr/bin/ruby -e 'print (rand * 2821109907455).round.to_s(36)'"))`}
+	#ifndef ${1:`toupper(Filename('$1_H', 'UNTITLED_H'))`}
 
 	#define $1
 
@@ -104,7 +108,6 @@ snippet pr
 # fprintf (again, this isn't as nice as TextMate's version, but it works)
 snippet fpr
 	fprintf(${1:stderr}, "${2:%s}\n"${3});${4}
+# This is kind of convenient
 snippet .
 	[${1}]${2}
-snippet un
-	unsigned
