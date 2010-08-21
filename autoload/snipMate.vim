@@ -507,6 +507,10 @@ fun! s:AddScopeAliases(list)
   let new2 =  []
   while !empty(new)
 	for i in new
+	  if i == ""
+		echoe "empty filetype?"
+		continue
+	  endif
 	  if !has_key(did, i)
 		let did[i] = 1
 		call extend(new2, split(get(scope_aliases,i,''),','))
