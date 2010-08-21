@@ -41,7 +41,8 @@ SYNTAX                                                        *snippet-syntax*
 
 Snippets can be defined in two ways. They can be in their own file, named
 after their trigger in 'snippets/<filetype>/<trigger>.snippet', or they can be
-defined together in a 'snippets/<filetype>.snippets' file. Note that dotted
+defined together in a 'snippets/<filetype>.snippets' or
+'snippets/<filetype>/*.snippets file. Note that dotted
 'filetype' syntax is supported -- e.g., you can use >
 
 	:set ft=html.eruby

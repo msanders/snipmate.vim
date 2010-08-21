@@ -598,6 +598,13 @@ fun! snipMate#GetSnippets(scopes, trigger)
 				endfor
 			endfor
 
+			for snippetsF in split(glob(r.'/snippets/'.scope.'/*.snippets'),"\n")
+				for [trigger, name, contents] in cached_file_contents#CachedFileContents(snippetsF, s:read_snippets_cached, 0)
+					if trigger !~ triggerR | continue | endif
+					call snipMate#SetByPath(result, [trigger, name], contents)
+				endfor
+			endfor
+
 			" == one file per snippet: ==
 
 			" without name snippets/<filetype>/<trigger>.snippet
