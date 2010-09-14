@@ -15,6 +15,10 @@ endif
 let loaded_snips = 1
 if !exists('snips_author') | let snips_author = 'Me' | endif
 
+if (!exists('g:snipMateSources'))
+  let g:snipMateSources = {}
+endif
+
 au BufRead,BufNewFile *.snippets\= set ft=snippet
 au FileType snippet setl noet fdm=indent
 

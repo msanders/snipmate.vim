@@ -624,6 +624,10 @@ fun! snipMate#GetSnippets(scopes, trigger)
 			endfor
 		endfor
 	endfor
+
+	for F in values(g:snipMateSources)
+	  call funcref#Call(F, [scopes, a:trigger, result])
+	endfor
 	return result
 endf
 
