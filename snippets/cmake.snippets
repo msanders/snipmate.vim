@@ -31,8 +31,7 @@ snippet subdir
 	ADD_SUBDIRECTORY(${1:src})
 
 snippet lib
-	ADD_LIBRARY(
-		${1:lib} ${2:STATIC}
+	ADD_LIBRARY(${1:lib} ${2:STATIC}
 		${${3:SRCS}}
 	)
 
@@ -53,4 +52,7 @@ snippet dep
 	)
 
 snippet props
-	SET_TARGET_PROPERTIES(${1:target} ${2:PROPERTIES} ${3:COMPILE_FLAGS} "-O3 -Wall -pedantic")
+	SET_TARGET_PROPERTIES(${1:target} 
+		${2:PROPERTIES} ${3:COMPILE_FLAGS} 
+		"-O3 -Wall -pedantic"
+	)
