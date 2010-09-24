@@ -51,3 +51,6 @@ snippet dep
 	ADD_DEPENDENCIES(${1:target}
 		${2:dep}
 	)
+
+snippet props
+	SET_TARGET_PROPERTIES(${1:target} ${2:PROPERTIES} ${3:COMPILE_FLAGS} "-O3 -Wall -pedantic")
