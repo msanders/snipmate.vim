@@ -122,6 +122,13 @@ use the "${#:}" construct without the text; e.g.: >
  snippet foo
  	${1:}bar$1
 <                                                          *snipMate-commands*
+
+
+                                          *snipMate-visual-selection-support*
+There is a special placeholder called {VISUAL}. If you visually select text,
+then press <tab> Vim switches to insert mode. The next snippet you'll expand
+will replace {VISUAL} by the the text which was selected previously
+
 Interpolated Vim Script ~
 
 Snippets can also contain Vim script commands that are executed (via |eval()|)

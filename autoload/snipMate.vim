@@ -95,6 +95,14 @@ endf
 " Prepare snippet to be processed by s:BuildTabStops
 fun s:ProcessSnippet(snip)
 	let snippet = a:snip
+
+	if exists('g:snipmate_content_visual')
+		let visual = g:snipmate_content_visual | unlet g:snipmate_content_visual
+	else
+		let visual = ''
+	endif
+	let snippet = substitute(snippet,'{VISUAL}', escape(visual,'%\'), 'g')
+
 	" Evaluate eval (`...`) expressions.
 	" Backquotes prefixed with a backslash "\" are ignored.
 	" Using a loop here instead of a regex fixes a bug with nested "\=".
