@@ -515,6 +515,12 @@ snippet it
 		${2}
 	end
 snippet desc
-	describe ${1:class_name}
+	describe ${1:class_name} do
 		${2}
 	end
+
+#views
+snippet cfor
+	<% content_for :${1:head} do %>
+		${2}
+	<% end %>
