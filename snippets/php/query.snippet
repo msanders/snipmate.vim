@@ -1,0 +1,10 @@
+<?php
+query_posts('');
+
+if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+
+<?php endwhile; else: ?>
+<p><?php _e('Disculpe, no hay publicaciones que coincidan con lo que está buscando'); ?></p>
+<?php endif; 
+
+wp_reset_query(); ?>
