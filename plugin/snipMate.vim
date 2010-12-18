@@ -16,7 +16,7 @@ let loaded_snips = 1
 if !exists('snips_author') | let snips_author = 'Me' | endif
 
 au BufRead,BufNewFile *.snippets\= set ft=snippet
-au FileType snippet setl noet fdm=indent
+au FileType snippet setl noet fdm=expr fde=getline(v:lnum)!~'^\\t\\\\|^$'?'>1':1
 
 let s:snippets = {} | let s:multi_snips = {}
 
