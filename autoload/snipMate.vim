@@ -77,15 +77,24 @@ fun s:ProcessSnippet(snip)
 	let snippet = a:snip
 	" Evaluate eval (`...`) expressions.
 	" Backquotes prefixed with a backslash "\" are ignored.
+	" And backslash can be escaped by doubling it.
 	" Using a loop here instead of a regex fixes a bug with nested "\=".
 	if stridx(snippet, '`') != -1
-		while match(snippet, '\(^\|[^\\]\)`.\{-}[^\\]`') != -1
-			let snippet = substitute(snippet, '\(^\|[^\\]\)\zs`.\{-}[^\\]`\ze',
-		                \ substitute(eval(matchstr(snippet, '\(^\|[^\\]\)`\zs.\{-}[^\\]\ze`')),
-		                \ "\n\\%$", '', ''), '')
-		endw
+		let new = []
+		let snip = split(snippet, '\%(\\\@<!\%(\\\\\)*\)\@<=`', 1)
+		let isexp = 0
+		for i in snip
+			if isexp
+				call add(new, substitute(eval(i), "\n\\%$", '', ''))
+			else
+				call add(new, i)
+			endif
+			let isexp = !isexp
+		endfor
+		let snippet = join(new, '')
 		let snippet = substitute(snippet, "\r", "\n", 'g')
-		let snippet = substitute(snippet, '\\`', '`', 'g')
+		let snippet = substitute(snippet, '\\`', "`", 'g')
+		let snippet = substitute(snippet, '\\\\', "\\", 'g')
 	endif
 
 	" Place all text after a colon in a tab stop after the tab stop
