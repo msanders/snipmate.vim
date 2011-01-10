@@ -12,6 +12,11 @@ snippet fun
 # Anonymous Function
 snippet f
 	function(${1}) {${2}};
+# Immediate function
+snippet (f
+	(function(${1}) {
+		${3:/* code */}
+	}(${2}));
 # if
 snippet if
 	if (${1:true}) {${2}}
