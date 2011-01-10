@@ -11,7 +11,9 @@ snippet fun
 	}
 # Anonymous Function
 snippet f
-	function(${1}) {${2}};
+	function(${1}) {
+		${3}
+	}${2:;}
 # Immediate function
 snippet (f
 	(function(${1}) {
