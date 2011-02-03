@@ -93,5 +93,5 @@ snippet cl
 	1;${3}
 # Read File
 snippet slurp
-	my $${1:var};
-	{ local $/ = undef; local *FILE; open FILE, "<${2:file}"; $$1 = <FILE>; close FILE }${3}
+	my $${1:var} = do { local $/; open my $file, '<', "${2:file}"; <$file> };
+	${3}

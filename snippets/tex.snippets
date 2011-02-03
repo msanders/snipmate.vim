@@ -101,6 +101,7 @@ snippet subp
 	\label{subp:${2:$1}}
 	${3}
 	% subparagraph $2 (end)
+#References
 snippet itd
 	\item[${1:description}] ${2:item}
 snippet figure
@@ -113,3 +114,24 @@ snippet section
 	${1:Section}~\ref{${2:sec:}}${3}
 snippet page
 	${1:page}~\pageref{${2}}${3}
+#Formating text: italic, bold, underline, small capital, emphase ..
+snippet it
+	\textit{${1:text}}
+snippet bf
+	\textbf{${1:text}}
+snippet under
+	\underline{${1:text}}
+snippet emp
+	\emph{${1:text}}
+snippet sc
+	\textsc{${1:text}}
+#Choosing font
+snippet sf
+	\textsf{${1:text}}
+snippet rm
+	\textrm{${1:text}}
+snippet tt
+	\texttt{${1:text}}
+#misc
+snippet ft
+	\footnote{${1:text}}
