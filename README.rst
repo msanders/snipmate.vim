@@ -5,8 +5,7 @@ snipmate.vim
 :Maintainer: `Rok Garbas`_
 :Homepage: http://www.vim.org/scripts/script.php?script_id=2540 
 
-
-.. note::
+::
 
     After several unsuccessful attempts of contacting Michael Sanders, no
     commits in last half year and long pull request line on github (none of
