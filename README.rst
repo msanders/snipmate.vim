@@ -12,7 +12,7 @@ snipmate.vim
 
 
 Why forking snipMate?
----------------------
+=====================
 
 ::
 
