@@ -44,8 +44,6 @@ Changelog
 1.0 [Unreleased]
 ----------------
 
-I'm waiting for some sucess
-
     * Updated README: added contributors, instructions how to install snipMate,
       some spellchecking of my wonderfull english, added this Changelog
       [2011-02-07, `garbas`_]
