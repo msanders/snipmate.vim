@@ -149,9 +149,19 @@ endf
 fun! TriggerSnippet()
 	if exists('g:SuperTabMappingForward')
 		if g:SuperTabMappingForward == "<tab>"
-			let SuperTabKey = "\<c-n>"
+			let SuperTabPlug = maparg('<Plug>SuperTabForward', 'i')
+			if SuperTabPlug == ""
+				let SuperTabKey = "\<c-n>"
+			else
+				exec "let SuperTabKey = \"" . escape(SuperTabPlug, '<') . "\""
+			endif
 		elseif g:SuperTabMappingBackward == "<tab>"
-			let SuperTabKey = "\<c-p>"
+			let SuperTabPlug = maparg('<Plug>SuperTabBackward', 'i')
+			if SuperTabPlug == ""
+				let SuperTabKey = "\<c-p>"
+			else
+				exec "let SuperTabKey = \"" . escape(SuperTabPlug, '<') . "\""
+			endif
 		endif
 	endif
 
