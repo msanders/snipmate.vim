@@ -81,3 +81,6 @@ future
     engine. So maybe my vision of the future could be making xptemplate read
     snippet files. Its not imortant enough to me to work on it right now as
     snipmate works reasonable well for me.
+
+    comment without verifying it:
+    < Silex> MarcWeber: btw, check out ultisnips. Much better than snipmate imho
