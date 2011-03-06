@@ -212,7 +212,7 @@ fun! s:GetSnippet(word, scope)
 			let snippet = s:ChooseSnippet(a:scope, word)
 			if snippet == '' | break | endif
 		else
-			if match(word, '\W') == -1 | break | endif
+			if match(word, '\W\w') == -1 | break | endif
 			let word = substitute(word, '.\{-}\W', '', '')
 		endif
 	endw
