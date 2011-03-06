@@ -52,7 +52,7 @@ endf
 
 " Processes a single-snippet file; optionally add the name of the parent
 " directory for a snippet with multiple matches.
-fun s:ProcessFile(file, ft, ...)
+fun! s:ProcessFile(file, ft, ...)
 	let keyword = fnamemodify(a:file, ':t:r')
 	if keyword  == '' | return | endif
 	try
@@ -135,7 +135,7 @@ fun! GetSnippets(dir, filetypes)
 endf
 
 " Define "aliasft" snippets for the filetype "realft".
-fun s:DefineSnips(dir, aliasft, realft)
+fun! s:DefineSnips(dir, aliasft, realft)
 	for path in split(globpath(a:dir, a:aliasft.'/')."\n".
 					\ globpath(a:dir, a:aliasft.'-*/'), "\n")
 		call ExtractSnips(path, a:realft)
@@ -203,7 +203,7 @@ endf
 
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
 " the text after non-word characters is (e.g. check for "foo" in "bar.foo")
-fun s:GetSnippet(word, scope)
+fun! s:GetSnippet(word, scope)
 	let word = a:word | let snippet = ''
 	while snippet == ''
 		if exists('s:snippets["'.a:scope.'"]["'.escape(word, '\"').'"]')
@@ -222,7 +222,7 @@ fun s:GetSnippet(word, scope)
 	return [word, snippet]
 endf
 
-fun s:ChooseSnippet(scope, trigger)
+fun! s:ChooseSnippet(scope, trigger)
 	let snippet = []
 	let i = 1
 	for snip in s:multi_snips[a:scope][a:trigger]
