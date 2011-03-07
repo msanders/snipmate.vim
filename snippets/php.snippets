@@ -203,8 +203,12 @@ snippet for
 		${4: // code...}
 	}
 snippet foreach
-	foreach ($${1:variable} as $${2:key}) {
+	foreach ($${1:variable} as $${2:value}) {
 		${3:// code...}
+	}
+snippet foreachk
+	foreach ($${1:variable} as $${2:key} => $${3:value}) {
+		${4:// code...}
 	}
 snippet fun
 	${1:public }function ${2:FunctionName}(${3})
@@ -214,3 +218,13 @@ snippet fun
 # $... = array (...)
 snippet array
 	$${1:arrayName} = array('${2}' => ${3});${4}
+snippet try
+	try {
+		${2}
+	} catch (${1:Exception} $e) {
+	}
+# lambda with closure
+snippet lambda
+	${1:static }function (${2:args}) use (${3:&$x, $y /*put vars in scope (closure) */}) {
+		${4}
+	};
