@@ -1,6 +1,5 @@
 snippet #!
 	#!/usr/bin/env python
-
 snippet imp
 	import ${1:module}
 # Module Docstring
@@ -13,6 +12,9 @@ snippet docs
 snippet wh
 	while ${1:condition}:
 		${2:# code...}
+snippet with
+	with ${1:expr} as ${2:var}:
+		${3:# code...}
 snippet for
 	for ${1:needle} in ${2:haystack}:
 		${3:# code...}
@@ -84,3 +86,31 @@ snippet ifmain
 # __magic__
 snippet _
 	__${1:init}__${2}
+# python debugger (pdb)
+snippet pdb
+	import pdb; pdb.set_trace()
+# ipython debugger (ipdb)
+snippet ipdb
+	import ipdb; ipdb.set_trace()
+# ipython debugger (pdbbb)
+snippet pdbbb
+	import pdbpp; pdbpp.set_trace()
+# GPL
+snippet gpl
+	# ${1:Name}
+	# Copyright (C) `strftime("%Y")` ${2:Author}
+	#
+	# This program is free software: you can redistribute it and/or modify
+	# it under the terms of the GNU General Public License as published by
+	# the Free Software Foundation, either version 3 of the License, or
+	# (at your option) any later version.
+	#
+	# This program is distributed in the hope that it will be useful,
+	# but WITHOUT ANY WARRANTY; without even the implied warranty of
+	# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	# GNU General Public License for more details.
+	#
+	# You should have received a copy of the GNU General Public License
+	# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	
+	${3:#code}

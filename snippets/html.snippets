@@ -188,3 +188,57 @@ snippet table
 	</table>${4}
 snippet textarea
 	<textarea name="${1:Name}" rows="${2:8}" cols="${3:40}">${4}</textarea>${5}
+snippet #
+	#{${1:tagName}} /}${2}
+snippet ##
+	#{${1:tagName} ${2:param}} ${3} #{/${1}}
+snippet dobody
+	#{doBody /}${1}
+snippet dolayout
+	#{doLayout /}${1}
+snippet elseif
+	#{elseif ${1:condition}} ${2} #{/elseif}
+snippet else
+	#{else} ${1} #{/else}
+snippet extends
+	#{extends '${1:class}' /} ${2}
+snippet get
+	#{get '${1:param}' /} ${2}
+snippet if
+	#{if ${1:condition}} ${2} #{/if}
+snippet include
+	#{include ${1:page} /} ${2}
+snippet list
+	#{list items:${1:list}, as:'${2:item}'} ${3} #{/list}
+snippet set
+	#{set ${1:var}: '${2:value}' /}
+snippet $
+	\$\{${1:expression}}${2}
+snippet %
+	%{${1:script}}%${2}
+snippet *
+	*{ ${1:comment} }*${2}
+snippet em
+	<em>${1:text}</em>${2}
+snippet li
+	<li>${1:item}</li>${2}
+snippet p
+	<p>${1:text}</p>${2}
+snippet span
+	<span${1}>${2}</span>${3}
+snippet strong
+	<strong>${1:text}</strong>${2}
+snippet ul
+	<ul>
+	  <li>${1:item}</li>${2}
+	</ul>
+snippet ulc
+	<ul class="${1:class}">
+	  <li>${2:item}</li>${3}
+	</ul>
+snippet uli
+	<ul id="${1:id}">
+	  <li>${2:item}</li>${3}
+	</ul>
+snippet @
+	@{${1:action}}${2}
