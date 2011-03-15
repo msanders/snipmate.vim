@@ -68,5 +68,13 @@ future
     snippet files. Its not imortant enough to me to work on it right now as
     snipmate works reasonable well for me.
 
+    snippets should be distributed in additional repositories. Eg
+    snipmate-snippets-ruby
+    snipmate-snippets-vim
+    snipmate-snippets-....
+    One repo containing snippets is:
+    git://github.com/scrooloose/snipmate-snippets.git
+
+
     comment without verifying it:
     < Silex> MarcWeber: btw, check out ultisnips. Much better than snipmate imho
