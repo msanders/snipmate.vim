@@ -31,26 +31,12 @@ snipmate.vim
 How to install
 --------------
 
-    * using `pathogen`_ and `git submodule`_
+    * using `vim-addon-manager`:
+      Add "snipMate" to the addon list.
 
-        % cd ~/.vim
-        $ git submodule
 
-    * manually
-
-        ::
-            % git clone git://github.com/msanders/snipmate.vim.git
-            % cd snipmate.vim
-            % cp -R * ~/.vim
-
-        Then in vim::
-
-            :helptags ~/.vim/doc/
-
-.. _`Michael Sanders`: http://www.vim.org/account/profile.php?user_id=16544
-.. _`Rok Garbas`: rok@garbas.si
-.. _`pathogen`: http://www.vim.org/scripts/script.php?script_id=2332
-.. _`git submodule`: http://www.kernel.org/pub/software/scm/git/docs/git-submodule.html
+    * manually:
+      See snipMate-addon-info.txt, you need tlib and vim-addon-mw-utils
 
 
 comment about this (MarcWeber) branch
