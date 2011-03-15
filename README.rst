@@ -78,3 +78,7 @@ future
 
     comment without verifying it:
     < Silex> MarcWeber: btw, check out ultisnips. Much better than snipmate imho
+
+    And before this discussion xptemplate vs snipmate vs ultisnips .. continues
+    we should create a wiki page comparing them and keep that up to date.
+    If you volunteer tell me so that I can reference the link.
