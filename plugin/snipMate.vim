@@ -156,12 +156,17 @@ fun! s:ChooseSnippet(snippets)
 		let snippet += [i.'. '.snip]
 		let i += 1
 	endfor
-	let idx = tlib#input#List('si','select snippet by name',snippet) -1
+	if len(snippet) == 1
+		" there's only a single snippet, choose it
+		let idx = 0
+	else
+		let idx = tlib#input#List('si','select snippet by name',snippet) -1
+		if idx == -1
+			return ''
+		endif
+	endif
 	" if a:snippets[..] is a String Call returns it
 	" If it's a function or a function string the result is returned
-	if idx == -1
-	  return ''
-	endif
 	return funcref#Call(a:snippets[keys(a:snippets)[idx]])
 endf
 
