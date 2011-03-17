@@ -228,3 +228,9 @@ snippet lambda
 	${1:static }function (${2:args}) use (${3:&$x, $y /*put vars in scope (closure) */}) {
 		${4}
 	};
+# pre_dump();
+snippet pd
+	echo '<pre>'; var_dump(${1}); echo '</pre>';
+# pre_dump(); die();
+snippet pdd
+	echo '<pre>'; var_dump(${1}); echo '</pre>'; die(${2:});
