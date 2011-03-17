@@ -65,13 +65,13 @@ future
 ::
     I'd like to investigate whether xptemplate or snipmate has the better
     engine. So maybe my vision of the future could be making xptemplate read
-    snippet files. Its not imortant enough to me to work on it right now as
-    snipmate works reasonable well for me.
+    snippet files. It is not important enough to me to work on it right now,
+    because snipmate works reasonable well for me.
 
-    snippets should be distributed in additional repositories. Eg
-    snipmate-snippets-ruby
-    snipmate-snippets-vim
-    snipmate-snippets-....
+    Snippets should be distributed in additional repositories. Eg
+     - snipmate-snippets-ruby
+     - snipmate-snippets-vim
+     - snipmate-snippets-...
     One repo containing snippets is:
     git://github.com/scrooloose/snipmate-snippets.git
 
