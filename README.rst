@@ -82,3 +82,8 @@ future
     And before this discussion xptemplate vs snipmate vs ultisnips .. continues
     we should create a wiki page comparing them and keep that up to date.
     If you volunteer tell me so that I can reference the link.
+
+    Think about merging:
+    https://github.com/vim-scripts/superSnipMate
+    (note: vim-scripts is only a "mirror all service".
+    I asked the author o superSnipMate to create his own upstream on github.
