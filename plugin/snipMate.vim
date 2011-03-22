@@ -107,13 +107,17 @@ endf
 
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
 " the text after non-word characters is (e.g. check for "foo" in "bar.foo")
-fun s:GetSnippet(word, scope)
+fun! s:GetSnippet(word, scope)
 	let word = a:word | let snippet = ''
 	while snippet == ''
 		let snippetD = get(snipMate#GetSnippets([a:scope], word),word, {})
 		if !empty(snippetD)
 			let s = s:ChooseSnippet(snippetD)
-			let snippet = join(s, "\n")
+			if type(s) == type([])
+				let snippet = join(s, "\n")
+			else
+				let snippet = s
+			end
 			if snippet == '' | break | endif
 		else
 			if match(word, '\W') == -1 | break | endif
