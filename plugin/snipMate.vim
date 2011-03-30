@@ -78,7 +78,7 @@ fun! TriggerSnippet()
 	if exists('g:snipPos') | return snipMate#jumpTabStop(0) | endif
 
 	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
-	for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
+	for scope in split(&ft, '\.') + ['_']
 		let [trigger, snippet] = s:GetSnippet(word, scope)
 		" If word is a trigger for a snippet, delete the trigger & expand
 		" the snippet.
@@ -184,7 +184,7 @@ fun! ShowAvailableSnips()
 	endif
 	let matchlen = 0
 	let matches = []
-	let snips = snipMate#GetSnippets([bufnr('%')] + split(&ft, '\.') + ['_'], word.'*')
+	let snips = snipMate#GetSnippets(split(&ft, '\.') + ['_'], word.'*')
 	for trigger in keys(snips)
 		for word in words
 			if word == ''
