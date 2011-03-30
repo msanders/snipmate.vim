@@ -133,7 +133,11 @@ fun! s:GetSnippet(word, scope)
 		let snippetD = get(snipMate#GetSnippets([a:scope], word),word, {})
 		if !empty(snippetD)
 			let s = s:ChooseSnippet(snippetD)
-			let snippet =  s
+			if type(s) == type([])
+				let snippet = join(s, "\n")
+			else
+				let snippet = s
+			end
 			if snippet == '' | break | endif
 		else
 			if match(word, '\W\w') == -1 | break | endif
