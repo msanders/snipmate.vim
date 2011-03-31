@@ -18,20 +18,19 @@ Why forking snipMate?
 
     After several unsuccessful attempts of contacting Michael Sanders, no
     commits in last half year and long pull request line on github (none of
-    pull requests were commented/replied/rejected) I decided to take action and
-    step up and bring some love to this widly used plugin.
+    pull requests were commented/replied/rejected) I decided to take action,
+    step up and bring some love to this widely used plugin.
 
     But nothing to worry about. We all get busy, accupied with our daily work
     or just lose interest in doing boring maintainance.
 
     While reviewing pull requests on github.com/msanders I found lots of great
     improvements and I decided to **friendly** fork it, review and apply patches
-    that were sent, notify all the patch submiters and decided to do
-    maintainance of snipmate.vim from now on. Ofcourse if somebody want to
-    help, please don't hesitate to write me, I'm open to all suggestions. The
-    only thing in what I'm not interested is leaving things like they are now.
+    that were sent, notify all the patch submitters and decided to maintain
+    snipmate.vim from now on. Of course if somebody wants to
+    help, please do not hesitate to write me, I am open to any suggestions.
 
-    Maybe I'll only maintain it for a while until Michael Sanders takes things
+    Maybe I will only maintain it for a while until Michael Sanders takes things
     back into his hand or until some other super-hero shows up.
 
     Tnx and happy snipmating, Rok Garbas, 2011-02-02
@@ -48,8 +47,8 @@ Changelog
       some spellchecking of my wonderfull english, added this Changelog
       [2011-02-07, `garbas`_]
 
-    * From bellow mentioned merges I must spectialy mention `MarcWeber`_ patch
-      which brought quite few functionalities/improvements:
+    * From below mentioned merges I must specially mention `MarcWeber`_'s patch
+      which brought quite a few functionalities/improvements:
         - snippets are loaded lazily.
         - snippets are no longer cached. Thus you always get the snippets you 
           just wrote to a file without reloading anything.
@@ -59,7 +58,7 @@ Changelog
       on `vim-addon-mw-utils`_ and `tlib`_.
       [2011-02-02, `garbas`_]
 
-    * Marged pull requests of `MarcWeber`_, `lilydjwg`_, `henrik`_, `steveno`_,
+    * Merged pull requests of `MarcWeber`_, `lilydjwg`_, `henrik`_, `steveno`_,
       `asymmetric`_, `jherdman`_, `ironcamel`_, `honza`_, `jb55`_,
       `robhudson`_, `kozo2`_, `MicahElliott`_, `darkwise`_, `redpill`_,
       `thisgeek`_, `sickill`_, `pose`_,
@@ -69,7 +68,7 @@ Changelog
 0.83 [2009-07-13]
 -----------------
 
-    * last release done by `Michael Sanders`_, you can found it here:
+    * last release done by `Michael Sanders`_, you can find it here:
         http://www.vim.org/scripts/download_script.php?src_id=11006
 
 
@@ -117,18 +116,18 @@ TODO / Future
 =============
 
     * Notify all "forkers" about new home and ask them nicely to review already
-      merged changes and possibly send they changes.
+      merged changes and possibly send their changes.
       [2011-02-07, `garbas`_]
 
     * I'd like to investigate whether xptemplate or snipmate has the better
       engine. So maybe my vision of the future could be making xptemplate read
-      snippet files. Its not imortant enough to me to work on it right now as
+      snippet files. It is not important enough for me to work on it right now as
       snipmate works reasonable well for me.
       [2011-02-02, `MarcWeber`_]
 
 
     * Split core from snippets. Then reviewing patches and updates will be easier?
-      snippets should be distributed in additional repositories. Eg
+      Snippets should be distributed in additional repositories. Eg
       snipmate-snippets-ruby
       snipmate-snippets-vim
       snipmate-snippets-....
