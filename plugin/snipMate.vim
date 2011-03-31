@@ -125,11 +125,30 @@ fun! BackwardsSnippet()
 	return "\<s-tab>"
 endf
 
-" Check if word under cursor is snippet trigger; if it isn't, try checking if
-" the text after non-word characters is (e.g. check for "foo" in "bar.foo")
+" Check if the word under the cursor is a snippet trigger.
+" If it is not, it gets split by non-word characters and looked up in
+" parts, e.g. 'foo' in 'bar.foo'.
 fun! s:GetSnippet(word, scope)
-	let word = a:word | let snippet = ''
-	while snippet == ''
+	let snippet = ''
+	let lookups = [a:word] " lookup whole word always and first, e.g. '$_'
+	let parts = split(a:word, '\W\zs')
+	if len(parts) > 2
+		let parts = parts[-2:] " max 2 additional items, this might become a setting
+	endif
+	" Setup lookups: '1.2.3' becomes [1.2.3] + [3, 2.3]
+	let lookup = ''
+	for w in reverse(parts)
+		let lookup = w . lookup
+		if lookup == a:word
+			break
+		endif
+		let lookups += [lookup]
+	endfor
+	let i = len(lookups)
+	while snippet == '' && i > 0
+		let i = i-1
+		let word = lookups[i]
+		" echomsg a:scope.":".i.':'.word.":" 
 		let snippetD = get(snipMate#GetSnippets([a:scope], word),word, {})
 		if !empty(snippetD)
 			let s = s:ChooseSnippet(snippetD)
@@ -139,9 +158,6 @@ fun! s:GetSnippet(word, scope)
 				let snippet = s
 			end
 			if snippet == '' | break | endif
-		else
-			if match(word, '\W\w') == -1 | break | endif
-			let word = substitute(word, '.\{-}\W', '', '')
 		endif
 	endw
 	if word == '' && a:word != '.' && stridx(a:word, '.') != -1
