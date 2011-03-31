@@ -540,6 +540,16 @@ fun! s:AddScopeAliases(list)
   return keys(did)
 endf
 
+" don't ask me wy searching for trigger { is soo slow.
+fun! s:Glob(dir,  file)
+	let f= a:dir.a:file
+	if a:dir =~ '\*' || isdirectory(a:dir)
+		return split(glob(f),"\n")
+	else
+		return filereadable(f) ? [f] : []
+	endif
+endf
+
 " returns dict of
 " { path: { 'type': one of 'snippet' 'snippets',
 "           'exists': 1 or 0
@@ -583,14 +593,14 @@ fun! snipMate#GetSnippetFiles(mustExist, scopes, trigger)
 	  " == one file per snippet: ==
 
 	  " without name snippets/<filetype>/<trigger>.snippet
-	  for f in split(glob(r.'/snippets/'.scope.'/'.a:trigger.'.snippet'),"\n")
+	  for f in s:Glob(r.'/snippets/'.scope,'/'.a:trigger.'.snippet')
 		let trigger = fnamemodify(f,':t:r')
 		let result[f] = {'exists': 1, 'type': 'snippet', 'name': 'default', 'trigger': trigger, 'name_prefix' : rtp_last.' '.scope}
 	  endfor
 	  " add /snippets/trigger/*.snippet files (TODO)
 
 	  " with name (multi-snip) snippets/<filetype>/<trigger>/<name>.snippet
-	  for f in split(glob(r.'/snippets/'.scope.'/'.a:trigger.'/*.snippet'),"\n")
+	  for f in s:Glob(r.'/snippets/'.scope.'/'.a:trigger,'/*.snippet')
 		let name = fnamemodify(f,':t:r')
 		let trigger = fnamemodify(f,':h:t')
 		let result[f] = {'exists': 1, 'type': 'snippet', 'name': name, 'trigger': trigger, 'name_prefix' : rtp_last.' '.scope}
