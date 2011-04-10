@@ -85,8 +85,8 @@ Important to note is that since version 1.0 we depend on this 2 vim plugins:
     * `vim-addon-mw-utils`_ providing the implementation for caching parsed
       .snippets files.
 
-    * `tlib`_ providing tlib#input#List which provides the excellent filterable
-      list selection view (and more)
+    * `tlib`_ for tlib#input#List which provides the excellent filterable
+      list selection view (and more).
 
 
 Using `VAM`_
@@ -96,7 +96,7 @@ Using `VAM`_
     Add snipmate to the names to be installed. Or use "github:name/repo" if you
     want to use a non standard upstream.
 
-    VAM will also fetch the depndencies listed above for you automatically.
+    VAM will also fetch the dependencies listed above for you automatically.
 
 Using `pathogen`_ and `git submodule`_
 --------------------------------------
@@ -106,7 +106,7 @@ Using `pathogen`_ and `git submodule`_
     % mkdir bundle -p
     % git submodule add git://github.com/garbas/vim-snipmate.git bundle/snipmate 
 
-Then get dependencies (see above)
+Then install any dependencies (see above).
 
 Manually
 --------
@@ -120,7 +120,7 @@ Then in vim::
 
     :helptags ~/.vim/doc/
 
-Then get dependencies (see above)
+Then install any dependencies (see above).
 
 TODO / Future
 =============
