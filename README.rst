@@ -93,6 +93,7 @@ Using `VAM`_
 ------------
 
 ::
+
     Add snipmate to the names to be installed. Or use "github:name/repo" if you
     want to use a non standard upstream.
 
@@ -102,6 +103,7 @@ Using `pathogen`_ and `git submodule`_
 --------------------------------------
 
 ::
+
     % cd ~/.vim
     % mkdir bundle -p
     % git submodule add git://github.com/garbas/vim-snipmate.git bundle/snipmate 
@@ -112,6 +114,7 @@ Using `Vundle`_
 ---------------
 
 ::
+
     Install dependencies:
     Bundle "git://github.com/MarcWeber/vim-addon-mw-utils.git"
     Bundle "git://github.com/tomtom/tlib_vim.git"
