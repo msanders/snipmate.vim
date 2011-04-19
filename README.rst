@@ -5,7 +5,7 @@ snipmate.vim
 :Author: `Michael Sanders`_
 :Maintainer: `Rok Garbas`_
 :Homepage: http://www.vim.org/scripts/script.php?script_id=2540 
-:Contributors: `MarcWeber`_, `lilydjwg`_, `henrik`_, `steveno`_, `asymmetric`_, `jherdman`_, `ironcamel`_, `honza`_, `jb55`_, `robhudson`_, `kozo2`_, `MicahElliott`_, `darkwise`_, `redpill`_, `thisgeek`_, `sickill`_, `pose`_, `marutanm`_, `r00k`_, `jbernard`_, `holizz`_, `muffinresearch`_, `statik`_, Eustaquio Rangel
+:Contributors: `MarcWeber`_, `lilydjwg`_, `henrik`_, `steveno`_, `asymmetric`_, `jherdman`_, `ironcamel`_, `honza`_, `jb55`_, `robhudson`_, `kozo2`_, `MicahElliott`_, `darkwise`_, `redpill`_, `thisgeek`_, `sickill`_, `pose`_, `marutanm`_, `r00k`_, `jbernard`_, `holizz`_, `muffinresearch`_, `statik`_, Eustaquio Rangel, `alderz`_
 
 
 .. contents::
@@ -108,6 +108,21 @@ Using `pathogen`_ and `git submodule`_
 
 Then install any dependencies (see above).
 
+Using `Vundle`_
+---------------
+
+::
+    Install dependencies:
+    Bundle "git://github.com/MarcWeber/vim-addon-mw-utils.git"
+    Bundle "git://github.com/tomtom/tlib_vim.git"
+
+    Install:
+    Bundle "git://github.com/garbas/snipmate.vim.git"
+
+    And :BundleInstall
+
+
+
 Manually
 --------
 
@@ -185,3 +200,6 @@ TODO / Future
 .. _`holizz`: https://github.com/holizz
 .. _`muffinresearch`: https://github.com/muffinresearch
 .. _`statik`: https://github.com/statik
+
+.. _`Vundle`: https://github.com/gmarik/vundle
+.. _`alderz`: https://github.com/alderz
