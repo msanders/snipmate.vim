@@ -36,7 +36,7 @@ endif
 
 " Processes a single-snippet file; optionally add the name of the parent
 " directory for a snippet with multiple matches.
-fun s:ProcessFile(file, ft, ...)
+fun! s:ProcessFile(file, ft, ...)
 	let keyword = fnamemodify(a:file, ':t:r')
 	if keyword  == '' | return | endif
 	try
@@ -51,9 +51,19 @@ endf
 fun! TriggerSnippet()
 	if exists('g:SuperTabMappingForward')
 		if g:SuperTabMappingForward == "<tab>"
-			let SuperTabKey = "\<c-n>"
+			let SuperTabPlug = maparg('<Plug>SuperTabForward', 'i')
+			if SuperTabPlug == ""
+				let SuperTabKey = "\<c-n>"
+			else
+				exec "let SuperTabKey = \"" . escape(SuperTabPlug, '<') . "\""
+			endif
 		elseif g:SuperTabMappingBackward == "<tab>"
-			let SuperTabKey = "\<c-p>"
+			let SuperTabPlug = maparg('<Plug>SuperTabBackward', 'i')
+			if SuperTabPlug == ""
+				let SuperTabKey = "\<c-p>"
+			else
+				exec "let SuperTabKey = \"" . escape(SuperTabPlug, '<') . "\""
+			endif
 		endif
 	endif
 
@@ -68,7 +78,7 @@ fun! TriggerSnippet()
 	if exists('g:snipPos') | return snipMate#jumpTabStop(0) | endif
 
 	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
-	for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
+	for scope in split(&ft, '\.') + ['_']
 		let [trigger, snippet] = s:GetSnippet(word, scope)
 		" If word is a trigger for a snippet, delete the trigger & expand
 		" the snippet.
@@ -92,10 +102,20 @@ fun! BackwardsSnippet()
 	if exists('g:snipPos') | return snipMate#jumpTabStop(1) | endif
 
 	if exists('g:SuperTabMappingForward')
-		if g:SuperTabMappingBackward == "<s-tab>"
-			let SuperTabKey = "\<c-p>"
-		elseif g:SuperTabMappingForward == "<s-tab>"
-			let SuperTabKey = "\<c-n>"
+		if g:SuperTabMappingForward == "<s-tab>"
+			let SuperTabPlug = maparg('<Plug>SuperTabForward', 'i')
+			if SuperTabPlug == ""
+				let SuperTabKey = "\<c-n>"
+			else
+				exec "let SuperTabKey = \"" . escape(SuperTabPlug, '<') . "\""
+			endif
+		elseif g:SuperTabMappingBackward == "<s-tab>"
+			let SuperTabPlug = maparg('<Plug>SuperTabBackward', 'i')
+			if SuperTabPlug == ""
+				let SuperTabKey = "\<c-p>"
+			else
+				exec "let SuperTabKey = \"" . escape(SuperTabPlug, '<') . "\""
+			endif
 		endif
 	endif
 	if exists('SuperTabKey')
@@ -105,11 +125,30 @@ fun! BackwardsSnippet()
 	return "\<s-tab>"
 endf
 
-" Check if word under cursor is snippet trigger; if it isn't, try checking if
-" the text after non-word characters is (e.g. check for "foo" in "bar.foo")
+" Check if the word under the cursor is a snippet trigger.
+" If it is not, it gets split by non-word characters and looked up in
+" parts, e.g. 'foo' in 'bar.foo'.
 fun! s:GetSnippet(word, scope)
-	let word = a:word | let snippet = ''
-	while snippet == ''
+	let snippet = ''
+	let lookups = [a:word] " lookup whole word always and first, e.g. '$_'
+	let parts = split(a:word, '\W\zs')
+	if len(parts) > 2
+		let parts = parts[-2:] " max 2 additional items, this might become a setting
+	endif
+	" Setup lookups: '1.2.3' becomes [1.2.3] + [3, 2.3]
+	let lookup = ''
+	for w in reverse(parts)
+		let lookup = w . lookup
+		if lookup == a:word
+			break
+		endif
+		let lookups += [lookup]
+	endfor
+	let i = len(lookups)
+	while snippet == '' && i > 0
+		let i = i-1
+		let word = lookups[i]
+		" echomsg a:scope.":".i.':'.word.":" 
 		let snippetD = get(snipMate#GetSnippets([a:scope], word),word, {})
 		if !empty(snippetD)
 			let s = s:ChooseSnippet(snippetD)
@@ -119,9 +158,6 @@ fun! s:GetSnippet(word, scope)
 				let snippet = s
 			end
 			if snippet == '' | break | endif
-		else
-			if match(word, '\W') == -1 | break | endif
-			let word = substitute(word, '.\{-}\W', '', '')
 		endif
 	endw
 	if word == '' && a:word != '.' && stridx(a:word, '.') != -1
@@ -132,7 +168,7 @@ endf
 
 " snippets: dict containing snippets by name
 " usually this is just {'default' : snippet_contents }
-fun s:ChooseSnippet(snippets)
+fun! s:ChooseSnippet(snippets)
 	let snippet = []
 	let keys = keys(a:snippets)
 	let i = 1
@@ -140,12 +176,17 @@ fun s:ChooseSnippet(snippets)
 		let snippet += [i.'. '.snip]
 		let i += 1
 	endfor
-	let idx = tlib#input#List('si','select snippet by name',snippet) -1
+	if len(snippet) == 1
+		" there's only a single snippet, choose it
+		let idx = 0
+	else
+		let idx = tlib#input#List('si','select snippet by name',snippet) -1
+		if idx == -1
+			return ''
+		endif
+	endif
 	" if a:snippets[..] is a String Call returns it
 	" If it's a function or a function string the result is returned
-	if idx == -1
-	  return ''
-	endif
 	return funcref#Call(a:snippets[keys(a:snippets)[idx]])
 endf
 
@@ -159,7 +200,7 @@ fun! ShowAvailableSnips()
 	endif
 	let matchlen = 0
 	let matches = []
-	let snips = snipMate#GetSnippets([bufnr('%')] + split(&ft, '\.') + ['_'], word.'*')
+	let snips = snipMate#GetSnippets(split(&ft, '\.') + ['_'], word.'*')
 	for trigger in keys(snips)
 		for word in words
 			if word == ''

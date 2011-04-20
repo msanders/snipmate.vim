@@ -12,6 +12,12 @@ snippet docs
 snippet wh
 	while ${1:condition}:
 		${2:# code...}
+# dowh - does the same as do...while in other languages
+snippet dowh
+	while True:
+		${1:# code...}
+		if ${2:condition}:
+			break
 snippet with
 	with ${1:expr} as ${2:var}:
 		${3:# code...}
