@@ -1,0 +1,10 @@
+function inputSupportsType(test) {
+	var input = document.createElement('input');
+	input.setAttribute('type' ,test);
+	if (input.type == 'text') {
+		return false;
+	} else {
+		return true;
+	}
+}
+
