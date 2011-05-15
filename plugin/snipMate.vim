@@ -83,6 +83,7 @@ fun! TriggerSnippet()
 		" If word is a trigger for a snippet, delete the trigger & expand
 		" the snippet.
 		if snippet != ''
+			let &undolevels = &undolevels " create new undo point
 			let col = col('.') - len(trigger)
 			sil exe 's/\V'.escape(trigger, '/\.').'\%#//'
 			return snipMate#expandSnip(snippet, col)

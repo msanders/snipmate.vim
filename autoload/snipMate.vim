@@ -617,7 +617,7 @@ endf
 "
 fun! snipMate#GetSnippets(scopes, trigger)
 	let result = {}
-	let triggerR = substitute(a:trigger,'*','.*','g')
+	let triggerR = escape(substitute(a:trigger,'*','.*','g'), '~') " escape '~' for use as regexp
 	" let scopes = s:AddScopeAliases(a:scopes)
 
 	for [f,opts] in items(snipMate#GetSnippetFiles(1,a:scopes,a:trigger))
