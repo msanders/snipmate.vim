@@ -43,6 +43,24 @@ Changelog
 1.0 [Unreleased]
 ----------------
 
+    * Lots of updates to snippets.
+
+    * Made the trigger key configurable, https://github.com/garbas/vim-snipmate/pull/4.
+      [2011-04-13, `thenoseman`_]
+
+    * Handle single-line or multiline snippets.
+      [2011-03-22, `johnbintz`_]
+
+    * If there is only one snippet choose it directly.
+      [2011-03-16, `blueyed`_]
+
+    * Add snippets file for "diff" filetype and add bang to function
+      definitons, allowing for reload.
+      [2011-03-06, `blueyed`_]
+
+    * Update snipmate to handle latest supertab version.
+      [2011-02-09, `ervandew`_]
+
     * Updated README: added contributors, instructions how to install snipMate,
       some spellchecking of my wonderfull english, added this Changelog
       [2011-02-07, `garbas`_]
@@ -199,13 +217,15 @@ TODO / Future
 .. _`thisgeek`: https://github.com/thisgeek
 .. _`sickill`: https://github.com/sickill
 .. _`pose`: https://github.com/pose
-
 .. _`marutanm`: https://github.com/marutanm
 .. _`r00k`: https://github.com/r00k
 .. _`jbernard`: https://github.com/jbernard
 .. _`holizz`: https://github.com/holizz
 .. _`muffinresearch`: https://github.com/muffinresearch
 .. _`statik`: https://github.com/statik
-
 .. _`Vundle`: https://github.com/gmarik/vundle
 .. _`alderz`: https://github.com/alderz
+.. _`johnbintz`: https://github.com/johnbintz
+.. _`thenoseman`: https://github.com/thenoseman
+.. _`ervandew`: https://github.com/ervandew
+.. _`blueyed`: https://github.com/blueyed
