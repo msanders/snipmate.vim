@@ -134,7 +134,7 @@ Manually
 
 ::
 
-    % git clone git://github.com/msanders/snipmate.vim.git
+    % git clone git://github.com/garbas/vim-snipmate.git
     % cd snipmate.vim
     % cp -R * ~/.vim
 
