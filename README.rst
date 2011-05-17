@@ -43,6 +43,10 @@ Changelog
 1.0 [Unreleased]
 ----------------
 
+    * Adding ``css.snippets`` from `tisho`_
+      (https://github.com/tisho/css-snippets-snipmate)
+      [2011-04-17, `garbas`_]
+
     * Lots of updates to snippets.
 
     * Made the trigger key configurable, https://github.com/garbas/vim-snipmate/pull/4.
@@ -229,3 +233,4 @@ TODO / Future
 .. _`thenoseman`: https://github.com/thenoseman
 .. _`ervandew`: https://github.com/ervandew
 .. _`blueyed`: https://github.com/blueyed
+.. _`tisho`: https://github.com/tisho
