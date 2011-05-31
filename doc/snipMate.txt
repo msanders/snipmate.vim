@@ -3,46 +3,130 @@
 snipMate                                       *snippet* *snippets* *snipMate*
 Last Change: December 27, 2009
 
+|snipMate-installation|  Installation
 |snipMate-description|   Description
-|snipMate-syntax|        Snippet syntax
+|snipMate-related-work|  Related work
 |snipMate-usage|         Usage
+|snipMate-snippet-sources|       snippet sources
+|snipMate-syntax|        Snippet syntax
 |snipMate-settings|      Settings
 |snipMate-features|      Features
 |snipMate-disadvantages| Disadvantages to TextMate
 |snipMate-contact|       Contact
 |snipMate-license|       License
+|snipMate-bugs|       BUGS
 
 For Vim version 7.0 or later.
 This plugin only works if 'compatible' is not set.
 {Vi does not have any of these features.}
 
+
+==============================================================================
+INSTALLATION                                           *snipMate-installation*
+
+Of course you can use whatever tool you want.
+However some features of snipMate depend on external VimL code:
+tlib: tlib#input#List (providing a nice selection list)
+vim-addon-mw-utils: (providing all the caching implementation)
+Thus i recommend vim-addon-manager to install snipMate because this will also
+fetch the dependencies for you.
+
+The complete set of dependencies can be found in snipMate-addon-info.txt
+The current VAM-plugin name for this enhanced verison of snipMate is "snipMate".
+
 ==============================================================================
 DESCRIPTION                                             *snipMate-description*
 
-snipMate.vim implements some of TextMate's snippets features in Vim. A
-snippet is a piece of often-typed text that you can insert into your
-document using a trigger word followed by a <tab>.
+snipMate is an extension to Vim which allows you to store and retrtieve text
+snippets with placeholders in a very convenient way.
 
-For instance, in a C file using the default installation of snipMate.vim, if
-you type "for<tab>" in insert mode, it will expand a typical for loop in C: >
+snipMate is inspired by TextMate's snippet features.
 
- for (i = 0; i < count; i++) {
+==============================================================================
+RELATED WORK                                 *snipMate-related-work*
 
- }
+There are some alternatives:
+- ultisnips (python based)
+- xptemplate which is probaly a much more powerful
+  but also more complex
+- (..?)
 
+snipmate is not perfect - however it gets its job done perfectly and gets out
+of your way. So if you want to get started fast without reading too much
+documentation probaly snipmate is for you.
 
-To go to the next item in the loop, simply <tab> over to it; if there is
-repeated code, such as the "i" variable in this example, you can simply
-start typing once it's highlighted and all the matches specified in the
-snippet will be updated. To go in reverse, use <shift-tab>.
+==============================================================================
+USAGE (GETTING STARTED QUICKLY)                               *snipMate-usage*
+
+Adding snippets: >
+  :SnipMateOpenSnippetFiles
+< all valid snippet locations will be shown in a list. Existing files are
+  shown first. The list depends on Vim's |runtimepath|. Thus snipMate
+  perfectly integrates with the recommended way of installing each plugin into
+  its own directory which all newer plugin management solutions (VAM,
+  Pathogen, Vundle, ..) propagate.
+
+  The command will only show non existing .snippets files. See |snipMate-syntax|
+  to learn about all supported files snipMate can read.
+
+  In .snippets files you should use \t as indentation character which will
+  be replaced by spaces/tabs depending on your Vim indentation settings.
+
+  You can retab your snippet text by visually selecting it and pressing <cr>.
+
+Using snippets:
+>
+  g:snipMate.scope_aliases
+< defines which snippets typse are available when you edit a buffer.
+  You can override the default in autoload/snipMate.vim in your .vimrc.
+
+  <c-r><tab>: shows a list of available snippets
+  XX<tab>   : will either show a list of all snippets starting with the
+              characters XX or expand the snippet if it matches a snippet name.
+
+ *snipMate-disambiguation*
+What happens if multiple files or filetypes define the same snippet name or if
+|multi_snip| is being used? This results in name collisions!
+You'll get list of matching snippets and can choose one.
+
+Snippets are loaded and refreshed automatically on demand.
+The parsed .snippets files are cached.
+
+in the current buffer to show a list via.
+
+------------------------------------------------------------------------------
+SNIPPET SOURCES                                      *snippet-sources*
+
+The default set of snippets is determined by Vim's |rtp|. However you can
+easily register your own sources as demonstrated by
+autoload/snipMate_python_demo.vim
+because the snippet pool is created on the fly. 
+
+The implementation can be found in snipMate#GetSnippetFiles(..).
+
+More details about all possible relative locations to |rtp| can be found in
+|snipMate-syntax|
 
 ==============================================================================
 SYNTAX                                      *snippet-syntax* *snipMate-syntax*
 
-Snippets can be defined in two ways. They can be in their own file, named
-after their trigger in 'snippets/<filetype>/<trigger>.snippet', or they can be
-defined together in a 'snippets/<filetype>.snippets' or
-'snippets/<filetype>/*.snippets file. Note that dotted
+Default snippet sources [1], you can add your own as illustrated in
+|snippet-sources|.
+
+trigger: the snippet's name.
+|rtp|  : Vim's |runtimepath| path list
+
+one snippet per file:
+  |rtp|/snippets/<filetype>/<trigger>.snippet
+
+many snippets per file, triggers are specified in file, see below:
+  |rtp|/snippets/<filetype>.snippets (RECOMMENDED)
+  |rtp|/snippets/<filetype>/*.snippets 
+
+
+See |snipMate-disambiguation| to learn about how name collisions are handled.
+
+Note that dotted
 'filetype' syntax is supported -- e.g., you can use >
 
 	:set ft=html.eruby
@@ -54,6 +138,8 @@ The syntax for snippets in *.snippets files is the following: >
  snippet trigger
  	expanded text
 	more expanded text
+Multiple snippets having the same name but different triggers exist?
+
 
 Note that the first hard tab after the snippet trigger is required, and not
 expanded in the actual snippet. The syntax for *.snippet files is the same,
@@ -174,58 +260,7 @@ this syntax: >
  snippet trigger A description of snippet #2
  	expand THIS text!
 
-In this example, when "trigger<tab>" is typed, a numbered menu containing all
-of the descriptions of the "trigger" will be shown; when the user presses the
-corresponding number, that snippet will then be expanded.
-
-To create a snippet with multiple matches using *.snippet files,
-simply place all the snippets in a subdirectory with the trigger name:
-'snippets/<filetype>/<trigger>/<name>.snippet'.
-
-==============================================================================
-USAGE                                                         *snipMate-usage*
-
-                                                 *'snippets'* *g:snippets_dir*
-Snippets are by default looked for any 'snippets' directory in your
-'runtimepath'. Typically, it is located at '~/.vim/snippets/' on *nix or
-'$HOME\vimfiles\snippets\' on Windows. To change that location or add another
-one, change the g:snippets_dir variable in your |.vimrc| to your preferred
-directory, or use the |ExtractSnips()|function. This will be used by the
-|globpath()| function, and so accepts the same syntax as it (e.g.,
-comma-separated paths).
-
-ExtractSnipsFile({directory}, {filetype})     *ExtractSnipsFile()* *.snippets*
-
-ExtractSnipsFile() extracts the specified *.snippets file for the given
-filetype. A .snippets file contains multiple snippet declarations for the
-filetype. It is further explained above, in |snippet-syntax|.
-
-ExtractSnips({directory}, {filetype})             *ExtractSnips()* *.snippet*
-
-ExtractSnips() extracts *.snippet files from the specified directory and
-defines them as snippets for the given filetype. The directory tree should
-look like this: 'snippets/<filetype>/<trigger>.snippet'. If the snippet has
-multiple matches, it should look like this:
-'snippets/<filetype>/<trigger>/<name>.snippet' (see |multi_snip|).
-
-ResetAllSnippets()                                       *ResetAllSnippets()*
-ResetAllSnippets() removes all snippets from memory. This is useful to put at
-the top of a snippet setup file for if you would like to |:source| it multiple
-times.
-
-ResetSnippets({filetype})                                   *ResetSnippets()*
-ResetSnippets() removes all snippets from memory for the given filetype.
-
-ReloadAllSnippets()                                     *ReloadAllSnippets()*
-ReloadAllSnippets() reloads all snippets for all filetypes. This is useful for
-testing and debugging.
-
-ReloadSnippets({filetype})                                 *ReloadSnippets()*
-ReloadSnippets() reloads all snippets for the given filetype.
-
-                                             *list-snippets* *i_CTRL-R_<Tab>*
-If you would like to see what snippets are available, simply type <c-r><tab>
-in the current buffer to show a list via |popupmenu-completion|.
+See |snipMate-disambiguation|
 
 ==============================================================================
 SETTINGS                                  *snipMate-settings* *g:snips_author*
@@ -291,10 +326,21 @@ Perhaps some of these features will be added in a later release.
 ==============================================================================
 CONTACT                                   *snipMate-contact* *snipMate-author*
 
+current maintainers:
+  - garbas
+  - Marc Weber (marco-oweber@gmx.de)
+You sohuld consider creating a github ticket or contacting us because the
+original author Michael Sanders did not act uppon change requests for long
+time. Anyway - he did most of the hard initial work.
+
 To contact the author (Michael Sanders), please email:
  msanders42+snipmate <at> gmail <dot> com
 
-I greatly appreciate any suggestions or improvements offered for the script.
+
+==============================================================================
+BUGS                                                     *snipMate-bugs*
+[1]: I think having so many different ways is too complicated
+    - Marc Weber
 
 ==============================================================================
 LICENSE                                                     *snipMate-license*
