@@ -563,14 +563,15 @@ endf
 "
 "     mustExist = 0 is used by OpenSnippetFiles
 fun! snipMate#GetSnippetFiles(mustExist, scopes, trigger)
+  let paths = funcref#Call(s:snipMate.snippet_dirs)
+
   let result = {}
-  let triggerR = substitute(a:trigger,'*','.*','g')
   let scopes = s:AddScopeAliases(a:scopes)
 
   " collect existing files
   for scope in scopes
 
-	for r in split(&runtimepath,',')
+	for r in paths
 	  let rtp_last = fnamemodify(r,':t')
 
 	  " .snippets files (many snippets per file).
@@ -611,6 +612,23 @@ fun! snipMate#GetSnippetFiles(mustExist, scopes, trigger)
 endf
 
 
+" default triggers based on paths
+fun! snipMate#DefaultPool(scopes, trigger, result)
+	let triggerR = substitute(a:trigger,'*','.*','g')
+	for [f,opts] in items(snipMate#GetSnippetFiles(1, a:scopes, a:trigger))
+		if opts.type == 'snippets'
+			for [trigger, name, contents] in cached_file_contents#CachedFileContents(f, s:read_snippets_cached, 0)
+				if trigger !~ triggerR | continue | endif
+				call snipMate#SetByPath(a:result, [trigger, opts.name_prefix.' '.name], contents)
+			endfor
+		elseif opts.type == 'snippet'
+			call snipMate#SetByPath(a:result, [opts.trigger, opts.name_prefix.' '.opts.name], funcref#Function('return readfile('.string(f).')'))
+		else
+			throw "unexpected"
+		endif
+	endfor
+endf
+
 " return a dict of snippets found in runtimepath matching trigger
 " scopes: list of scopes. usually this is the filetype. eg ['c','cpp']
 " trigger may contain glob patterns. Thus use '*' to get all triggers
@@ -620,21 +638,8 @@ fun! snipMate#GetSnippets(scopes, trigger)
 	let triggerR = escape(substitute(a:trigger,'*','.*','g'), '~') " escape '~' for use as regexp
 	" let scopes = s:AddScopeAliases(a:scopes)
 
-	for [f,opts] in items(snipMate#GetSnippetFiles(1,a:scopes,a:trigger))
-		if opts.type == 'snippets'
-			for [trigger, name, contents] in cached_file_contents#CachedFileContents(f, s:read_snippets_cached, 0)
-				if trigger !~ triggerR | continue | endif
-				call snipMate#SetByPath(result, [trigger, opts.name_prefix.' '.name], contents)
-			endfor
-		elseif opts.type == 'snippet'
-			call snipMate#SetByPath(result, [opts.trigger, opts.name_prefix.' '.opts.name], funcref#Function('return readfile('.string(f).')'))
-		else
-			throw "unexpected"
-		endif
-	endfor
-
 	for F in values(g:snipMateSources)
-	  call funcref#Call(F, [scopes, a:trigger, result])
+	  call funcref#Call(F, [a:scopes, a:trigger, result])
 	endfor
 	return result
 endf

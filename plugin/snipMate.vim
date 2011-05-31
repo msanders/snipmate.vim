@@ -17,6 +17,8 @@ if !exists('snips_author') | let snips_author = 'Me' | endif
 
 if (!exists('g:snipMateSources'))
   let g:snipMateSources = {}
+  " default source: get snippets based on runtimepath:
+  let g:snipMateSources['default'] = funcref#Function('snipMate#DefaultPool')
 endif
 
 au BufRead,BufNewFile *.snippets\= set ft=snippet
@@ -29,6 +31,11 @@ endif
 let s:snipMate = g:snipMate
 
 let s:snipMate['get_snippets'] = get(s:snipMate, 'get_snippets', funcref#Function("snipMate#GetSnippets"))
+
+" old snippets_dir: function returning list of paths which is used to read
+" snippets. You can replace it with your own implementation. Defaults to all
+" directories in &rtp/snippets/*
+let s:snipMate['snippet_dirs'] = get(s:snipMate, 'snippets_dirs', funcref#Function('return split(&runtimepath,",")'))
 
 if !exists('snippets_dir')
 	let snippets_dir = substitute(globpath(&rtp, 'snippets/'), "\n", ',', 'g')

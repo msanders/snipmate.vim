@@ -97,12 +97,23 @@ in the current buffer to show a list via.
 ------------------------------------------------------------------------------
 SNIPPET SOURCES                                      *snippet-sources*
 
-The default set of snippets is determined by Vim's |rtp|. However you can
-easily register your own sources as demonstrated by
-autoload/snipMate_python_demo.vim
-because the snippet pool is created on the fly. 
+snipMate is configurable.
 
-The implementation can be found in snipMate#GetSnippetFiles(..).
+plugin/snipMate.vim assigns three important keys:
+>
+  " default implementation collecting snippets by handlers
+  let g:snipMate['get_snippets'] = snipMate#GetSnippets
+  " default handler:
+  let g:snipMateSources['default'] = snipMate#DefaultPool
+  " default directories containing snippets:
+  let g:snipMate['snippet_dirs'] = funcref#Function('return split(&runtimepath,",")')
+<  
+You can override all of those settings.
+
+You can see that the default set of snippets is determined by Vim's |rtp|.
+autoload/snipMate_python_demo.vim shows how you can register additional
+sources such as creating snippets on the fly representing python function
+definitions found in the current file.
 
 More details about all possible relative locations to |rtp| can be found in
 |snipMate-syntax|
