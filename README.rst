@@ -166,6 +166,18 @@ Then in vim::
 
 Then install any dependencies (see above).
 
+external snippet repositories
+=============================
+See TODO / Future. We'd like to split snippets of the core in the long run.
+Probably there will be one snippet repo containing almost all snippets.
+
+We also encourage people to maintain sets of snippets for particular use cases.
+That all users can benefit from them people can list their snippet repositories here:
+
+     * https://github.com/rbonvall/snipmate-snippets-bib (snippets for BibTeX files)
+
+Installation using VAM: "github:rbonvall/snipmate-snippets-bib"
+
 TODO / Future
 =============
 
