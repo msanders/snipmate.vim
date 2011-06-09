@@ -152,12 +152,10 @@ fun! s:GetSnippet(word, scope)
 		endif
 		let lookups += [lookup]
 	endfor
-	let i = len(lookups)
-	while snippet == '' && i > 0
-		let i = i-1
-		let word = lookups[i]
-		" echomsg a:scope.":".i.':'.word.":" 
-		let snippetD = get(snipMate#GetSnippets([a:scope], word),word, {})
+	" prefer longest word
+	for word in reverse(lookups)
+		" echomsg string(lookups).' current: '.word
+		let snippetD = get(funcref#Call(s:snipMate['get_snippets'], [[a:scope], word]), word, {})
 		if !empty(snippetD)
 			let s = s:ChooseSnippet(snippetD)
 			if type(s) == type([])
@@ -167,7 +165,7 @@ fun! s:GetSnippet(word, scope)
 			end
 			if snippet == '' | break | endif
 		endif
-	endw
+	endfor
 	if word == '' && a:word != '.' && stridx(a:word, '.') != -1
 		let [word, snippet] = s:GetSnippet('.', a:scope)
 	endif
@@ -208,7 +206,9 @@ fun! ShowAvailableSnips()
 	endif
 	let matchlen = 0
 	let matches = []
-	let snips = snipMate#GetSnippets(split(&ft, '\.') + ['_'], word.'*')
+	let snips = funcref#Call(s:snipMate['get_snippets'], [split(&ft, '\.') + ['_'], word.'*'])
+
+
 	for trigger in keys(snips)
 		for word in words
 			if word == ''
