@@ -151,7 +151,7 @@ fun! s:GetSnippet(word)
 		let lookups += [lookup]
 	endfor
 	" prefer longest word
-	for word in reverse(lookups)
+	for word in lookups
 		" echomsg string(lookups).' current: '.word
 		let snippetD = get(funcref#Call(s:snipMate['get_snippets'], [split(&ft, '\.') + ['_'], word.'*']), word, {})
 		if !empty(snippetD)
@@ -161,7 +161,7 @@ fun! s:GetSnippet(word)
 			else
 				let snippet = s
 			end
-			if snippet == '' | break | endif
+			if snippet != '' | break | endif
 		endif
 	endfor
 	if word == '' && a:word != '.' && stridx(a:word, '.') != -1
