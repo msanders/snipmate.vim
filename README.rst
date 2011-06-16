@@ -254,3 +254,4 @@ TODO / Future
 .. _`blueyed`: https://github.com/blueyed
 .. _`tisho`: https://github.com/tisho
 .. _`pielgrzym`: https://github.com/pielgrzym
+.. _`jgosmann`: https://github.com/jgosmann
