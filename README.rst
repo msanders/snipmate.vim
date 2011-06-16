@@ -72,6 +72,9 @@ Changelog
       some spellchecking of my wonderfull english, added this Changelog
       [2011-02-07, `garbas`_]
 
+    * Fixed bug: When leaving a placeholder unchanged and trying to jump to the
+      next placeholder, the text of the first placeholder would get cleared.
+
     * From below mentioned merges I must specially mention `MarcWeber`_'s patch
       which brought quite a few functionalities/improvements:
         - snippets are loaded lazily.
