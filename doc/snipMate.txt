@@ -295,6 +295,11 @@ snipMate. To configure the key set g:snips_trigger_key to something other than
 
  let g:snips_trigger_key='<c-space>'
 
+snipMate will try to automaticaly configure backwards trigger to prepend shift
+key infront, e.g. <s-tab> or <s-c-space>. You can manually configure backward
+trigger using:
+
+ let g:snips_trigger_key_backwards='<c-space>'
 
 ==============================================================================
 FEATURES                                                   *snipMate-features*
