@@ -5,7 +5,7 @@ snipmate.vim
 :Author: `Michael Sanders`_
 :Maintainer: `Rok Garbas`_
 :Homepage: http://www.vim.org/scripts/script.php?script_id=2540 
-:Contributors: `MarcWeber`_, `lilydjwg`_, `henrik`_, `steveno`_, `asymmetric`_, `jherdman`_, `ironcamel`_, `honza`_, `jb55`_, `robhudson`_, `kozo2`_, `MicahElliott`_, `darkwise`_, `redpill`_, `thisgeek`_, `sickill`_, `pose`_, `marutanm`_, `r00k`_, `jbernard`_, `holizz`_, `muffinresearch`_, `statik`_, Eustaquio Rangel, `alderz`_, `pielgrzym`_
+:Contributors: `MarcWeber`_, `lilydjwg`_, `henrik`_, `steveno`_, `asymmetric`_, `jherdman`_, `ironcamel`_, `honza`_, `jb55`_, `robhudson`_, `kozo2`_, `MicahElliott`_, `darkwise`_, `redpill`_, `thisgeek`_, `sickill`_, `pose`_, `marutanm`_, `r00k`_, `jbernard`_, `holizz`_, `muffinresearch`_, `statik`_, `taq`_, `alderz`_, `pielgrzym`_
 
 
 .. contents::
@@ -263,3 +263,4 @@ TODO / Future
 .. _`tisho`: https://github.com/tisho
 .. _`pielgrzym`: https://github.com/pielgrzym
 .. _`jgosmann`: https://github.com/jgosmann
+.. _`taq': https://github.com/taq
