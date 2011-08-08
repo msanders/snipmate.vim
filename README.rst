@@ -139,7 +139,7 @@ Using `Vundle`_
     Bundle "git://github.com/honza/snipmate-snippets.git"
 
     Install:
-    Bundle "git://github.com/garbas/snipmate.vim.git"
+    Bundle "git://github.com/garbas/vim-snipmate.git"
 
     And :BundleInstall
 
