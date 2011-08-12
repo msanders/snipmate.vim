@@ -97,5 +97,6 @@ snippet slurp
 	{ local $/ = undef; local *FILE; open FILE, "<${2:file}"; $$1 = <FILE>; close FILE }${3}
 # basic warning and stricts
 snippet basic
+	use 5.010;
 	use warnings;
 	use strict;${1}
