@@ -140,9 +140,9 @@ See |snipMate-disambiguation| to learn about how name collisions are handled.
 Note that dotted
 'filetype' syntax is supported -- e.g., you can use >
 
-	:set ft=html.eruby
-
-to activate snippets for both HTML and eRuby for the current file.
+	:set ft=html.eruby =syntax=sql
+to activate snippets for both HTML, eRuby and sql for the current file.
+See snipMate#ScopesByFile()
 
 The syntax for snippets in *.snippets files is the following: >
 
