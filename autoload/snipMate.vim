@@ -683,8 +683,7 @@ fun! snipMate#RetabSnip() range
 endf
 
 fun! snipMate#OpenSnippetFiles()
-  let scopes = s:AddScopeAliases(snipMate#ScopesByFile())
-  let dict = snipMate#GetSnippetFiles(0, scopes, '*')
+  let dict = snipMate#GetSnippetFiles(0, snipMate#ScopesByFile(), '*')
   " sort by files wether they exist - put existing files first
   let exists = []
   let notExists = []
@@ -705,9 +704,8 @@ fun! snipMate#OpenSnippetFiles()
 endf
 
 fun! snipMate#ScopesByFile()
-  " default implementation to determine scopes based on cursor, filetype,
-  " syntax setting. Usually &ft and &syntax are the same
-  return tlib#list#Uniq(split(&ft, '\.') + [&syntax, '_'])
+	" duplicates are removed in AddScopeAliases
+	return funcref#Call(s:snipMate.get_scopes)
 endf
 
 " vim:noet:sw=4:ts=4:ft=vim

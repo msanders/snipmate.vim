@@ -37,6 +37,11 @@ let s:snipMate['get_snippets'] = get(s:snipMate, 'get_snippets', funcref#Functio
 " directories in &rtp/snippets/*
 let s:snipMate['snippet_dirs'] = get(s:snipMate, 'snippets_dirs', funcref#Function('return split(&runtimepath,",")'))
 
+" _ is default scope added always
+"
+" &ft honors multiple filetypes and syntax such as in set ft=html.javascript syntax=FOO
+let s:snipMate['get_scopes'] = get(s:snipMate, 'get_scopes', funcref#Function('return split(&ft,"\\.")+[&syntax, "_"]'))
+
 if !exists('snippets_dir')
 	let snippets_dir = substitute(globpath(&rtp, 'snippets/'), "\n", ',', 'g')
 endif
@@ -153,7 +158,7 @@ fun! s:GetSnippet(word)
 	" prefer longest word
 	for word in lookups
 		" echomsg string(lookups).' current: '.word
-		let snippetD = get(funcref#Call(s:snipMate['get_snippets'], [split(&ft, '\.') + ['_'], word.'*']), word, {})
+		let snippetD = get(funcref#Call(s:snipMate['get_snippets'], [snipMate#ScopesByFile(), word.'*']), word, {})
 		if !empty(snippetD)
 			let s = s:ChooseSnippet(snippetD)
 			if type(s) == type([])
@@ -204,7 +209,7 @@ fun! ShowAvailableSnips()
 	endif
 	let matchlen = 0
 	let matches = []
-	let snips = funcref#Call(s:snipMate['get_snippets'], [split(&ft, '\.') + ['_'], word.'*'])
+	let snips = funcref#Call(s:snipMate['get_snippets'], [snipMate#ScopesByFile(), word.'*'])
 
 
 	for trigger in keys(snips)
