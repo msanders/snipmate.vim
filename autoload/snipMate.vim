@@ -683,7 +683,7 @@ fun! snipMate#RetabSnip() range
 endf
 
 fun! snipMate#OpenSnippetFiles()
-  let scopes = s:AddScopeAliases([&ft])
+  let scopes = s:AddScopeAliases(split(&ft,'\.'))
   let dict = snipMate#GetSnippetFiles(0, scopes, '*')
   " sort by files wether they exist - put existing files first
   let exists = []
