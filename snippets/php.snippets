@@ -214,3 +214,95 @@ snippet fun
 # $... = array (...)
 snippet array
 	$${1:arrayName} = array('${2}' => ${3});${4}
+#
+###########################################################################
+# Simpletest snippets
+
+snippet test_c
+	class Test_${1:something} extends UnitTestCase {
+	
+	    function Test_$1() {
+	        $this->UnitTestCase('${2:Test class description}');
+	    }
+	
+	    ${3}
+	}
+
+snippet test_f
+	function test_${1:some_particular_thing}() {
+	    ${2}
+	}
+
+snippet ass assertTrue()
+	$this->assertTrue(${1:condition}, '${2:Description}: %s');
+	${3}
+snippet ass assertFalse()
+	$this->assertFalse(${1:condition}, '${2:Description}: %s');
+	${3}
+snippet ass assertEqual()
+	$this->assertEqual(${1:x}, ${2:y}, '${3:Description}: %s');
+	${4}
+snippet ass assertNotEqual()
+	$this->assertNotEqual(${1:x}, ${2:y}, '${3:Description}: %s');
+	${4}
+snippet ass assertNull()
+	$this->assertNull(${1:condition}, '${2:Description}: %s');
+	${3}
+snippet ass assertNotNull()
+	$this->assertNotNull(${1:condition}, '${2:Description}: %s');
+	${3}
+snippet ass assertPattern()
+	$this->assertPattern('/${1:pattern}/', ${2:x}, '${3:Description}: %s');
+	${4}
+snippet ass assertNoPattern()
+	$this->assertNoPattern('/${1:pattern}/', ${2:x}, '${3:Description}: %s');
+	${4}
+snippet ass assertIsA()
+	$this->assertIsA(${1:object}, '${2:type}', '${3:Description}: %s');
+	${4}
+snippet ass assertNotA()
+	$this->assertNotA(${1:object}, '${2:type}', '${3:Description}: %s');
+	${4}
+snippet ass assertIdentical()
+	$this->assertIdentical(${1:x}, ${2:y}, '${3:Description}: %s');
+	${4}
+snippet ass assertNotIdentical()
+	$this->assertNotIdentical(${1:x}, ${2:y}, '${3:Description}: %s');
+	${4}
+snippet ass assertWithinMargin()
+	$this->assertWithinMargin(${1:x}, ${2:y}, ${3:margin}, '${4:Description}: %s');
+	${5}
+snippet ass assertOutsideMargin()
+	$this->assertOutsideMargin(${1:x}, ${2:y}, ${3:margin}, '${4:Description}: %s');
+	${5}
+snippet ass assertReference()
+	$this->assertReference(${1:x}, ${2:y}, '${3:Description}: %s');
+	${4}
+snippet ass assertClone()
+	$this->assertClone(${1:x}, ${2:y}, '${3:Description}: %s');
+	${4}
+snippet f_noerr
+	$this->assertFalse($f->error_flag, 'error_flag is not set: %s');
+	$this->assertFalse($f->error_msg, 'error_msg is not set: %s');
+	${1}
+snippet f_err
+	$this->assertTrue($f->error_flag, 'error_flag is set: %s');
+	$this->assertEqual($f->error_msg, '${1:text}', 'error_msg is correct: %s');
+	${2}
+snippet f_new
+	$f = new Fundament($this->fundament_cfg_file);
+	${1}
+snippet f_cfg
+	var $fundament_cfg_file = 'fundament_test.cfg';
+	${1}
+snippet f_auto
+	$this->assertTrue($f->_db_has_autocommit(), 'db has autocommit: %s');
+	${1}
+snippet f_autof
+	function test_db_has_autocommit() {
+	    $f = new Fundament($this->fundament_cfg_file);
+	
+	    $this->assertTrue($f->_db_has_autocommit(), 'db has autocommit: %s');
+	}
+	${1}
+
