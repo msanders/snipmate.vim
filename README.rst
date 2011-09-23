@@ -4,7 +4,7 @@ snipmate.vim
 
 :Author: `Michael Sanders`_
 :Maintainer: `Rok Garbas`_
-:Homepage: http://www.vim.org/scripts/script.php?script_id=2540 
+:Homepage: http://www.vim.org/scripts/script.php?script_id=2540
 :Contributors: `MarcWeber`_, `lilydjwg`_, `henrik`_, `steveno`_, `asymmetric`_, `jherdman`_, `ironcamel`_, `honza`_, `jb55`_, `robhudson`_, `kozo2`_, `MicahElliott`_, `darkwise`_, `redpill`_, `thisgeek`_, `sickill`_, `pose`_, `marutanm`_, `r00k`_, `jbernard`_, `holizz`_, `muffinresearch`_, `statik`_, `taq`_, `alderz`_, `pielgrzym`_
 
 
@@ -47,7 +47,7 @@ Changelog
       [2011-02-09, `ervandew`_]
 
     * Updated README: added contributors, instructions how to install snipMate,
-      some spellchecking of my wonderfull english, added this Changelog
+      some spellchecking of my wonderful English, added this Changelog
       [2011-02-07, `garbas`_]
 
     * Fixed bug: When leaving a placeholder unchanged and trying to jump to the
@@ -57,7 +57,7 @@ Changelog
     * From below mentioned merges I must specially mention `MarcWeber`_'s patch
       which brought quite a few functionalities/improvements:
         - snippets are loaded lazily.
-        - snippets are no longer cached. Thus you always get the snippets you 
+        - snippets are no longer cached. Thus you always get the snippets you
           just wrote to a file without reloading anything.
         - When visually selecting a snippet in a .snippets file you can press
           <cr> to replace spaces by tabs automatically in a smart way.
@@ -82,8 +82,8 @@ Changelog
 How to install
 ==============
 
-Unfortunatly there are many ways to how to install vim plugins. If you don't
-see you prefered way of installation plugins please consider adding updating
+Unfortunately there are many ways to how to install vim plugins. If you don't
+see your preferred way of installation plugins please consider updating
 this section. Basically, installation consists of 2 simple steps:
 
 1. Install vim-snipmate
