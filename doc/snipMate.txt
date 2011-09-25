@@ -111,9 +111,38 @@ plugin/snipMate.vim assigns three important keys:
 You can override all of those settings.
 
 You can see that the default set of snippets is determined by Vim's |rtp|.
+
+Example 1: ~
 autoload/snipMate_python_demo.vim shows how you can register additional
 sources such as creating snippets on the fly representing python function
 definitions found in the current file.
+
+Example 2: ~
+Add to your ~/.vimrc: For each know snippet add a second version ending in _
+adding folding markers
+>
+  fun! AddFolding(text)
+    return "# {{{1\n".a:text."\n# }}}"
+  endf
+
+  fun! SnippetsWithFolding(scopes, trigger, result)
+    " hacky: temporarely remove this function to prevent infinite recursion:
+    call remove(g:snipMateSources, 'with_folding')
+    " get list of snippets:
+    let result = snipMate#GetSnippets(a:scopes, substitute(a:trigger,'_\(\*\)\?$','\1',''))
+    let g:snipMateSources['with_folding'] = funcref#Function('SnippetsWithFolding')
+
+    " add folding:
+    for k in keys(result)
+      let a:result[k.'_'] = map(result[k],'AddFolding(v:val)')
+    endfor
+  endf
+
+  " force setting default:
+  runtime plugin/snipMate.vim
+  " add our own source
+  let g:snipMateSources['with_folding'] = funcref#Function('SnippetsWithFolding')
+<
 
 More details about all possible relative locations to |rtp| can be found in
 |snipMate-syntax|
