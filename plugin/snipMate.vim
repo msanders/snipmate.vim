@@ -202,7 +202,7 @@ endf
 fun! ShowAvailableSnips()
 	let line  = getline('.')
 	let col   = col('.')
-	let word  = matchstr(getline('.'), '\S\+\%'.col.'c')
+	let word  = matchstr(line, '\S\+\%'.col.'c')
 	let words = [word]
 	if stridx(word, '.')
 		let words += split(word, '\.', 1)
