@@ -221,16 +221,16 @@ snippet array
 snippet test_c
 	class Test_${1:something} extends UnitTestCase {
 	
-	    function Test_$1() {
-	        $this->UnitTestCase('${2:Test class description}');
-	    }
+		function Test_$1() {
+			$this->UnitTestCase('${2:Test class description}');
+		}
 	
-	    ${3}
+		${3}
 	}
 
 snippet test_f
 	function test_${1:some_particular_thing}() {
-	    ${2}
+		${2}
 	}
 
 snippet ass assertTrue()
@@ -300,9 +300,9 @@ snippet f_auto
 	${1}
 snippet f_autof
 	function test_db_has_autocommit() {
-	    $f = new Fundament($this->fundament_cfg_file);
+		$f = new Fundament($this->fundament_cfg_file);
 	
-	    $this->assertTrue($f->_db_has_autocommit(), 'db has autocommit: %s');
+		$this->assertTrue($f->_db_has_autocommit(), 'db has autocommit: %s');
 	}
 	${1}
 
