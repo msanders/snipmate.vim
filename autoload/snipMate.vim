@@ -540,7 +540,7 @@ endf
 fun! s:Glob(dir,  file)
 	let f= a:dir.a:file
 	if a:dir =~ '\*' || isdirectory(a:dir)
-		return split(glob(f),"\n")
+		return split(glob(escape(f,"{}")),"\n")
 	else
 		return filereadable(f) ? [f] : []
 	endif
