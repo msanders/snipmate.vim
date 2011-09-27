@@ -136,17 +136,13 @@ fun! BackwardsSnippet()
 	return "\<s-tab>"
 endf
 
-" Check if the word under the cursor is a snippet trigger.
-" If it is not, it gets split by non-word characters and looked up in
-" parts, e.g. 'foo' in 'bar.foo'.
-fun! s:GetSnippet(word)
-	let snippet = ''
-	let lookups = [a:word] " lookup whole word always and first, e.g. '$_'
+" Setup lookups: '1.2.3' becomes [1.2.3] + [3, 2.3]
+fun! s:GetLookups(word)
 	let parts = split(a:word, '\W\zs')
 	if len(parts) > 2
 		let parts = parts[-2:] " max 2 additional items, this might become a setting
 	endif
-	" Setup lookups: '1.2.3' becomes [1.2.3] + [3, 2.3]
+	let lookups = [a:word]
 	let lookup = ''
 	for w in reverse(parts)
 		let lookup = w . lookup
@@ -155,6 +151,15 @@ fun! s:GetSnippet(word)
 		endif
 		let lookups += [lookup]
 	endfor
+	return lookups
+endf
+
+" Check if the word under the cursor is a snippet trigger.
+" If it is not, it gets split by non-word characters and looked up in
+" parts, e.g. 'foo' in 'bar.foo'.
+fun! s:GetSnippet(word)
+	let snippet = ''
+	let lookups = s:GetLookups(a:word)
 	" prefer longest word
 	for word in lookups
 		" echomsg string(lookups).' current: '.word
@@ -203,17 +208,18 @@ fun! ShowAvailableSnips()
 	let line  = getline('.')
 	let col   = col('.')
 	let word  = matchstr(line, '\S\+\%'.col.'c')
-	let words = [word]
-	if stridx(word, '.')
-		let words += split(word, '\.', 1)
-	endif
 	let matchlen = 0
 	let matches = []
-	let snips = funcref#Call(s:snipMate['get_snippets'], [snipMate#ScopesByFile(), word.'*'])
+	let snips = {}
 
+	let lookups = s:GetLookups(word)
+
+	for w in lookups
+		call extend(snips, funcref#Call(s:snipMate['get_snippets'], [snipMate#ScopesByFile(), w.'*']))
+	endfor
 
 	for trigger in keys(snips)
-		for word in words
+		for word in lookups
 			if word == ''
 				let matches += [trigger] " Show all matches if word is empty
 			elseif trigger =~ '^'.word
