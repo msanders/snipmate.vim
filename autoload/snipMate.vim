@@ -726,7 +726,7 @@ fun! snipMate#GetSnippetsForWordBelowCursor(word, suffix, break_on_first_match)
 	endif
 
 	call filter(lookups, 'v:val != ""')
-	echo lookups
+	" echo lookups
 
 	let matching_snippets = []
 	let snippet = ''
