@@ -385,6 +385,10 @@ To contact the author (Michael Sanders), please email:
 
 ==============================================================================
 BUGS                                                     *snipMate-bugs*
+
+<c-space> does not work: Try gvim. <c-space> is mapped to ctrl-2 or such in
+Vim - this is not a snipmate issue.
+
 [1]: I think having so many different ways is too complicated
     - Marc Weber
 

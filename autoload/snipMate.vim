@@ -704,4 +704,188 @@ fun! snipMate#ScopesByFile()
 	return filter(funcref#Call(s:snipMate.get_scopes), "v:val != ''")
 endf
 
+" used by both: completion and insert snippet
+fun! snipMate#GetSnippetsForWordBelowCursor(word, suffix, break_on_first_match)
+	" Setup lookups: '1.2.3' becomes [1.2.3] + [3, 2.3]
+	let parts = split(a:word, '\W\zs')
+	if len(parts) > 2
+		let parts = parts[-2:] " max 2 additional items, this might become a setting
+	endif
+	let lookups = [a:word.a:suffix]
+	let lookup = ''
+	for w in reverse(parts)
+		let lookup = w . lookup
+		if index(lookups, lookup) == -1
+			call add(lookups, lookup.a:suffix)
+		endif
+	endfor
+
+	" allow matching '.'
+	if a:word =~ '\.$'
+		call insert(lookups, '.'.a:suffix, 0)
+	endif
+
+	call filter(lookups, 'v:val != ""')
+	echo lookups
+
+	let matching_snippets = []
+	let snippet = ''
+	" prefer longest word
+	for word in lookups
+		" echomsg string(lookups).' current: '.word
+		for [k,snippetD] in items(funcref#Call(s:snipMate['get_snippets'], [snipMate#ScopesByFile(), word]))
+			if a:suffix == ''
+				" hack: require exact match
+				if k != word | continue | endif
+			endif
+			call add(matching_snippets, [k, snippetD])
+			if a:break_on_first_match | break| endif
+		endfor
+	endfor
+	return matching_snippets
+endf
+
+" snippets: dict containing snippets by name
+" usually this is just {'default' : snippet_contents }
+fun! s:ChooseSnippet(snippets)
+	let snippet = []
+	let keys = keys(a:snippets)
+	let i = 1
+	for snip in keys
+		let snippet += [i.'. '.snip]
+		let i += 1
+	endfor
+	if len(snippet) == 1
+		" there's only a single snippet, choose it
+		let idx = 0
+	else
+		let idx = tlib#input#List('si','select snippet by name',snippet) -1
+		if idx == -1
+			return ''
+		endif
+	endif
+	" if a:snippets[..] is a String Call returns it
+	" If it's a function or a function string the result is returned
+	return funcref#Call(a:snippets[keys(a:snippets)[idx]])
+endf
+
+fun! snipMate#ShowAvailableSnips()
+	let line  = getline('.')
+	let col   = col('.')
+	let word  = matchstr(line, '\S\+\%'.col.'c')
+	let matchlen = 0
+	let matches = []
+	let snips = {}
+
+	let snippet_triggers = map(snipMate#GetSnippetsForWordBelowCursor(word, '*', 0),'v:val[0]')
+
+	for trigger in snippet_triggers
+		if word == ''
+			let matches += [trigger] " Show all matches if word is empty
+		elseif trigger =~ '^'.word
+			let matches += [trigger]
+			let len = len(word)
+			if len > matchlen | let matchlen = len | endif
+		endif
+	endfor
+
+	" This is to avoid a bug with Vim when using complete(col - matchlen, matches)
+	" (Issue#46 on the Google Code snipMate issue tracker).
+	call setline(line('.'), substitute(line, repeat('.', matchlen).'\%'.col.'c', '', ''))
+	call complete(col, sort(matches))
+	return ''
+endf
+
+
+" user interface implementation {{{1
+
+fun! snipMate#TriggerSnippet()
+	if exists('g:SuperTabMappingForward')
+		if g:SuperTabMappingForward == "<tab>"
+			let SuperTabPlug = maparg('<Plug>SuperTabForward', 'i')
+			if SuperTabPlug == ""
+				let SuperTabKey = "\<c-n>"
+			else
+				exec "let SuperTabKey = \"" . escape(SuperTabPlug, '<') . "\""
+			endif
+		elseif g:SuperTabMappingBackward == "<tab>"
+			let SuperTabPlug = maparg('<Plug>SuperTabBackward', 'i')
+			if SuperTabPlug == ""
+				let SuperTabKey = "\<c-p>"
+			else
+				exec "let SuperTabKey = \"" . escape(SuperTabPlug, '<') . "\""
+			endif
+		endif
+	endif
+
+	if pumvisible() " Update snippet if completion is used, or deal with supertab
+		if exists('SuperTabKey')
+			call feedkeys(SuperTabKey) | return ''
+		endif
+		call feedkeys("\<esc>a", 'n') " Close completion menu
+		call feedkeys("\<tab>") | return ''
+	endif
+
+	if exists('g:snipPos') | return snipMate#jumpTabStop(0) | endif
+
+	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
+	let list = snipMate#GetSnippetsForWordBelowCursor(word, '',  1)
+	if empty(list)
+		let snippet = ''
+	else
+		let [trigger, snippetD] = list[0]
+
+		let s = s:ChooseSnippet(snippetD)
+		if type(s) == type([])
+			let snippet = join(s, "\n")
+		else
+			let snippet = s
+		end
+
+		let &undolevels = &undolevels " create new undo point
+		let col = col('.') - len(trigger)
+		sil exe 's/\V'.escape(trigger, '/\.').'\%#//'
+		return snipMate#expandSnip(snippet, col)
+	endif
+
+	" should allow other plugins to register hooks instead (duplicate code)
+	if exists('SuperTabKey')
+		call feedkeys(SuperTabKey)
+		return ''
+	endif
+	return word == ''
+	  \ ? "\<tab>"
+	  \ : "\<c-r>=snipMate#ShowAvailableSnips()\<cr>"
+endf
+
+
+fun! snipMate#BackwardsSnippet()
+	if exists('g:snipPos') | return snipMate#jumpTabStop(1) | endif
+
+	if exists('g:SuperTabMappingForward')
+		if g:SuperTabMappingForward == "<s-tab>"
+			let SuperTabPlug = maparg('<Plug>SuperTabForward', 'i')
+			if SuperTabPlug == ""
+				let SuperTabKey = "\<c-n>"
+			else
+				exec "let SuperTabKey = \"" . escape(SuperTabPlug, '<') . "\""
+			endif
+		elseif g:SuperTabMappingBackward == "<s-tab>"
+			let SuperTabPlug = maparg('<Plug>SuperTabBackward', 'i')
+			if SuperTabPlug == ""
+				let SuperTabKey = "\<c-p>"
+			else
+				exec "let SuperTabKey = \"" . escape(SuperTabPlug, '<') . "\""
+			endif
+		endif
+	endif
+	" should allow other plugins to register hooks instead (duplicate code)
+	if exists('SuperTabKey')
+		call feedkeys(SuperTabKey)
+		return ''
+	endif
+	return "\<s-tab>"
+endf
+
+
 " vim:noet:sw=4:ts=4:ft=vim

@@ -18,10 +18,10 @@ if !exists('g:snips_trigger_key_backwards')
   let g:snips_trigger_key_backwards = '<s-' . substitute(g:snips_trigger_key, '[<>]', '', 'g')
 endif
 
-exec 'ino <silent> ' . g:snips_trigger_key . ' <c-g>u<c-r>=TriggerSnippet()<cr>'
-exec 'snor <silent> ' . g:snips_trigger_key . ' <esc>i<right><c-r>=TriggerSnippet()<cr>'
-exec 'ino <silent> ' . g:snips_trigger_key_backwards . '> <c-r>=BackwardsSnippet()<cr>'
-exec 'snor <silent> ' . g:snips_trigger_key_backwards . '> <esc>i<right><c-r>=BackwardsSnippet()<cr>'
+exec 'ino <silent> ' . g:snips_trigger_key . ' <c-g>u<c-r>=snipMate#TriggerSnippet()<cr>'
+exec 'snor <silent> ' . g:snips_trigger_key . ' <esc>i<right><c-r>=snipMate#TriggerSnippet()<cr>'
+exec 'ino <silent> ' . g:snips_trigger_key_backwards . '> <c-r>=snipMate#BackwardsSnippet()<cr>'
+exec 'snor <silent> ' . g:snips_trigger_key_backwards . '> <esc>i<right><c-r>=snipMate#BackwardsSnippet()<cr>'
 exec 'ino <silent> <c-r>' . g:snips_trigger_key . ' <c-r>=ShowAvailableSnips()<cr>'
 
 " maybe there is a better way without polluting registers ?
