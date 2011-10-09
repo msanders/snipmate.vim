@@ -775,7 +775,6 @@ fun! snipMate#ShowAvailableSnips()
 	let word  = matchstr(line, '\S\+\%'.col.'c')
 	let matchlen = 0
 	let matches = []
-	let snips = {}
 
 	let snippet_triggers = map(snipMate#GetSnippetsForWordBelowCursor(word, '*', 0),'v:val[0]')
 
