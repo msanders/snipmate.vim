@@ -1,18 +1,19 @@
-	<?php
+<?php
 
-	$args = array(
-		${1:'key'	=> 'value',};
-	);
+$args = array(
+	${1:'key'	=> 'value',};
+);
 
-	$query = new  WP_Query( $args );
+$query = new  WP_Query( $args );
 
-	// Here come's the loop
-	if ( $query->have_posts() ) : while ( $query->have_posts() ) : $query->the_post(); ?>
+// Here come's the loop
+if ( $query->have_posts() ) : while ( $query->have_posts() ) : $query->the_post(); ?>
 
-		${2:// Do stuff here}
+	${2:// Do stuff here}
 
-	<?php endwhile; else: ?>
-	<p>There's nothing to show here.</p>
+<?php endwhile; else: ?>
 
-	<?php endif;
-	wp_reset_postdata(); ?>
+<p>There's nothing to show here.</p>
+
+<?php endif;
+wp_reset_postdata(); ?>

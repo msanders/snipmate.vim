@@ -1,13 +1,13 @@
-	<?php
-	query_posts('${1:query args}');
+<?php
+query_posts('${1:query args}');
 
-	// Here comes the loop!
-	if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+// Here comes the loop!
+if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 		
-		${2:Do stuff inside the loop}
+	${2:Do stuff inside the loop}
 
-	<?php endwhile; else: ?>
-	<p>Disculpe, no hay publicaciones que coincidan con lo que está buscando</p>
-	<?php endif; 
+<?php endwhile; else: ?>
+<p>Disculpe, no hay publicaciones que coincidan con lo que está buscando</p>
+<?php endif; 
 
-	wp_reset_query(); ?>
+wp_reset_query(); ?>
