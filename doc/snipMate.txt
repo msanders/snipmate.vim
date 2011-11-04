@@ -84,6 +84,10 @@ Using snippets:
   XX<tab>   : will either show a list of all snippets starting with the
               characters XX or expand the snippet if it matches a snippet name.
 
+  Add this to your .vimrc to not ignore tabs if there is no match: >
+    let g:snipMate['no_match_completion_feedkeys_chars'] = "\<tab>"
+>
+
  *snipMate-disambiguation*
 What happens if multiple files or filetypes define the same snippet name or if
 |multi_snip| is being used? This results in name collisions!

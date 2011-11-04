@@ -18,6 +18,11 @@ let s:snipMate['scope_aliases'] = get(s:snipMate,'scope_aliases',
 	  \ ,'mxml': 'actionscript'
 	  \ } )
 
+" set this to "\<tab>" to make snipmate not swallow tab (make sure to not have
+" expandtab set). Remember that you can always enter tabs by <c-v> <tab> then
+" you don't need this
+let s:snipMate['no_match_completion_feedkeys_chars'] = get(s:snipMate, 'no_match_completion_feedkeys_chars', '')
+
 fun! Filename(...)
 	let filename = expand('%:t:r')
 	if filename == '' | return a:0 == 2 ? a:2 : '' | endif
@@ -787,6 +792,12 @@ fun! snipMate#ShowAvailableSnips()
 			if len > matchlen | let matchlen = len | endif
 		endif
 	endfor
+
+	" Pretty hacky, but really can't have the tab swallowed!
+	if len(matches) == 0
+		call feedkeys(s:snipMate['no_match_completion_feedkeys_chars'], 'n')
+		return ''
+	endif
 
 	" This is to avoid a bug with Vim when using complete(col - matchlen, matches)
 	" (Issue#46 on the Google Code snipMate issue tracker).
