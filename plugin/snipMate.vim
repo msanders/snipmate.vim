@@ -38,7 +38,7 @@ let s:snipMate['get_snippets'] = get(s:snipMate, 'get_snippets', funcref#Functio
 " old snippets_dir: function returning list of paths which is used to read
 " snippets. You can replace it with your own implementation. Defaults to all
 " directories in &rtp/snippets/*
-let s:snipMate['snippet_dirs'] = get(s:snipMate, 'snippets_dirs', funcref#Function('return split(&runtimepath,",")'))
+let s:snipMate['snippet_dirs'] = get(s:snipMate, 'snippet_dirs', funcref#Function('return split(&runtimepath,",")'))
 
 " _ is default scope added always
 "
