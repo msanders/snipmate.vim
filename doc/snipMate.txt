@@ -37,7 +37,7 @@ start typing once it's highlighted and all the matches specified in the
 snippet will be updated. To go in reverse, use <shift-tab>.
 
 ==============================================================================
-SYNTAX                                                        *snippet-syntax*
+SYNTAX                                      *snippet-syntax* *snipMate-syntax*
 
 Snippets can be defined in two ways. They can be in their own file, named
 after their trigger in 'snippets/<filetype>/<trigger>.snippet', or they can be
@@ -189,7 +189,7 @@ ExtractSnipsFile({directory}, {filetype})     *ExtractSnipsFile()* *.snippets*
 
 ExtractSnipsFile() extracts the specified *.snippets file for the given
 filetype. A .snippets file contains multiple snippet declarations for the
-filetype. It is further explained above, in |snippet-syntax|.
+filetype. It is further explained above, in |snipMate-syntax|.
 
 ExtractSnips({directory}, {filetype})             *ExtractSnips()* *.snippet*
 
