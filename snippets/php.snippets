@@ -225,11 +225,7 @@ snippet vdd
 	echo "<pre>";
 	var_dump(${1});
 	die;
-snippet vds
+snippet vdm
 	echo "<pre>";
-	var_dump("${1}");
-	die;
-snippet vdds
-	echo "<pre>";
-	var_dump("${1}");
+	var_dump(__METHOD__, ${1});
 	die;
