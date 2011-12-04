@@ -214,3 +214,31 @@ snippet fun
 # $... = array (...)
 snippet array
 	$${1:arrayName} = array('${2}' => ${3});${4}
+###################################################
+### Codeigniter snipets                         ###
+###################################################
+# Controller
+snippet cic
+	class ${1:ClassName} extends CI_Controller
+	{
+		function __construct()
+		{
+			parent::__construct();
+			${2:// code...}
+		}
+
+		function ${3:index}()
+		{
+			${4:// code...}
+		}
+	}
+# Model
+snippet cim
+	class ${1:ClassName_model} extends CI_Model
+	{
+		function __construct()
+		{
+			parent::__construct();
+			${2:// code...}
+		}
+	} 
