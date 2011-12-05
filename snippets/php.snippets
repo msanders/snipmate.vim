@@ -219,26 +219,43 @@ snippet array
 ###################################################
 # Controller
 snippet cic
-	class ${1:ClassName} extends CI_Controller
-	{
-		function __construct()
-		{
+	class ${1:ClassName} extends CI_Controller {
+		function __construct() {
 			parent::__construct();
 			${2:// code...}
 		}
 
-		function ${3:index}()
-		{
+		function ${3:index}() {
 			${4:// code...}
 		}
 	}
 # Model
 snippet cim
-	class ${1:ClassName_model} extends CI_Model
-	{
-		function __construct()
-		{
+	class ${1:ClassName_model} extends CI_Model {
+		function __construct() {
 			parent::__construct();
 			${2:// code...}
 		}
 	} 
+# Load view
+snippet cilv
+	$this->load->view("${1:view_name}", $${2:data});${3}
+# DB Class snippets
+snippet cidbi
+	$this->db->insert("${1:table}", $${2:data});${3}
+snippet cidbs
+	$this->db->select("${1:id, ...}");${2}
+snippet cidbf
+	$this->db->from("${1:table}");${2}
+snippet cidbj
+	$this->db->join("${1:table}", "${2:condition}", "${3:type}");${4}
+snippet cidbw
+	$this->db->where("${1:key}", "${2:value}");${3}
+snippet cidbow
+	$this->db->or_where("${1:key}", "${2:value}");${3}
+snippet cidbg
+	$this->db->get("${1:table}", ${2:limit}, ${3:offset});${4}
+snippet cidbd
+	$this->db->delete("${1:table}", "${2:where}");${3}
+snippet cidbu
+	$this->db->update("${1:table}", $${2:set}, $${3:where});${4}
