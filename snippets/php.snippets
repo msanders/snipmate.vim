@@ -274,3 +274,38 @@ snippet ciiajax
 	$this->input->is_ajax_request();${1}
 snippet ciicli
 	$this->input->is_cli_request();${1}
+# Form Validation Class and Form Helper snippets
+snippet cifvsr
+	$this->form_validation->set_rules("${1:field}", "${2:label}", "${3:trim|required}");${4}
+snippet cifo
+	form_open("${1:action}");${2}
+snippet cifom
+	form_open_multipart("${1:action}");${2}
+snippet cifh
+	form_hidden("${1:name}", "${2:value}");${3}
+snippet cifi
+	form_input("${1:name}", "${2:value}");${3}
+snippet cifp
+	form_password("${1:name}", "${2:value}");${3}
+snippet cifu
+	form_upload("${1:name}", "${2:value}");${3}
+snippet cifta
+	form_textarea("${1:name}", "${2:value}");${3}
+snippet cifdd
+	form_dropdown("${1:name}", $${2:options}, $${3:selected);${4}
+snippet cifcb
+	form_checkbox("${1:name}", "${2:value}");${3}
+snippet cifr
+	form_radio("${1:name}", "${2:value}");${3}
+snippet cifsub
+	form_submit("${1:name}", "${2:value}");${3}
+snippet cifres
+	form_reset("${1:name}", "${2:value}");${3}
+snippet cifbut
+	form_button("${1:name}", "${2:value}");${3}
+snippet ciflab
+	form_label("${1:label text}", "${2:id}");${3}
+snippet cifc
+	form_close();${1}
+snippet civerr
+	validation_errors();${1}
