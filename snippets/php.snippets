@@ -259,3 +259,18 @@ snippet cidbd
 	$this->db->delete("${1:table}", "${2:where}");${3}
 snippet cidbu
 	$this->db->update("${1:table}", $${2:set}, $${3:where});${4}
+# Input Class snippets
+snippet ciip
+	$this->input->post("${1:index}");${2}
+snippet ciig
+	$this->input->get("${1:index}");${2}
+snippet ciic
+	$this->input->cookie("${1:index}");${2}
+snippet ciis
+	$this->input->server("${1:index}");${2}
+snippet ciiua
+	$this->input->user_agent();${1}
+snippet ciiajax
+	$this->input->is_ajax_request();${1}
+snippet ciicli
+	$this->input->is_cli_request();${1}
