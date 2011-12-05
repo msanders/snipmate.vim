@@ -309,3 +309,12 @@ snippet cifc
 	form_close();${1}
 snippet civerr
 	validation_errors();${1}
+# Session Class snippets
+snippet cisud
+	$this->session->userdata("${1:item}");${2}
+snippet cissud
+	$this->session->set_userdata($${1:array});${2}
+snippet cisfd
+	$this->session->flashdata("${1:item}");${2}
+snippet cissfd
+	$this->session->set_flashdata("${1:item}", "${2:value}");${3}
