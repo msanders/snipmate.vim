@@ -52,58 +52,58 @@ snippet gen_server
 	%% Public API
 
 	start() ->
-	  gen_server:start({local, ?MODULE}, ?MODULE, [], []).
+		gen_server:start({local, ?MODULE}, ?MODULE, [], []).
 
 	stop(Module) ->
-	  gen_server:call(Module, stop).
+		gen_server:call(Module, stop).
 
 	stop() ->
-	  stop(?MODULE).
+		stop(?MODULE).
 
 	state(Module) ->
-	  gen_server:call(Module, state).
+		gen_server:call(Module, state).
 
 	state() ->
-	  state(?MODULE).
+		state(?MODULE).
 
 	%% Server implementation, a.k.a.: callbacks
 
 	init([]) ->
-	  say("init", []),
-	  {ok, []}.
+		say("init", []),
+		{ok, []}.
 
 	handle_call(stop, _From, State) ->
-	  say("stopping by ~p, state was ~p.", [_From, State]),
-	  {stop, normal, stopped, State};
+		say("stopping by ~p, state was ~p.", [_From, State]),
+		{stop, normal, stopped, State};
 
 	handle_call(state, _From, State) ->
-	  say("~p is asking for the state.", [_From]),
-	  {reply, State, State};
+		say("~p is asking for the state.", [_From]),
+		{reply, State, State};
 
 	handle_call(_Request, _From, State) ->
-	  say("call ~p, ~p, ~p.", [_Request, _From, State]),
-	  {reply, ok, State}.
+		say("call ~p, ~p, ~p.", [_Request, _From, State]),
+		{reply, ok, State}.
 
 	handle_cast(_Msg, State) ->
-	  say("cast ~p, ~p.", [_Msg, State]),
-	  {noreply, State}.
+		say("cast ~p, ~p.", [_Msg, State]),
+		{noreply, State}.
 
 	handle_info(_Info, State) ->
-	  say("info ~p, ~p.", [_Info, State]),
-	  {noreply, State}.
+		say("info ~p, ~p.", [_Info, State]),
+		{noreply, State}.
 
 	terminate(_Reason, _State) ->
-	  say("terminate ~p, ~p", [_Reason, _State]),
-	  ok.
+		say("terminate ~p, ~p", [_Reason, _State]),
+		ok.
 
 	code_change(_OldVsn, State, _Extra) ->
-	  say("code_change ~p, ~p, ~p", [_OldVsn, State, _Extra]),
-	  {ok, State}.
+		say("code_change ~p, ~p, ~p", [_OldVsn, State, _Extra]),
+		{ok, State}.
 
 	%% Some helper methods.
 
 	say(Format) ->
-	  say(Format, []).
+		say(Format, []).
 	say(Format, Data) ->
-	  io:format("~p:~p: ~s~n", [?MODULE, self(), io_lib:format(Format, Data)]).
+		io:format("~p:~p: ~s~n", [?MODULE, self(), io_lib:format(Format, Data)]).
 
