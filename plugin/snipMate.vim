@@ -15,6 +15,12 @@ endif
 let loaded_snips = 1
 if !exists('snips_author') | let snips_author = 'Me' | endif
 
+try
+	call funcref#Function('')
+catch /.*/
+	echoe "you're missing vim-addon-mw-utils. See install instructions at ".expand('<sfile>:h:h').'/README.rst'
+endtry
+
 if (!exists('g:snipMateSources'))
   let g:snipMateSources = {}
   " default source: get snippets based on runtimepath:
