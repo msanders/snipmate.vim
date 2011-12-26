@@ -733,7 +733,7 @@ fun! snipMate#GetSnippetsForWordBelowCursor(word, suffix, break_on_first_match)
 
 	" allow matching '.'
 	if a:word =~ '\.$'
-		call insert(lookups, '.'.a:suffix, 0)
+		call add(lookups, '.'.a:suffix)
 	endif
 
 	call filter(lookups, 'v:val != ""')
