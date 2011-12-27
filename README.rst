@@ -90,7 +90,7 @@ this section. Basically, installation consists of 2 simple steps:
 2. Install snippets
 
 
-snipate dependencies
+snipmate dependencies
 ==============
 Important to note is that since version 1.0 we depend on this 2 vim plugins:
     * `vim-addon-mw-utils`_ providing the implementation for caching parsed
@@ -134,12 +134,12 @@ Using `Vundle`_
 ::
 
     Install dependencies:
-    Bundle "git://github.com/MarcWeber/vim-addon-mw-utils.git"
-    Bundle "git://github.com/tomtom/tlib_vim.git"
-    Bundle "git://github.com/honza/snipmate-snippets.git"
+    Bundle "MarcWeber/vim-addon-mw-utils"
+    Bundle "tomtom/tlib_vim"
+    Bundle "snipmate-snippets"
 
     Install:
-    Bundle "git://github.com/garbas/vim-snipmate.git"
+    Bundle "garbas/vim-snipmate"
 
     And :BundleInstall
 
