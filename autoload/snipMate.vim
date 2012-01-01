@@ -803,7 +803,7 @@ fun! snipMate#ShowAvailableSnips()
 	" Pretty hacky, but really can't have the tab swallowed!
 	if len(matches) == 0
 		call feedkeys(s:snipMate['no_match_completion_feedkeys_chars'], 'n')
-		return ''
+		return "\t"
 	endif
 
 	" This is to avoid a bug with Vim when using complete(col - matchlen, matches)
