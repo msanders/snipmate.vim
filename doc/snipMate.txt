@@ -74,8 +74,15 @@ Adding snippets: >
 
   You can retab your snippet text by visually selecting it and pressing <cr>.
 
-Using snippets:
->
+Using snippets: ~
+
+  <c-r><tab>: shows a list of available snippets
+  XX<tab>   : will either show a list of all snippets starting with the
+              characters XX or expand the snippet if it matches a snippet name.
+
+associating snippets and filetypes: ~
+
+1) >
   g:snipMate.scope_aliases
 < defines which snippets types are available when you edit a buffer.
   You can override the default in autoload/snipMate.vim in your .vimrc. For
@@ -89,12 +96,11 @@ Using snippets:
   allows multiple snippets files to be used for one filetype without actually
   changing the filetype.
 
-  <c-r><tab>: shows a list of available snippets
-  XX<tab>   : will either show a list of all snippets starting with the
-              characters XX or expand the snippet if it matches a snippet name.
+2)
+  set filetype to a list such as 'html.javascript' or such.
 
-  Add this to your .vimrc to not ignore tabs if there is no match: >
-    let g:snipMate['no_match_completion_feedkeys_chars'] = "\<tab>"
+  Add this to your .vimrc to not add tabs if there is no match: >
+    let g:snipMate['no_match_completion_feedkeys_chars'] = ""
 <
 
  *snipMate-disambiguation*
