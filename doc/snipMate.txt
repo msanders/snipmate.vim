@@ -89,9 +89,9 @@ Using snippets:
   allows multiple snippets files to be used for one filetype without actually
   changing the filetype.
 
-  XX<c-r><tab>: shows a list of available snippets
-  XX<tab>     : will either show a list of all snippets starting with the
-                characters XX or expand the snippet if it matches a snippet name.
+  <c-r><tab>: shows a list of available snippets
+  XX<tab>   : will either show a list of all snippets starting with the
+              characters XX or expand the snippet if it matches a snippet name.
 
   Add this to your .vimrc to not ignore tabs if there is no match: >
     let g:snipMate['no_match_completion_feedkeys_chars'] = "\<tab>"
