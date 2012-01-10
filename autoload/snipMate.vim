@@ -748,7 +748,7 @@ fun! snipMate#GetSnippetsForWordBelowCursor(word, suffix, break_on_first_match)
 		for [k,snippetD] in items(funcref#Call(s:snipMate['get_snippets'], [snipMate#ScopesByFile(), word]))
 			if a:suffix == ''
 				" hack: require exact match
-				if k != word | continue | endif
+				if k !=# word | continue | endif
 			endif
 			call add(matching_snippets, [k, snippetD])
 			if a:break_on_first_match | break| endif
