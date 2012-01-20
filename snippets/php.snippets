@@ -225,3 +225,5 @@ snippet vdd
 	echo "<pre>";
 	var_dump(__METHOD__.':'.__LINE__, ${1});
 	die;
+snippet vdi
+	fwrite(STDERR, var_export(${1}, true));
