@@ -2,7 +2,7 @@
 if !exists('g:snipMate')
   let g:snipMate = {}
 endif
-let s:snipMate = g:snipMate
+let s:c = g:snipMate
 
 try
 	call tlib#input#List('mi', '', [])
@@ -10,10 +10,17 @@ catch /.*/
 	echoe "you're missing tlib. See install instructions at ".expand('<sfile>:h:h').'/README.rst'
 endtry
 
+
+" disable write cache in files
+" some people get errors about writing the cache files. Probably there is no
+" pay off having slow disks anyway. So disabling the cache by default
+let s:c.cache_parsed_snippets_on_disk = get(s:c, 'cache_parsed_snippets_on_disk', 0)
+let s:c.read_snippets_cached = get(s:c, 'read_snippets_cached', {'func' : function('snipMate#ReadSnippetsFile'), 'version': 3, 'use_file_cache': s:c.cache_parsed_snippets_on_disk})
+
 " if filetype is objc, cpp, or cs also append snippets from scope 'c'
 " you can add multiple by separating scopes by ',', see s:AddScopeAliases
 " TODO add documentation to doc/*
-let s:snipMate['scope_aliases'] = get(s:snipMate,'scope_aliases',
+let s:c['scope_aliases'] = get(s:c,'scope_aliases',
 	  \ {'objc' :'c'
 	  \ ,'cpp': 'c'
 	  \ ,'cs':'c'
@@ -28,7 +35,7 @@ let s:snipMate['scope_aliases'] = get(s:snipMate,'scope_aliases',
 " set this to "\<tab>" to make snipmate not swallow tab (make sure to not have
 " expandtab set). Remember that you can always enter tabs by <c-v> <tab> then
 " you don't need this
-let s:snipMate['no_match_completion_feedkeys_chars'] = get(s:snipMate, 'no_match_completion_feedkeys_chars', "\t")
+let s:c['no_match_completion_feedkeys_chars'] = get(s:c, 'no_match_completion_feedkeys_chars', "\t")
 
 fun! Filename(...)
 	let filename = expand('%:t:r')
@@ -524,15 +531,12 @@ fun! snipMate#ReadSnippetsFile(file)
 	return result
 endf
 
-
-let s:read_snippets_cached  = {'func' : function('snipMate#ReadSnippetsFile'), 'version': 3, 'use_file_cache':1}
-
 " adds scope aliases to list.
 " returns new list
 " the aliases of aliases are added recursively
 fun! s:AddScopeAliases(list)
   let did = {}
-  let scope_aliases = get(s:snipMate,'scope_aliases', {})
+  let scope_aliases = get(s:c,'scope_aliases', {})
   let new = a:list
   let new2 =  []
   while !empty(new)
@@ -571,7 +575,7 @@ endf
 "
 "     mustExist = 0 is used by OpenSnippetFiles
 fun! snipMate#GetSnippetFiles(mustExist, scopes, trigger)
-  let paths = funcref#Call(s:snipMate.snippet_dirs)
+  let paths = funcref#Call(s:c.snippet_dirs)
 
   let result = {}
   let scopes = s:AddScopeAliases(a:scopes)
@@ -625,7 +629,7 @@ fun! snipMate#DefaultPool(scopes, trigger, result)
 	let triggerR = substitute(a:trigger,'*','.*','g')
 	for [f,opts] in items(snipMate#GetSnippetFiles(1, a:scopes, a:trigger))
 		if opts.type == 'snippets'
-			for [trigger, name, contents] in cached_file_contents#CachedFileContents(f, s:read_snippets_cached, 0)
+			for [trigger, name, contents] in cached_file_contents#CachedFileContents(f, s:c.read_snippets_cached, 0)
 				if trigger !~ triggerR | continue | endif
 				call snipMate#SetByPath(a:result, [trigger, opts.name_prefix.' '.name], contents)
 			endfor
@@ -713,7 +717,7 @@ endf
 
 fun! snipMate#ScopesByFile()
 	" duplicates are removed in AddScopeAliases
-	return filter(funcref#Call(s:snipMate.get_scopes), "v:val != ''")
+	return filter(funcref#Call(s:c.get_scopes), "v:val != ''")
 endf
 
 " used by both: completion and insert snippet
@@ -745,7 +749,7 @@ fun! snipMate#GetSnippetsForWordBelowCursor(word, suffix, break_on_first_match)
 	" prefer longest word
 	for word in lookups
 		" echomsg string(lookups).' current: '.word
-		for [k,snippetD] in items(funcref#Call(s:snipMate['get_snippets'], [snipMate#ScopesByFile(), word]))
+		for [k,snippetD] in items(funcref#Call(s:c['get_snippets'], [snipMate#ScopesByFile(), word]))
 			if a:suffix == ''
 				" hack: require exact match
 				if k !=# word | continue | endif
@@ -802,7 +806,7 @@ fun! snipMate#ShowAvailableSnips()
 
 	" Pretty hacky, but really can't have the tab swallowed!
 	if len(matches) == 0
-		call feedkeys(s:snipMate['no_match_completion_feedkeys_chars'], 'n')
+		call feedkeys(s:c['no_match_completion_feedkeys_chars'], 'n')
 		return ""
 	endif
 
