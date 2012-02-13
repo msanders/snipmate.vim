@@ -4,3 +4,49 @@ snippet left
 # Fractions
 snippet frac
 	\frac{${1:a}}{${2:b}}
+# Floating figures
+snippet fig
+	\begin{figure}[htb]
+		\centering
+		\includegraphics{${1:file}}
+		\caption{\label{fig:${2:label}}
+			${3:caption}
+		}
+	\end{figure}
+# Chapter
+snippet cha
+	\chapter{${1:chapter name}} % {{{
+	\label{cha:${2:$1}}
+	${3}
+	% chapter $2 }}}
+# Section
+snippet sec
+	\section{${1:section name}} % {{{
+	\label{sec:${2:$1}}
+	${3}
+	% section $2 }}}
+# Sub Section
+snippet sub
+	\subsection{${1:subsection name}} % {{{
+	\label{sub:${2:$1}}
+	${3}
+	% subsection $2 }}}
+# Sub Sub Section
+snippet subs
+	\subsubsection{${1:subsubsection name}} % {{{
+	\label{ssub:${2:$1}}
+	${3}
+	% subsubsection $2 }}}
+# Paragraph
+snippet par
+	\paragraph{${1:paragraph name}} % {{{
+	\label{par:${2:$1}}
+	${3}
+	% paragraph $2 }}}
+# Sub Paragraph
+snippet subp
+	\subparagraph{${1:subparagraph name}} % {{{
+	\label{subp:${2:$1}}
+	${3}
+	% subparagraph $2 }}}
+
