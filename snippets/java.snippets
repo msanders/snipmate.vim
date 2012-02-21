@@ -47,7 +47,7 @@ snippet j.m
 snippet if
 	if (${1}) ${2}
 snippet el
-	else 
+	else
 snippet elif
 	else if (${1}) ${2}
 snippet wh
@@ -93,3 +93,52 @@ snippet tryf
 	}
 snippet rst
 	ResultSet ${1:rst}${2: = null}${3};${4}
+snippet mm
+	@ManyToMany
+	${1}
+snippet mo
+	@ManyToOne
+	${1}
+snippet om
+	OneToMany${1:(cascade=CascadeType.ALL)}
+	${2}
+snippet oo
+	@OneToOne
+	${1}
+snippet action
+	public static void ${1:index}(${2:args}) { ${3} }
+snippet before
+	@Before
+	static void ${1:intercept}(${2:args}) { ${3} }
+snippet debug
+	Logger.debug(${1:param});${2}
+snippet error
+	Logger.error(${1:param});${2}
+snippet findall
+	List<${1:listName}> ${2:items} = ${1}.findAll();${3}
+snippet findbyid
+	${1:var} ${2:item} = ${1}.findById(${3});${4}
+snippet info
+	Logger.info(${1:param});${2}
+snippet rnf
+	notFound(${1:param});${2}
+snippet rnfin
+	notFoundIfNull(${1:param});${2}
+snippet rr
+	redirect(${1:param});${2}
+snippet ru
+	unauthorized(${1:param});${2}
+snippet ren
+	render(${1:param});${2}
+snippet rena
+	renderArgs.put("${1}", ${2});${3}
+snippet renb
+	renderBinary(${1:param});${2}
+snippet renj
+	renderJSON(${1:param});${2}
+snippet renx
+	renderXml(${1:param});${2}
+snippet unless
+	(unless=${1:param});${2}
+snippet warn
+	Logger.warn(${1:param});${2}
