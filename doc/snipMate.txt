@@ -6,7 +6,7 @@ Last Change: December 27, 2009
 |snipMate-installation|  Installation
 |snipMate-description|   Description
 |snipMate-related-work|  Related work
-|snipMate-usage|         Usage
+|snipMate-usage|         Usage (GETTING STARTED QUICKLY)
 |snipMate-snippet-sources|       snippet sources
 |snipMate-syntax|        Snippet syntax
 |snipMate-settings|      Settings
@@ -207,8 +207,14 @@ See|snipMate-usage|.
 The syntax for snippets in *.snippets files is the following: >
 
  snippet trigger
+ guard left_from_cursor='^\s*'
  	expanded text
 	more expanded text
+
+Note: the guard condition line is optional. It can be used to make a snippet available
+only in some cases. the value should be a viml expression.
+(This implementation may change). Only supported in *.snippets files by now.
+
 Multiple snippets having the same name but different triggers exist?
 
 

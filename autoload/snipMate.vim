@@ -506,18 +506,27 @@ endf
 fun! snipMate#ReadSnippetsFile(file)
 	let result = []
 	if !filereadable(a:file) | return result | endif
+	let r_guard = 'guard\s\+\zs.*'
 	let inSnip = 0
+	let guard = 1
 	for line in readfile(a:file) + ["\n"]
-		if inSnip && (line[0] == "\t" || line == '')
+		if inSnip == 2 && line =~ r_guard
+			let guard = matchstr(line, r_guard)
+		elseif inSnip && (line[0] == "\t" || line == '')
 			let content .= strpart(line, 1)."\n"
 			continue
 		elseif inSnip
-			call add(result, [trigger, name == '' ? 'default' : name, content[:-2]])
+			call add(result, [trigger, name == '' ? 'default' : name, content[:-2], guard])
 			let inSnip = 0
+			let guard = "1"
 		endif
 
-		if line[:6] == 'snippet'
+		if inSnip == 2
 			let inSnip = 1
+		endif
+		if line[:6] == 'snippet'
+			" 2 signals first line
+			let inSnip = 2
 			let trigger = strpart(line, 8)
 			let name = ''
 			let space = stridx(trigger, ' ') + 1
@@ -623,15 +632,28 @@ fun! snipMate#GetSnippetFiles(mustExist, scopes, trigger)
   return result
 endf
 
+fun! snipMate#EvalGuard(guard)
+	" left: everything left of expansion 
+	" word: the expanded word
+	" are guaranteed to be in scpe
+
+	if a:guard == '1' | return 1 | endif
+	let word = s:c.word
+	" eval is evil, but backticks are allowed anyway.
+	let left = getline('.')[:col('.')-3 - len(word)]
+	exec 'return '.a:guard
+endf
 
 " default triggers based on paths
 fun! snipMate#DefaultPool(scopes, trigger, result)
 	let triggerR = substitute(a:trigger,'*','.*','g')
 	for [f,opts] in items(snipMate#GetSnippetFiles(1, a:scopes, a:trigger))
 		if opts.type == 'snippets'
-			for [trigger, name, contents] in cached_file_contents#CachedFileContents(f, s:c.read_snippets_cached, 0)
+			for [trigger, name, contents, guard] in cached_file_contents#CachedFileContents(f, s:c.read_snippets_cached, 0)
 				if trigger !~ triggerR | continue | endif
-				call snipMate#SetByPath(a:result, [trigger, opts.name_prefix.' '.name], contents)
+				if snipMate#EvalGuard(guard)
+					call snipMate#SetByPath(a:result, [trigger, opts.name_prefix.' '.name], contents)
+				endif
 			endfor
 		elseif opts.type == 'snippet'
 			call snipMate#SetByPath(a:result, [opts.trigger, opts.name_prefix.' '.opts.name], funcref#Function('return readfile('.string(f).')'))
@@ -748,6 +770,7 @@ fun! snipMate#GetSnippetsForWordBelowCursor(word, suffix, break_on_first_match)
 	let snippet = ''
 	" prefer longest word
 	for word in lookups
+		let s:c.word = word
 		" echomsg string(lookups).' current: '.word
 		for [k,snippetD] in items(funcref#Call(s:c['get_snippets'], [snipMate#ScopesByFile(), word]))
 			if a:suffix == ''
