@@ -15,40 +15,24 @@ endif
 let loaded_snips = 1
 if !exists('snips_author') | let snips_author = 'Me' | endif
 
-au BufRead,BufNewFile *.snippets\= set ft=snippet
-au FileType snippet setl noet fdm=indent
+if (!exists('g:snipMateSources'))
+  let g:snipMateSources = {}
+endif
 
-let s:snippets = {} | let s:multi_snips = {}
+au BufRead,BufNewFile *.snippets\= set ft=snippet
+au FileType snippet setl noet fdm=expr fde=getline(v:lnum)!~'^\\t\\\\|^$'?'>1':1
+
+" config which can be overridden (shared lines)
+if !exists('g:snipMate')
+  let g:snipMate = {}
+endif
+let s:snipMate = g:snipMate
+
+let s:snipMate['get_snippets'] = get(s:snipMate, 'get_snippets', funcref#Function("snipMate#GetSnippets"))
 
 if !exists('snippets_dir')
 	let snippets_dir = substitute(globpath(&rtp, 'snippets/'), "\n", ',', 'g')
 endif
-
-fun! MakeSnip(scope, trigger, content, ...)
-	let multisnip = a:0 && a:1 != ''
-	let var = multisnip ? 's:multi_snips' : 's:snippets'
-	if !has_key({var}, a:scope) | let {var}[a:scope] = {} | endif
-	if !has_key({var}[a:scope], a:trigger)
-		let {var}[a:scope][a:trigger] = multisnip ? [[a:1, a:content]] : a:content
-	elseif multisnip | let {var}[a:scope][a:trigger] += [[a:1, a:content]]
-	else
-		echom 'Warning in snipMate.vim: Snippet '.a:trigger.' is already defined.'
-				\ .' See :h multi_snip for help on snippets with multiple matches.'
-	endif
-endf
-
-fun! ExtractSnips(dir, ft)
-	for path in split(globpath(a:dir, '*'), "\n")
-		if isdirectory(path)
-			let pathname = fnamemodify(path, ':t')
-			for snipFile in split(globpath(path, '*.snippet'), "\n")
-				call s:ProcessFile(snipFile, a:ft, pathname)
-			endfor
-		elseif fnamemodify(path, ':e') == 'snippet'
-			call s:ProcessFile(path, a:ft)
-		endif
-	endfor
-endf
 
 " Processes a single-snippet file; optionally add the name of the parent
 " directory for a snippet with multiple matches.
@@ -62,88 +46,6 @@ fun s:ProcessFile(file, ft, ...)
 	endtry
 	return a:0 ? MakeSnip(a:ft, a:1, text, keyword)
 			\  : MakeSnip(a:ft, keyword, text)
-endf
-
-fun! ExtractSnipsFile(file, ft)
-	if !filereadable(a:file) | return | endif
-	let text = readfile(a:file)
-	let inSnip = 0
-	for line in text + ["\n"]
-		if inSnip && (line[0] == "\t" || line == '')
-			let content .= strpart(line, 1)."\n"
-			continue
-		elseif inSnip
-			call MakeSnip(a:ft, trigger, content[:-2], name)
-			let inSnip = 0
-		endif
-
-		if line[:6] == 'snippet'
-			let inSnip = 1
-			let trigger = strpart(line, 8)
-			let name = ''
-			let space = stridx(trigger, ' ') + 1
-			if space " Process multi snip
-				let name = strpart(trigger, space)
-				let trigger = strpart(trigger, 0, space - 1)
-			endif
-			let content = ''
-		endif
-	endfor
-endf
-
-" Reset snippets for filetype.
-fun! ResetSnippets(ft)
-	let ft = a:ft == '' ? '_' : a:ft
-	for dict in [s:snippets, s:multi_snips, g:did_ft]
-		if has_key(dict, ft)
-			unlet dict[ft]
-		endif
-	endfor
-endf
-
-" Reset snippets for all filetypes.
-fun! ResetAllSnippets()
-	let s:snippets = {} | let s:multi_snips = {} | let g:did_ft = {}
-endf
-
-" Reload snippets for filetype.
-fun! ReloadSnippets(ft)
-	let ft = a:ft == '' ? '_' : a:ft
-	call ResetSnippets(ft)
-	call GetSnippets(g:snippets_dir, ft)
-endf
-
-" Reload snippets for all filetypes.
-fun! ReloadAllSnippets()
-	for ft in keys(g:did_ft)
-		call ReloadSnippets(ft)
-	endfor
-endf
-
-let g:did_ft = {}
-fun! GetSnippets(dir, filetypes)
-	for ft in split(a:filetypes, '\.')
-		if has_key(g:did_ft, ft) | continue | endif
-		call s:DefineSnips(a:dir, ft, ft)
-		if ft == 'objc' || ft == 'cpp' || ft == 'cs'
-			call s:DefineSnips(a:dir, 'c', ft)
-		elseif ft == 'xhtml'
-			call s:DefineSnips(a:dir, 'html', 'xhtml')
-		endif
-		let g:did_ft[ft] = 1
-	endfor
-endf
-
-" Define "aliasft" snippets for the filetype "realft".
-fun s:DefineSnips(dir, aliasft, realft)
-	for path in split(globpath(a:dir, a:aliasft.'/')."\n".
-					\ globpath(a:dir, a:aliasft.'-*/'), "\n")
-		call ExtractSnips(path, a:realft)
-	endfor
-	for path in split(globpath(a:dir, a:aliasft.'.snippets')."\n".
-					\ globpath(a:dir, a:aliasft.'-*.snippets'), "\n")
-		call ExtractSnipsFile(path, a:realft)
-	endfor
 endf
 
 fun! TriggerSnippet()
@@ -181,7 +83,9 @@ fun! TriggerSnippet()
 		call feedkeys(SuperTabKey)
 		return ''
 	endif
-	return "\<tab>"
+	return word == ''
+	  \ ? "\<tab>"
+	  \ : "\<c-r>=ShowAvailableSnips()\<cr>"
 endf
 
 fun! BackwardsSnippet()
@@ -206,10 +110,10 @@ endf
 fun s:GetSnippet(word, scope)
 	let word = a:word | let snippet = ''
 	while snippet == ''
-		if exists('s:snippets["'.a:scope.'"]["'.escape(word, '\"').'"]')
-			let snippet = s:snippets[a:scope][word]
-		elseif exists('s:multi_snips["'.a:scope.'"]["'.escape(word, '\"').'"]')
-			let snippet = s:ChooseSnippet(a:scope, word)
+		let snippetD = get(snipMate#GetSnippets([a:scope], word),word, {})
+		if !empty(snippetD)
+			let s = s:ChooseSnippet(snippetD)
+			let snippet =  s
 			if snippet == '' | break | endif
 		else
 			if match(word, '\W') == -1 | break | endif
@@ -222,16 +126,23 @@ fun s:GetSnippet(word, scope)
 	return [word, snippet]
 endf
 
-fun s:ChooseSnippet(scope, trigger)
+" snippets: dict containing snippets by name
+" usually this is just {'default' : snippet_contents }
+fun s:ChooseSnippet(snippets)
 	let snippet = []
+	let keys = keys(a:snippets)
 	let i = 1
-	for snip in s:multi_snips[a:scope][a:trigger]
-		let snippet += [i.'. '.snip[0]]
+	for snip in keys
+		let snippet += [i.'. '.snip]
 		let i += 1
 	endfor
-	if i == 2 | return s:multi_snips[a:scope][a:trigger][0][1] | endif
-	let num = inputlist(snippet) - 1
-	return num == -1 ? '' : s:multi_snips[a:scope][a:trigger][num][1]
+	let idx = tlib#input#List('si','select snippet by name',snippet) -1
+	" if a:snippets[..] is a String Call returns it
+	" If it's a function or a function string the result is returned
+	if idx == -1
+	  return ''
+	endif
+	return funcref#Call(a:snippets[keys(a:snippets)[idx]])
 endf
 
 fun! ShowAvailableSnips()
@@ -244,21 +155,16 @@ fun! ShowAvailableSnips()
 	endif
 	let matchlen = 0
 	let matches = []
-	for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
-		let triggers = has_key(s:snippets, scope) ? keys(s:snippets[scope]) : []
-		if has_key(s:multi_snips, scope)
-			let triggers += keys(s:multi_snips[scope])
-		endif
-		for trigger in triggers
-			for word in words
-				if word == ''
-					let matches += [trigger] " Show all matches if word is empty
-				elseif trigger =~ '^'.word
-					let matches += [trigger]
-					let len = len(word)
-					if len > matchlen | let matchlen = len | endif
-				endif
-			endfor
+	let snips = snipMate#GetSnippets([bufnr('%')] + split(&ft, '\.') + ['_'], word.'*')
+	for trigger in keys(snips)
+		for word in words
+			if word == ''
+				let matches += [trigger] " Show all matches if word is empty
+			elseif trigger =~ '^'.word
+				let matches += [trigger]
+				let len = len(word)
+				if len > matchlen | let matchlen = len | endif
+			endif
 		endfor
 	endfor
 

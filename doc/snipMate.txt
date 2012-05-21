@@ -37,11 +37,12 @@ start typing once it's highlighted and all the matches specified in the
 snippet will be updated. To go in reverse, use <shift-tab>.
 
 ==============================================================================
-SYNTAX                                                        *snippet-syntax*
+SYNTAX                                      *snippet-syntax* *snipMate-syntax*
 
 Snippets can be defined in two ways. They can be in their own file, named
 after their trigger in 'snippets/<filetype>/<trigger>.snippet', or they can be
-defined together in a 'snippets/<filetype>.snippets' file. Note that dotted
+defined together in a 'snippets/<filetype>.snippets' or
+'snippets/<filetype>/*.snippets file. Note that dotted
 'filetype' syntax is supported -- e.g., you can use >
 
 	:set ft=html.eruby
@@ -58,8 +59,9 @@ Note that the first hard tab after the snippet trigger is required, and not
 expanded in the actual snippet. The syntax for *.snippet files is the same,
 only without the trigger declaration and starting indentation.
 
-Also note that snippets must be defined using hard tabs. They can be expanded
-to spaces later if desired (see |snipMate-indenting|).
+Also note that indentation within snippets must be defined using hard tabs.
+They can be expanded to spaces later if desired (see |snipMate-indenting|).
+You can retab a snippet by visually selecting the lines, then press <cr>.
 
 "#" is used as a line-comment character in *.snippets files; however, they can
 only be used outside of a snippet declaration. E.g.: >
@@ -120,6 +122,13 @@ use the "${#:}" construct without the text; e.g.: >
  snippet foo
  	${1:}bar$1
 <                                                          *snipMate-commands*
+
+
+                                          *snipMate-visual-selection-support*
+There is a special placeholder called {VISUAL}. If you visually select text,
+then press <tab> Vim switches to insert mode. The next snippet you'll expand
+will replace {VISUAL} by the the text which was selected previously
+
 Interpolated Vim Script ~
 
 Snippets can also contain Vim script commands that are executed (via |eval()|)

@@ -9,8 +9,8 @@ snippet guard
 	endif
 	let $1 = 1${3}
 snippet f
-	fun ${1:function_name}(${2})
-		${3:" code}
+	fun! ${1:`expand('%') =~ 'autoload' ? substitute(matchstr(expand('%:p'),'autoload/\zs.*\ze.vim'),'[/\\]','#','g').'#' : ''`}${2:function_name}(${3})
+		${4:" code}
 	endf
 snippet for
 	for ${1:needle} in ${2:haystack}
@@ -30,3 +30,5 @@ snippet ife
 	else
 		${3}
 	endif
+
+
