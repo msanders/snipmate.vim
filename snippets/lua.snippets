@@ -1,0 +1,32 @@
+# Function
+snippet fun
+	function ${1:function_name} (${2:argument})
+		${3}
+	end
+# Anonymous Function
+snippet f
+	function(${1}) ${2} end
+# if
+snippet if
+	if ${1:true} then ${2} end;
+# for (...) {...}
+snippet for
+	for ${2:i}=1,#${1:Things} do
+		${4:$1[$2]}
+	end
+snippet forp
+	for ${1:i} in pairs(${2:Things}) do
+		${3}
+	end
+snippet fori
+	for ${1:i} in ipairs(${2:Things}) do
+		${3}
+	end
+snippet wh
+	while ${1:true} do
+		${2}
+	end
+snippet l
+	local ${1}
+snippet p
+	print(${1})
