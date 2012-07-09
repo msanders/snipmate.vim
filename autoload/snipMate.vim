@@ -20,17 +20,16 @@ let s:c.read_snippets_cached = get(s:c, 'read_snippets_cached', {'func' : functi
 " if filetype is objc, cpp, or cs also append snippets from scope 'c'
 " you can add multiple by separating scopes by ',', see s:AddScopeAliases
 " TODO add documentation to doc/*
-let s:c['scope_aliases'] = get(s:c,'scope_aliases',
-	  \ {'objc' :'c'
-	  \ ,'cpp': 'c'
-	  \ ,'cs':'c'
-	  \ ,'xhtml': 'html'
-	  \ ,'html': 'javascript'
-	  \ ,'php': 'php,html,javascript'
-	  \ ,'ur': 'html,javascript'
-	  \ ,'mxml': 'actionscript'
-	  \ ,'eruby': 'eruby-rails,html'
-	  \ } )
+let s:c.scope_aliases = get(s:c, 'scope_aliases', {})
+let s:c.scope_aliases.objc = get(s:c.scope_aliases, 'objc', 'c')
+let s:c.scope_aliases.cpp = get(s:c.scope_aliases, 'cpp', 'c')
+let s:c.scope_aliases.cs = get(s:c.scope_aliases, 'cs','c')
+let s:c.scope_aliases.xhtml = get(s:c.scope_aliases, 'xhtml', 'html')
+let s:c.scope_aliases.html = get(s:c.scope_aliases, 'html', 'javascript')
+let s:c.scope_aliases.php = get(s:c.scope_aliases, 'php', 'php,html,javascript')
+let s:c.scope_aliases.ur = get(s:c.scope_aliases, 'ur', 'html,javascript')
+let s:c.scope_aliases.mxml = get(s:c.scope_aliases, 'mxml', 'actionscript')
+let s:c.scope_aliases.eruby = get(s:c.scope_aliases, 'eruby', 'eruby-rails,html')
 
 " set this to "\<tab>" to make snipmate not swallow tab (make sure to not have
 " expandtab set). Remember that you can always enter tabs by <c-v> <tab> then
