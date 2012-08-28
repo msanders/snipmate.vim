@@ -82,8 +82,8 @@ Changelog
 How to install
 ==============
 
-Unfortunately there are many ways to how to install vim plugins. If you don't
-see your preferred way of installation plugins please consider updating
+Unfortunately there are many ways to install vim plugins. If you don't
+see your preferred way of installation, please consider updating
 this section. Basically, installation consists of 2 simple steps:
 
 1. Install vim-snipmate
@@ -92,7 +92,7 @@ this section. Basically, installation consists of 2 simple steps:
 
 snipmate dependencies
 ==============
-Important to note is that since version 1.0 we depend on this 2 vim plugins:
+Important to note is that since version 1.0 we depend on 2 vim plugins:
     * `vim-addon-mw-utils`_ providing the implementation for caching parsed
       .snippets files.
 
@@ -168,8 +168,8 @@ encouraged to submit any fixes and new snippets there.
 
 https://github.com/honza/snipmate-snippets
 
-We also encourage people to maintain sets of snippets for particular use cases.
-That all users can benefit from them people can list their snippet repositories here:
+We also encourage people to maintain sets of snippets for particular use cases
+so that all users can benefit from them.  People can list their snippet repositories here:
 
      * https://github.com/rbonvall/snipmate-snippets-bib (snippets for BibTeX files)
 
