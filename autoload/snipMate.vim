@@ -506,7 +506,7 @@ endf
 fun! snipMate#ReadSnippetsFile(file)
 	let result = []
 	if !filereadable(a:file) | return result | endif
-	let r_guard = 'guard\s\+\zs.*'
+	let r_guard = '^guard\s\+\zs.*'
 	let inSnip = 0
 	let guard = 1
 	for line in readfile(a:file) + ["\n"]
