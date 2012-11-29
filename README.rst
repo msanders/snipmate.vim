@@ -56,9 +56,8 @@ Changelog
 
     * From below mentioned merges I must specially mention `MarcWeber`_'s patch
       which brought quite a few functionalities/improvements:
-        - snippets are loaded lazily.
-        - snippets are no longer cached. Thus you always get the snippets you
-          just wrote to a file without reloading anything.
+        - snippets are loaded lazily and they are cached. Recaching takes place
+          automatically when file's timestamp changes
         - When visually selecting a snippet in a .snippets file you can press
           <cr> to replace spaces by tabs automatically in a smart way.
       Big +1 to `MarcWeber`_ for this. Important to note is that we now depend
@@ -199,6 +198,10 @@ Why forking snipMate?
     Tnx and happy snipmating, Rok Garbas, 2011-02-02
 
 
+
+related work
+=============
+See doc/snipMate.txt
 
 Known Bugs
 =============

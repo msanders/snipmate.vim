@@ -49,6 +49,8 @@ There are some alternatives:
 - ultisnips (python based)
 - xptemplate which is probably a much more powerful
   but also more complex
+- neosnippets - which seems to be able to read snippet
+files when swiching on compatible mode
 - (..?)
 
 snipmate is not perfect - however it gets its job done perfectly and gets out
