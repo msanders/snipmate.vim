@@ -232,6 +232,13 @@ TODO / Future
       If you volunteer tell me so that I can reference the link.
       [2011-02-02, `MarcWeber`_]
 
+    * tcomment claims to know which language mode you're editing in even if its
+      JS in PHP or HTML within PHP. It would be great if that functionality could be
+      moved into its own plugirn (vim-detect-language-at-cursor) or such.
+      Then a lot of the scoped_aliases (which causes collisions easily) could
+      be enhanced.
+
+
 .. _`Michael Sanders`: http://www.vim.org/account/profile.php?user_id=16544
 .. _`Rok Garbas`: rok@garbas.si
 .. _`Marc Weber`: marco-oweber@gmx.de
