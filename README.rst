@@ -3,7 +3,7 @@ snipmate.vim
 ============
 
 :Author: `Michael Sanders`_
-:Maintainer: `Rok Garbas`_
+:Maintainer: `Rok Garbas`_ & `Marc Weber`_
 :Homepage: http://www.vim.org/scripts/script.php?script_id=2540
 :Contributors: `MarcWeber`_, `lilydjwg`_, `henrik`_, `steveno`_, `asymmetric`_, `jherdman`_, `ironcamel`_, `honza`_, `jb55`_, `robhudson`_, `kozo2`_, `MicahElliott`_, `darkwise`_, `redpill`_, `thisgeek`_, `sickill`_, `pose`_, `marutanm`_, `r00k`_, `jbernard`_, `holizz`_, `muffinresearch`_, `statik`_, `taq`_, `alderz`_, `pielgrzym`_
 
@@ -195,7 +195,7 @@ Why forking snipMate?
     Maybe I will only maintain it for a while until Michael Sanders takes things
     back into his hand or until some other super-hero shows up.
 
-    Tnx and happy snipmating, Rok Garbas, 2011-02-02
+    Tnx and happy snipmating, Rok Garbas & Marc Weber, 2011-02-02
 
 
 
@@ -234,6 +234,7 @@ TODO / Future
 
 .. _`Michael Sanders`: http://www.vim.org/account/profile.php?user_id=16544
 .. _`Rok Garbas`: rok@garbas.si
+.. _`Marc Weber`: marco-oweber@gmx.de
 .. _`VAM`: https://github.com/MarcWeber/vim-addon-manager
 .. _`pathogen`: http://www.vim.org/scripts/script.php?script_id=2332
 .. _`vim-addon-mw-utils`: https://github.com/MarcWeber/vim-addon-mw-utils

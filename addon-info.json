@@ -2,7 +2,7 @@
   "name" : "snipMate",
   "version" : "dev",
   "author" : "Michael Sanders -> original project http://github.com/msanders/snipmate.vim",
-  "maintainer" : "Rok Garbas",
+  "maintainer" : "Rok Garbas / Marc Weber",
   "repository" : {"type": "git", "url": "git://github.com/garbas/vim-snipmate.git"},
   "dependencies" : {
     "vim-addon-mw-utils": {},
