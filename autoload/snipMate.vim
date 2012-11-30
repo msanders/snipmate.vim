@@ -10,6 +10,9 @@ catch /.*/
 	echoe "you're missing tlib. See install instructions at ".expand('<sfile>:h:h').'/README.rst'
 endtry
 
+" match $ which doesn't follow a \
+let s:d = '\%([\\]\@<!\$\)'
+
 
 " disable write cache in files
 " some people get errors about writing the cache files. Probably there is no
@@ -60,7 +63,7 @@ fun! snipMate#expandSnip(snip, col)
 	if snippet == '' | return '' | endif
 
 	" Expand snippet onto current position with the tab stops removed
-	let snipLines = split(substitute(snippet, '$\d\+\|${\d\+.\{-}}', '', 'g'), "\n", 1)
+	let snipLines = split(substitute(snippet, ''.s:d .'\d\+\|'.s:d .'{\d\+.\{-}}', '', 'g'), "\n", 1)
 
 	let line = getline(lnum)
 	let afterCursor = strpart(line, col - 1)
@@ -146,16 +149,16 @@ fun! s:ProcessSnippet(snip)
 	" Place all text after a colon in a tab stop after the tab stop
 	" (e.g. "${#:foo}" becomes "${:foo}foo").
 	" This helps tell the position of the tab stops later.
-	let snippet = substitute(snippet, '${\d\+:\(.\{-}\)}', '&\1', 'g')
+	let snippet = substitute(snippet, s:d.'{\d\+:\(.\{-}\)}', '&\1', 'g')
 
 	" Update the a:snip so that all the $# become the text after
 	" the colon in their associated ${#}.
 	" (e.g. "${1:foo}" turns all "$1"'s into "foo")
 	let i = 1
-	while stridx(snippet, '${'.i) != -1
-		let s = matchstr(snippet, '${'.i.':\zs.\{-}\ze}')
+	while snippet =~ s:d.'{'.i
+		let s = matchstr(snippet, s:d.'{'.i.':\zs.\{-}\ze}')
 		if s != ''
-			let snippet = substitute(snippet, '$'.i, s.'&', 'g')
+			let snippet = substitute(snippet, s:d.i, s.'&', 'g')
 		endif
 		let i += 1
 	endw
@@ -192,30 +195,30 @@ fun! s:BuildTabStops(snip, lnum, col, indent)
 	let snipPos = []
 	let i = 1
 	let withoutVars = substitute(a:snip, '$\d\+', '', 'g')
-	while stridx(a:snip, '${'.i) != -1
-		let beforeTabStop = matchstr(withoutVars, '^.*\ze${'.i.'\D')
-		let withoutOthers = substitute(withoutVars, '${\('.i.'\D\)\@!\d\+.\{-}}', '', 'g')
+	while a:snip =~ s:d.'{'.i
+		let beforeTabStop = matchstr(withoutVars, '^.*\ze'.s:d .'{'.i.'\D')
+		let withoutOthers = substitute(withoutVars, ''.s:d .'{\('.i.'\D\)\@!\d\+.\{-}}', '', 'g')
 
 		let j = i - 1
 		call add(snipPos, [0, 0, -1])
 		let snipPos[j][0] = a:lnum + s:Count(beforeTabStop, "\n")
-		let snipPos[j][1] = a:indent + len(matchstr(withoutOthers, '.*\(\n\|^\)\zs.*\ze${'.i.'\D'))
+		let snipPos[j][1] = a:indent + len(matchstr(withoutOthers, '.*\(\n\|^\)\zs.*\ze'.s:d .'{'.i.'\D'))
 		if snipPos[j][0] == a:lnum | let snipPos[j][1] += a:col | endif
 
 		" Get all $# matches in another list, if ${#:name} is given
-		if stridx(withoutVars, '${'.i.':') != -1
-			let snipPos[j][2] = len(matchstr(withoutVars, '${'.i.':\zs.\{-}\ze}'))
+		if withoutVars =~ ''.s:d .'{'.i.':'
+			let snipPos[j][2] = len(matchstr(withoutVars, ''.s:d .'{'.i.':\zs.\{-}\ze}'))
 			let dots = repeat('.', snipPos[j][2])
 			call add(snipPos[j], [])
-			let withoutOthers = substitute(a:snip, '${\d\+.\{-}}\|$'.i.'\@!\d\+', '', 'g')
-			while match(withoutOthers, '$'.i.'\(\D\|$\)') != -1
-				let beforeMark = matchstr(withoutOthers, '^.\{-}\ze'.dots.'$'.i.'\(\D\|$\)')
+			let withoutOthers = substitute(a:snip, ''.s:d .'{\d\+.\{-}}\|'.s:d .''.i.'\@!\d\+', '', 'g')
+			while match(withoutOthers, ''.s:d .''.i.'\(\D\|$\)') != -1
+				let beforeMark = matchstr(withoutOthers, '^.\{-}\ze'.dots.''.s:d .''.i.'\(\D\|$\)')
 				call add(snipPos[j][3], [0, 0])
 				let snipPos[j][3][-1][0] = a:lnum + s:Count(beforeMark, "\n")
 				let snipPos[j][3][-1][1] = a:indent + (snipPos[j][3][-1][0] > a:lnum
 				                           \ ? len(matchstr(beforeMark, '.*\n\zs.*'))
 				                           \ : a:col + len(beforeMark))
-				let withoutOthers = substitute(withoutOthers, '$'.i.'\ze\(\D\|$\)', '', '')
+				let withoutOthers = substitute(withoutOthers, ''.s:d .''.i.'\ze\(\D\|$\)', '', '')
 			endw
 		endif
 		let i += 1
