@@ -2,6 +2,9 @@
 snipmate.vim
 ============
 
+IMPORTANT: comment on: [What about merging whith Ultisnip using its engine](https://github.com/garbas/vim-snipmate/issues/114)
+
+
 :Author: `Michael Sanders`_
 :Maintainer: `Rok Garbas`_ & `Marc Weber`_
 :Homepage: http://www.vim.org/scripts/script.php?script_id=2540
