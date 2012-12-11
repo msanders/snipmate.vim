@@ -3,6 +3,8 @@ snipmate.vim
 ============
 
 IMPORTANT: comment on: [What about merging whith Ultisnip using its engine](https://github.com/garbas/vim-snipmate/issues/114)
+status: snipmate-snippet files are read by Ultisnip flawlessly. See
+snipmate-snippets readme about how to configure and use Ultisnips as alternative
 
 
 :Author: `Michael Sanders`_
