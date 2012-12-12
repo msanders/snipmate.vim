@@ -73,11 +73,11 @@ snippet docts
 	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
 	"http://www.w3.org/TR/html4/strict.dtd">
 # HTML Doctype 4.01 Transitional
-snippet doct
+snippet doct4
 	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 	"http://www.w3.org/TR/html4/loose.dtd">
 # HTML Doctype 5
-snippet doct5
+snippet doct
 	<!DOCTYPE HTML>
 # XHTML Doctype 1.0 Frameset
 snippet docxf
@@ -109,25 +109,26 @@ snippet body
 	</body>
 snippet head
 	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8"`Close()`>
+		<meta charset='utf-8'>
+		<meta name='viewport' content='width=device-width, initial-scale=1.0'>
 
 		<title>${1:`substitute(Filename('', 'Page Title'), '^.', '\u&', '')`}</title>
 		${2}
 	</head>
 snippet title
 	<title>${1:`substitute(Filename('', 'Page Title'), '^.', '\u&', '')`}</title>${2}
-snippet script
+snippet scriptin
 	<script type="text/javascript" charset="utf-8">
 		${1}
 	</script>${2}
-snippet scriptsrc
-	<script src="${1}.js" type="text/javascript" charset="utf-8"></script>${2}
+snippet script
+	<script src='${1}.js'></script>${2}
 snippet style
-	<style type="text/css" media="${1:screen}">
+	<style type='text/css' media='${1:screen}'>
 		${2}
 	</style>${3}
-snippet sheet
-	<link rel="stylesheet" type="text/css" href="${1:sheet.css}">${2}
+snippet css
+	<link rel='stylesheet' href='${1:sheet.css}'>${2}
 snippet base
 	<base href="${1}" target="${2}"`Close()`>
 snippet r
