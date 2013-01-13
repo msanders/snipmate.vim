@@ -45,12 +45,13 @@ snippet defs
 		${3:# TODO: write code...}
 # New Property
 snippet property
-	def ${1:foo}():
-		doc = "${2:The $1 property.}"
-		def fget(self):
-			${3:return self._$1}
-		def fset(self, value):
-			${4:self._$1 = value}
+	@property
+	def ${1:foo}(self):
+		"""${2:I'm the '$1' property}"""
+		${3:return self._$1}
+	@$1.setter
+	def $1(self, value):
+		self._$1 = value
 # Ifs
 snippet if
 	if ${1:condition}:
