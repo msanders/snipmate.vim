@@ -5,6 +5,10 @@ snipmate.vim
 IMPORTANT: comment on: [What about merging whith Ultisnip using its engine](https://github.com/garbas/vim-snipmate/issues/114)
 status: snipmate-snippet files are read by Ultisnip flawlessly. See
 snipmate-snippets readme about how to configure and use Ultisnips as alternative
+That branch also supports completion menu now
+Thus there is only one reason left to keep using snipmate from my point of
+view: not having python support.
+In other words: upstream of snipmate is almost dead. (Better to say Marc Weber is not going to fix any bugs anymore)
 
 
 :Author: `Michael Sanders`_
