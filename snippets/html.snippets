@@ -96,8 +96,14 @@ snippet docx
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 snippet html
+	<!doctype html>
 	<html>
-	${1}
+	  <head>
+	    <title>${1:`substitute(Filename('', 'Page Title'), '^.', '\u&', '')`}</title>
+	  <head>
+	  <body>
+	    ${2}
+	  </body>
 	</html>
 snippet xhtml
 	<html xmlns="http://www.w3.org/1999/xhtml">
@@ -164,7 +170,7 @@ snippet form
 snippet h1
 	<h1 id="${1:heading}">${2:$1}</h1>
 snippet input
-	<input type="${1:text/submit/hidden/button}" name="${2:some_name}" value="${3}"`Close()`>${4}
+	<input type="${1:text/submit/hidden/button/search}" name="${2:some_name}" value="${3}"`Close()`>${4}
 snippet label
 	<label for="${2:$1}">${1:name}</label><input type="${3:text/submit/hidden/button}" name="${4:$2}" value="${5}" id="${6:$2}"`Close()`>${7}
 snippet link
