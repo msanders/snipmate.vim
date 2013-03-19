@@ -4,6 +4,9 @@ if !exists('loaded_snips') || exists('s:did_snips_mappings')
 	finish
 endif
 let s:did_snips_mappings = 1
+" save and reset 'cpo'
+let s:save_cpo = &cpo
+set cpo&vim
 
 " This is put here in the 'after' directory in order for snipMate to override
 " other plugin mappings (e.g., supertab).
@@ -44,5 +47,8 @@ snor <c-x> b<bs><c-x>
 if empty(snippets_dir)
 	finish
 endif
+
+" restore 'cpo'
+let &cpo = s:save_cpo
 
 " vim:noet:sw=4:ts=4:ft=vim
