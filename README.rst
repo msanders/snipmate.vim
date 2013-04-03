@@ -24,8 +24,8 @@ ChangeLog
 =========
 
 
-0.85
-----
+0.85 [2013-04-03]
+-----------------
 
 * Allow trigger key customization
 * Enable undoing of snippet expansion
