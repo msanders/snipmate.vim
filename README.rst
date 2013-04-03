@@ -20,71 +20,39 @@ In other words: upstream of snipmate is almost dead. (Better to say Marc Weber i
 .. contents::
 
 
-Changelog
+ChangeLog
 =========
 
 
-1.0 [Unreleased]
-----------------
+0.85
+----
 
-    * Split snippet files into separate git repository (github/honza/snipmate-snippets). [2011-06-20, `honza`_]
-      See 'Snippets repository' below.
+* Allow trigger key customization
+* Enable undoing of snippet expansion
+* Support backslash escaping in snippets
+* Add support for {VISUAL}
+* Expand filetype extension with scope_aliases
+* Add expansion guards
+* Enable per-buffer expansion of snippets
+* Fix 'cpo' compatibility
+* Update supertab compatibility
+* Enable customization of various things through g:snipMate
 
-    * Adding general snippets to ``css.snippets`` and ``htmldjango.snippets``
-      [2011-06-10, `pielgrzym`_]
+* Disable spelling in snippet files
+* Highlight trigger names in .snippets files
 
-    * Adding ``css.snippets`` from `tisho`_
-      (https://github.com/tisho/css-snippets-snipmate)
-      [2011-04-17, `garbas`_]
+* Update many snippets
+* Separate sample snippets into separate repository
 
-    * Lots of updates to snippets.
+0.84
+----
 
-    * Made the trigger key configurable, https://github.com/garbas/vim-snipmate/pull/4.
-      [2011-04-13, `thenoseman`_]
-
-    * Handle single-line or multiline snippets.
-      [2011-03-22, `johnbintz`_]
-
-    * If there is only one snippet choose it directly.
-      [2011-03-16, `blueyed`_]
-
-    * Add snippets file for "diff" filetype and add bang to function
-      definitons, allowing for reload.
-      [2011-03-06, `blueyed`_]
-
-    * Update snipmate to handle latest supertab version.
-      [2011-02-09, `ervandew`_]
-
-    * Updated README: added contributors, instructions how to install snipMate,
-      some spellchecking of my wonderful English, added this Changelog
-      [2011-02-07, `garbas`_]
-
-    * Fixed bug: When leaving a placeholder unchanged and trying to jump to the
-      next placeholder, the text of the first placeholder would get cleared.
-      [2011-06-16, `jgosmann`_]
-
-    * From below mentioned merges I must specially mention `MarcWeber`_'s patch
-      which brought quite a few functionalities/improvements:
-        - snippets are loaded lazily and they are cached. Recaching takes place
-          automatically when file's timestamp changes
-        - When visually selecting a snippet in a .snippets file you can press
-          <cr> to replace spaces by tabs automatically in a smart way.
-      Big +1 to `MarcWeber`_ for this. Important to note is that we now depend
-      on `vim-addon-mw-utils`_ and `tlib`_.
-      [2011-02-02, `garbas`_]
-
-    * Merged pull requests of `MarcWeber`_, `lilydjwg`_, `henrik`_, `steveno`_,
-      `asymmetric`_, `jherdman`_, `ironcamel`_, `honza`_, `jb55`_,
-      `robhudson`_, `kozo2`_, `MicahElliott`_, `darkwise`_, `redpill`_,
-      `thisgeek`_, `sickill`_, `pose`_,
-      [2011-02-02, `garbas`_]
-
+* Unreleased version by `Michael Sanders`_. Available on `GitHub`_.
 
 0.83 [2009-07-13]
 -----------------
 
-    * last release done by `Michael Sanders`_, you can find it here:
-        http://www.vim.org/scripts/download_script.php?src_id=11006
+* Last release done by `Michael Sanders`_. Available on `vim.org`_.
 
 
 How to install
@@ -100,7 +68,7 @@ this section. Basically, installation consists of 2 simple steps:
 
 snipmate dependencies
 ==============
-Important to note is that since version 1.0 we depend on 2 vim plugins:
+Important to note is that since version 0.85 we depend on 2 vim plugins:
     * `vim-addon-mw-utils`_ providing the implementation for caching parsed
       .snippets files.
 
@@ -290,4 +258,6 @@ TODO / Future
 .. _`tisho`: https://github.com/tisho
 .. _`pielgrzym`: https://github.com/pielgrzym
 .. _`jgosmann`: https://github.com/jgosmann
-.. _`taq': https://github.com/taq
+.. _`taq`: https://github.com/taq
+.. _`vim.org`: http://www.vim.org/scripts/script.php?script_id=2540
+.. _`GitHub`: http://github.com/msanders/snipmate.vim
