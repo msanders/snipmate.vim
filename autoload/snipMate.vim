@@ -771,7 +771,8 @@ fun! snipMate#TriggerSnippet()
 			let snippet = s
 		end
 
-		let &undolevels = &undolevels " create new undo point
+		" Before expanding snippet, create new undo point |i_CTRL-G|
+		let &undolevels = &undolevels
 		let col = col('.') - len(trigger)
 		sil exe 's/\V'.escape(trigger, '/\.').'\%#//'
 		return snipMate#expandSnip(snippet, col)
