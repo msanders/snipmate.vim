@@ -411,6 +411,7 @@ Perhaps some of these features will be added in a later release.
 CONTACT                                   *snipMate-contact* *snipMate-author*
 
 current maintainers:
+  - Adnan Zafar
   - garbas
   - Marc Weber (marco-oweber@gmx.de)
 You should consider creating a github ticket or contacting us because the
