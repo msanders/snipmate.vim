@@ -101,7 +101,7 @@ Using `pathogen`_
     # Install dependencies:
     % git clone https://github.com/tomtom/tlib_vim.git
     % git clone https://github.com/MarcWeber/vim-addon-mw-utils.git
-    % git clone https://github.com/honza/snipmate-snippets.git
+    % git clone https://github.com/honza/vim-snippets.git
 
 Using `Vundle`_
 ---------------
@@ -111,7 +111,7 @@ Using `Vundle`_
     Install dependencies:
     Bundle "MarcWeber/vim-addon-mw-utils"
     Bundle "tomtom/tlib_vim"
-    Bundle "honza/snipmate-snippets"
+    Bundle "honza/vim-snippets"
 
     Install:
     Bundle "garbas/vim-snipmate"
@@ -125,7 +125,7 @@ Manually (not recommended!)
 
 ::
 
-    % git clone git://github.com/honza/snipmate-snippets.git
+    % git clone git://github.com/honza/vim-snippets.git
     % git clone git://github.com/garbas/vim-snipmate.git
     % cd snipmate.vim
     % cp -R * ~/.vim
@@ -141,7 +141,7 @@ Snippets repository
 There is now one snippet repo containing almost all snippets. You are
 encouraged to submit any fixes and new snippets there.
 
-https://github.com/honza/snipmate-snippets
+https://github.com/honza/vim-snippets
 
 More snippet repositories are listed at that repository's README file.
 
