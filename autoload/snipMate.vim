@@ -704,23 +704,11 @@ fun! s:ChooseSnippet(snippets)
 endf
 
 fun! snipMate#ShowAvailableSnips()
-	let line  = getline('.')
 	let col   = col('.')
-	let word  = matchstr(line, '\S\+\%'.col.'c')
-	let matchlen = 0
-	let matches = []
+	let word  = matchstr(getline('.'), '\S\+\%'.col.'c')
 
-	let snippet_triggers = map(snipMate#GetSnippetsForWordBelowCursor(word, '*', 0),'v:val[0]')
-
-	for trigger in snippet_triggers
-		if word == ''
-			let matches += [trigger] " Show all matches if word is empty
-		elseif trigger =~ '^'.word
-			let matches += [trigger]
-			let len = len(word)
-			if len > matchlen | let matchlen = len | endif
-		endif
-	endfor
+	let snippets = map(snipMate#GetSnippetsForWordBelowCursor(word, '*', 0),'v:val[0]')
+	let matches = filter(snippets, "v:val =~# '\\V\\^" . escape(word, '\') . "'")
 
 	" Pretty hacky, but really can't have the tab swallowed!
 	if len(matches) == 0
@@ -728,10 +716,7 @@ fun! snipMate#ShowAvailableSnips()
 		return ""
 	endif
 
-	" This is to avoid a bug with Vim when using complete(col - matchlen, matches)
-	" (Issue#46 on the Google Code snipMate issue tracker).
-	call setline(line('.'), substitute(line, repeat('.', matchlen).'\%'.col.'c', '', ''))
-	call complete(col, sort(matches))
+	call complete(col - len(word), sort(matches))
 	return ''
 endf
 
