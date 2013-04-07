@@ -30,18 +30,10 @@ exec 'ino <silent> <c-r>' . g:snips_trigger_key . ' <c-r>=snipMate#ShowAvailable
 " maybe there is a better way without polluting registers ?
 exec 'xnoremap ' . g:snips_trigger_key. ' s<c-o>:let<space>g:snipmate_content_visual=getreg('1')<cr>'
 
-" The default mappings for these are annoying & sometimes break snipMate.
-" You can change them back if you want, I've put them here for convenience.
-snor <bs> b<bs>
-snor <right> <esc>a
-snor <left> <esc>bi
-snor ' b<bs>'
-snor ` b<bs>`
-snor % b<bs>%
-snor U b<bs>U
-snor ^ b<bs>^
-snor \ b<bs>\
-snor <c-x> b<bs><c-x>
+" FIXME: Without this map, <BS> in select mode deletes the current selection and
+" returns to normal mode. This doesn't update placeholders. Ideally there's some
+" way to update the placeholders without this otherwise useless map.
+snor <bs> b<bs><Esc>
 
 " By default load snippets in snippets_dir
 if empty(snippets_dir)
