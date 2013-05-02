@@ -24,6 +24,10 @@ snippet cl
 			${5:super($1, self).__init__()}
 			self.$4 = $4
 			${6}
+# Simple New Class
+snippet cls
+	class ${1:ClassName}(${2:object}):
+		${3:pass}
 # New Function
 snippet def
 	def ${1:fname}(${2:`indent('.') ? 'self' : ''`}):
