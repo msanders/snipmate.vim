@@ -472,18 +472,18 @@ function! snipMate#GetSnippetFiles(mustExist, scopes, trigger)
 	" collect existing files
 	for scope in scopes
 
-		for f in s:Glob(paths, '/snippets/' . scope . '.snippets') +
-					\ s:Glob(paths, '/snippets/' . scope . '/*.snippets')
+		for f in s:Glob(paths, 'snippets/' . scope . '.snippets') +
+					\ s:Glob(paths, 'snippets/' . scope . '/*.snippets')
 			let result[f] = { 'exists' : 1, 'type' : 'snippets',
-						\ 'name_prefix' : scope }
+						\ 'name_prefix' : fnamemodify(f, ':t:r') }
 		endfor
 
-		for f in s:Glob(paths, '/snippets/'.scope.'/'.trigger.'.snippet')
+		for f in s:Glob(paths, 'snippets/'.scope.'/'.trigger.'.snippet')
 			let result[f] = {'exists': 1, 'type': 'snippet', 'name': 'default',
 						\ 'trigger': a:trigger, 'name_prefix' : scope }
 		endfor
 
-		for f in s:Glob(paths, '/snippets/'.scope.'/'.trigger.'/*.snippet')
+		for f in s:Glob(paths, 'snippets/'.scope.'/'.trigger.'/*.snippet')
 			let result[f] = {'exists': 1, 'type': 'snippet', 'name' : fnamemodify(f, ':t:r'),
 						\ 'trigger': a:trigger, 'name_prefix' : scope }
 		endfor
@@ -515,6 +515,7 @@ endf
 fun! snipMate#DefaultPool(scopes, trigger, result)
 	let triggerR = substitute(a:trigger,'*','.*','g')
 	for [f,opts] in items(snipMate#GetSnippetFiles(1, a:scopes, a:trigger))
+		let opts.name_prefix = matchstr(f, '\v[^/]+\ze/snippets') . ' ' . opts.name_prefix
 		if opts.type == 'snippets'
 			for [trigger, name, contents, guard] in cached_file_contents#CachedFileContents(f, s:c.read_snippets_cached, 0)
 				if trigger !~ escape(triggerR,'~') | continue | endif
