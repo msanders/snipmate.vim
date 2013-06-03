@@ -452,7 +452,7 @@ function! s:Glob(path, expr)
 	for p in split(a:path, ',')
 		let h = fnamemodify(a:expr, ':h')
 		if isdirectory(p . '/' . h)
-			call extend(res, glob(p . '/' . a:expr, 0, 1))
+			call extend(res, split(glob(p . '/' . a:expr), "\n"))
 		endif
 	endfor
 	return filter(res, 'filereadable(v:val)')
