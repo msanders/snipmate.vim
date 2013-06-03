@@ -56,15 +56,14 @@ let s:snipMate['get_snippets'] = get(s:snipMate, 'get_snippets', funcref#Functio
 " snippets. You can replace it with your own implementation. Defaults to all
 " directories in &rtp/snippets/*
 let s:snipMate['snippet_dirs'] = get(s:snipMate, 'snippet_dirs', funcref#Function('return split(&runtimepath,",")'))
+if type(s:snipMate['snippet_dirs']) == type([])
+	call map(s:snipMate['snippet_dirs'], 'expand(v:val)')
+endif
 
 " _ is default scope added always
 "
 " &ft honors multiple filetypes and syntax such as in set ft=html.javascript syntax=FOO
 let s:snipMate['get_scopes'] = get(s:snipMate, 'get_scopes', funcref#Function('return split(&ft,"\\.")+[&syntax, "_"]'))
-
-if !exists('snippets_dir')
-	let snippets_dir = substitute(globpath(&rtp, 'snippets/'), "\n", ',', 'g')
-endif
 
 " Processes a single-snippet file; optionally add the name of the parent
 " directory for a snippet with multiple matches.

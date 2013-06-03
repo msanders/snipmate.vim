@@ -497,7 +497,7 @@ function! snipMate#GetSnippetFiles(mustExist, scopes, trigger)
 
 		if !a:mustExist
 			for p in split(paths, ',')
-				let p .= '/' . scope . '.snippets'
+				let p .= '/snippets/' . scope . '.snippets'
 				let result[p] = get(result, p, {'exists': 0, 'type': 'snippets'})
 			endfor
 		endif
