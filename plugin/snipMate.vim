@@ -65,10 +65,6 @@ endif
 " &ft honors multiple filetypes and syntax such as in set ft=html.javascript syntax=FOO
 let s:snipMate['get_scopes'] = get(s:snipMate, 'get_scopes', funcref#Function('return split(&ft,"\\.")+[&syntax, "_"]'))
 
-if exists("s:snipMate['scope_aliases']")
-	echom 'Scope aliases are deprecated. See :h snipMate-extends for its replacement.'
-endif
-
 " dummy for compatibility - will be removed
 " moving to autoload to improve loading speed and debugging
 fun! TriggerSnippet()
