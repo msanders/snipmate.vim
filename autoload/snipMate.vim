@@ -390,7 +390,8 @@ endf
 " if triggername is not set 'default' is assumed
 fun! snipMate#ReadSnippetsFile(file)
 	let result = []
-	if !filereadable(a:file) | return result | endif
+	let new_scopes = []
+	if !filereadable(a:file) | return [result, new_scopes] | endif
 	let r_guard = '^guard\s\+\zs.*'
 	let inSnip = 0
 	let guard = 1
@@ -420,9 +421,12 @@ fun! snipMate#ReadSnippetsFile(file)
 				let trigger = strpart(trigger, 0, space - 1)
 			endif
 			let content = ''
+		elseif line[:6] == 'extends'
+			call extend(new_scopes, map(split(strpart(line, 8)),
+						\ "substitute(v:val, ',*$', '', '')"))
 		endif
 	endfor
-	return result
+	return [result, new_scopes]
 endf
 
 " adds scope aliases to list.
@@ -520,21 +524,27 @@ endf
 " default triggers based on paths
 fun! snipMate#DefaultPool(scopes, trigger, result)
 	let triggerR = substitute(a:trigger,'*','.*','g')
+	let extra_scopes = []
 	for [f,opts] in items(snipMate#GetSnippetFiles(1, a:scopes, a:trigger))
 		let opts.name_prefix = matchstr(f, '\v[^/]+\ze/snippets') . ' ' . opts.name_prefix
 		if opts.type == 'snippets'
-			for [trigger, name, contents, guard] in cached_file_contents#CachedFileContents(f, s:c.read_snippets_cached, 0)
+			let [snippets, extension] = cached_file_contents#CachedFileContents(f, s:c.read_snippets_cached, 0)
+			for [trigger, name, contents, guard] in snippets
 				if trigger !~ escape(triggerR,'~') | continue | endif
 				if snipMate#EvalGuard(guard)
 					call snipMate#SetByPath(a:result, [trigger, opts.name_prefix.' '.name], contents)
 				endif
 			endfor
+			call extend(extra_scopes, extension)
 		elseif opts.type == 'snippet'
 			call snipMate#SetByPath(a:result, [opts.trigger, opts.name_prefix.' '.opts.name], funcref#Function('return readfile('.string(f).')'))
 		else
 			throw "unexpected"
 		endif
 	endfor
+	if !empty(extra_scopes)
+		call snipMate#DefaultPool(extra_scopes, a:trigger, a:result)
+	endif
 endf
 
 " return a dict of snippets found in runtimepath matching trigger

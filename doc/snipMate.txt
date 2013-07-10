@@ -305,6 +305,15 @@ TextMates's functionality, use the |system()| function. E.g.: >
 will insert the current date, assuming you are on a Unix system. Note that you
 can also (and should) use |strftime()| for this example.
 
+                                                            *snipMate-extends*
+Borrowing from UltiSnips, .snippets files can also contain an extends
+directive, for example: >
+
+ extends html, javascript, css
+
+will tell SnipMate to also read html, javascript, and css snippets.
+
+
 Filename([{expr}] [, {defaultText}])             *snipMate-filename* *Filename()*
 
 Since the current filename is used often in snippets, a default function
