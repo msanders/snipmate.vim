@@ -121,8 +121,9 @@ endfunction
 fun! s:ProcessSnippet(snip)
 	let snippet = a:snip
 
-	if exists('g:snipmate_content_visual')
-		let visual = g:snipmate_content_visual | unlet g:snipmate_content_visual
+	if exists('b:snipmate_content_visual')
+		let visual = b:snipmate_content_visual
+		unlet b:snipmate_content_visual
 	else
 		let visual = ''
 	endif
