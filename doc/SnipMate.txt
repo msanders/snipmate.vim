@@ -208,10 +208,13 @@ will tell SnipMate to also read html, javascript, and css snippets.
                                                           *SnipMate-tabstops*
 Tab stops~
 
-By default, the cursor is placed at the end of a snippet. To specify where the
-cursor is to be placed next, use "${#}", where the # is the number of the tab
-stop. E.g., to place the cursor first on the id of a <div> tag, and then allow
-the user to press <tab> to go to the middle of it: >
+A tab stop, specified by ${#} where # is a number, tells SnipMate where to
+position the cursor next. The special tab stop ${0} denotes the last cursor
+position; in its absence, the cursor is placed at the end of the snippet.
+
+For example, to place the cursor first on the id of a <div> tag, allow
+the user to press <tab> to go to the middle of it, and finally end after
+</div>: >
 
     snippet div
         <div id="${1}">
@@ -360,7 +363,6 @@ to 'rtp' can be found in.
 DISADVANTAGES                                         *SnipMate-disadvantages*
 
 SnipMate.vim currently has the following disadvantages to TextMate's snippets:
-    - There is no $0; the order of tab stops must be explicitly stated.
     - Nested placeholders are not currently possible. E.g.: >
         '<div${1: id="${2:some_id}}">${3}</div>'
 <     In TextMate this would first highlight ' id="some_id"', and if
