@@ -119,26 +119,26 @@ The mappings SnipMate uses can be customized with the |:map| commands. For
 example, to change the key that triggers snippets and moves to the next
 tabstop, >
 
-        :imap <C-J> <Plug>SnipMateNextOrTrigger
-        :smap <C-J> <Plug>SnipMateNextOrTrigger
+        :imap <C-J> <Plug>snipMateNextOrTrigger
+        :smap <C-J> <Plug>snipMateNextOrTrigger
 
 The list of possible <Plug> mappings is as follows:
 
-<Plug>SnipMateNextOrTrigger     Default: <Tab>          Mode: Insert, Select
+<Plug>snipMateNextOrTrigger     Default: <Tab>          Mode: Insert, Select
                                 Jumps to the next tab stop or, if none exists,
                                 try to expand a snippet. Use in both insert
                                 and select modes.
 
-<Plug>SnipMateBack              Default: <S-Tab>        Mode: Insert, Select
+<Plug>snipMateBack              Default: <S-Tab>        Mode: Insert, Select
                                 Jump to the previous tab stop, if it exists.
                                 Use in both insert and select modes.
 
-<Plug>SnipMateShow              Default: <C-R><Tab>     Mode: Insert
+<Plug>snipMateShow              Default: <C-R><Tab>     Mode: Insert
                                 Show all available snippets (that start with
                                 the previous text, if it exists). Use in
                                 insert mode.
 
-<Plug>SnipMateVisual            Default: <Tab>          Mode: Visual
+<Plug>snipMateVisual            Default: <Tab>          Mode: Visual
                                 See |SnipMate-visual|.
 
 Additionally, <CR> is mapped in visual mode in .snippets files for retabbing
