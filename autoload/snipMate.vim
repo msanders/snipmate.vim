@@ -181,7 +181,7 @@ fun! s:ProcessSnippet(snip)
 	endif
 
 	if &et " Expand tabs to spaces if 'expandtab' is set.
-		return substitute(snippet, '\t', repeat(' ', &sts ? &sts : &sw), 'g')
+		return substitute(snippet, '\t', repeat(' ', (&sts > 0) ? &sts : &sw), 'g')
 	endif
 	return snippet
 endf
