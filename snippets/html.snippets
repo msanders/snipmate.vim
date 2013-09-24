@@ -167,8 +167,6 @@ snippet fieldset
 snippet form
 	<form action="${1:`Filename('$1_submit')`}" method="${2:get}" accept-charset="utf-8">
 		${3}
-
-
 	<p><input type="submit" value="Continue &rarr;"`Close()`></p>
 	</form>
 snippet h1
@@ -206,3 +204,7 @@ snippet span
 	<span id="${1:anything}">${2:foranything}</span>${3}
 snippet url
 	<a href="${1:http://dom.com}">${2:This web rules!}</a>${3}
+snippet p
+	<p>
+	  ${1}
+	</p>
