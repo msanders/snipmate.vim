@@ -105,6 +105,25 @@ g:snipMate.scope_aliases        A |Dictionary| associating certain filetypes
                                 "ruby" or contains "ruby" as an entry in the
                                 case of dotted filetypes.
 
+g:snipMate_no_default_aliases
+                                When set to 1, prevents SnipMate from loading
+                                default scope aliases. The defaults are:
+                                    Filetype    Alias ~
+                                    cpp         c
+                                    cu          c
+                                    eruby       eruby-rails,html
+                                    html        javascript
+                                    mxml        actionscript
+                                    objc        c
+                                    php         php,html,javascript
+                                    ur          html,javascript
+                                    xhtml       html
+                                Note: Setting this option does not disable
+                                scope aliases entirely, only those made by
+                                SnipMate itself. Any scope aliases created by
+                                the user or someone else will still be in
+                                effect.
+
 g:snipMate['no_match_completion_feedkeys_chars']
                                 A string inserted when no match for a trigger
                                 is found. By default a tab is inserted
