@@ -723,10 +723,8 @@ fun! snipMate#ShowAvailableSnips()
 	return ''
 endf
 
-
-" user interface implementation {{{1
-
-fun! snipMate#TriggerSnippet()
+" Pass an argument to force snippet expansion instead of triggering or jumping
+function! snipMate#TriggerSnippet(...)
 	if exists('g:SuperTabMappingForward')
 		if g:SuperTabMappingForward == "<tab>"
 			let SuperTabPlug = maparg('<Plug>SuperTabForward', 'i')
@@ -753,7 +751,7 @@ fun! snipMate#TriggerSnippet()
 		call feedkeys("\<tab>") | return ''
 	endif
 
-	if exists('b:snip_state')
+	if exists('b:snip_state') && a:0 == 0 " Jump only if no arguments
 		let jump = b:snip_state.jump_stop(0)
 		if type(jump) == 1 " returned a string
 			return jump
@@ -789,8 +787,7 @@ fun! snipMate#TriggerSnippet()
 	return word == ''
 	  \ ? "\<tab>"
 	  \ : "\<c-r>=snipMate#ShowAvailableSnips()\<cr>"
-endf
-
+endfunction
 
 fun! snipMate#BackwardsSnippet()
 	if exists('b:snip_state') | return b:snip_state.jump_stop(1) | endif
@@ -819,6 +816,5 @@ fun! snipMate#BackwardsSnippet()
 	endif
 	return "\<s-tab>"
 endf
-
 
 " vim:noet:sw=4:ts=4:ft=vim

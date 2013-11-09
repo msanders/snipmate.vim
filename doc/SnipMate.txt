@@ -148,6 +148,12 @@ The list of possible <Plug> mappings is as follows:
                                 try to expand a snippet. Use in both insert
                                 and select modes.
 
+<Plug>snipMateTrigger           Default: unmapped       Mode: Insert
+                                Try to expand a snippet regardless of any
+                                existing snippet expansion. If done within an
+                                expanded snippet, the outer snippet's tab
+                                stops are lost, unless expansion failed.
+
 <Plug>snipMateBack              Default: <S-Tab>        Mode: Insert, Select
                                 Jump to the previous tab stop, if it exists.
                                 Use in both insert and select modes.
