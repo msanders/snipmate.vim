@@ -184,6 +184,21 @@ fun! TriggerSnippet()
 	return "\<tab>"
 endf
 
+fun! CanExpandSnippet()
+	if exists('g:snipPos') | return snipMate#jumpTabStop(0) | endif
+
+	let word = matchstr(getline('.'), '\S\+\%'.col('.').'c')
+	for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
+		let [trigger, snippet] = s:GetSnippet(word, scope)
+		" If word is a trigger for a snippet, delete the trigger & expand
+		" the snippet.
+		if snippet != ''
+			return 1
+		endif
+	endfor
+	return 0
+endf
+
 fun! BackwardsSnippet()
 	if exists('g:snipPos') | return snipMate#jumpTabStop(1) | endif
 
