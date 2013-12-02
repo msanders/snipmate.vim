@@ -185,6 +185,10 @@ directory, or use the |ExtractSnips()|function. This will be used by the
 |globpath()| function, and so accepts the same syntax as it (e.g.,
 comma-separated paths).
 
+CanExpandSnippet()                                      *CanExpandSnippet()*
+CanExpandSnippet() Returns 0 (False) or 1 (True) to test if snipMate will
+expand the snippet under the current cursor position.
+
 ExtractSnipsFile({directory}, {filetype})     *ExtractSnipsFile()* *.snippets*
 
 ExtractSnipsFile() extracts the specified *.snippets file for the given
