@@ -18,6 +18,22 @@ if !exists('snips_author') | let snips_author = 'Me' | endif
 au BufRead,BufNewFile *.snippets\= set ft=snippet
 au FileType snippet setl noet fdm=indent
 
+ino <silent> <tab> <c-r>=TriggerSnippet()<cr>
+snor <silent> <tab> <esc>i<right><c-r>=TriggerSnippet()<cr>
+ino <silent> <s-tab> <c-r>=BackwardsSnippet()<cr>
+snor <silent> <s-tab> <esc>i<right><c-r>=BackwardsSnippet()<cr>
+ino <silent> <c-r><tab> <c-r>=ShowAvailableSnips()<cr>
+snor <bs> b<bs>
+snor <right> <esc>a
+snor <left> <esc>bi
+snor ' b<bs>'
+snor ` b<bs>`
+snor % b<bs>%
+snor U b<bs>U
+snor ^ b<bs>^
+snor \ b<bs>\
+snor <c-x> b<bs><c-x>
+
 let s:snippets = {} | let s:multi_snips = {}
 
 if !exists('snippets_dir')
