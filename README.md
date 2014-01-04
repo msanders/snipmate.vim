@@ -44,9 +44,9 @@ looking at the [vim-snippets][vim-snippets] repository.
         " Optional:
         Bundle "honza/vim-snippets"
 
-# Release Notes #
+## Release Notes ##
 
-## 0.87 - 2014-01-04 ##
+### 0.87 - 2014-01-04 ###
 
 * Stop indenting empty lines when expanding snippets
 * Support extends keyword in .snippets files
