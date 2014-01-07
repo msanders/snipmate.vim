@@ -46,6 +46,10 @@ looking at the [vim-snippets][vim-snippets] repository.
 
 ## Release Notes ##
 
+### Master ###
+
+* Fix bug with mirrors in the first column
+
 ### 0.87 - 2014-01-04 ###
 
 * Stop indenting empty lines when expanding snippets
