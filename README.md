@@ -49,6 +49,7 @@ looking at the [vim-snippets][vim-snippets] repository.
 ### Master ###
 
 * Fix bug with mirrors in the first column
+* Fix bug with tabs in indents ([#143](issues/143))
 
 ### 0.87 - 2014-01-04 ###
 
