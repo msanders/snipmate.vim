@@ -49,7 +49,7 @@ looking at the [vim-snippets][vim-snippets] repository.
 ### Master ###
 
 * Fix bug with mirrors in the first column
-* Fix bug with tabs in indents ([#143](issues/143))
+* Fix bug with tabs in indents ([#143][143])
 
 ### 0.87 - 2014-01-04 ###
 
@@ -73,3 +73,5 @@ looking at the [vim-snippets][vim-snippets] repository.
 [vam]: https://github.com/marcweber/vim-addon-manager
 [pathogen]: https://github.com/tpope/vim-pathogen
 [vundle]: https://github.com/gmarik/vundle
+
+[143]: https://github.com/garbas/vim-snipmate/issues/143
