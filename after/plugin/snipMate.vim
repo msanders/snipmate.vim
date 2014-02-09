@@ -1,40 +1,51 @@
-" These are the mappings for snipMate.vim. Putting it here ensures that it
-" will be mapped after other plugins such as supertab.vim.
-if !exists('loaded_snips') || exists('s:did_snips_mappings')
-	finish
+" snipMate maps
+" These maps are created here in order to make sure we can reliably create maps
+" after SuperTab.
+
+let s:save_cpo = &cpo
+set cpo&vim
+
+function! s:map_if_not_mapped(lhs, rhs, mode)
+    let l:unique = s:overwrite ? '' : ' <unique>'
+    if !hasmapto(a:rhs, a:mode)
+	silent! exe a:mode . 'map' . l:unique a:lhs a:rhs
+    endif
+endfunction
+
+if !exists('g:snips_no_mappings') || !g:snips_no_mappings
+	if exists('g:snips_trigger_key')
+		echom 'g:snips_trigger_key is deprecated. See :h snipMate-mappings'
+		exec 'imap <unique>' g:snips_trigger_key '<Plug>snipMateTrigger'
+		exec 'smap <unique>' g:snips_trigger_key '<Plug>snipMateSNext'
+		exec 'xmap <unique>' g:snips_trigger_key '<Plug>snipMateVisual'
+	else
+		" Remove SuperTab map if it exists
+		let s:overwrite = maparg('<Tab>', 'i') ==? '<Plug>SuperTabForward'
+		call s:map_if_not_mapped('<Tab>', '<Plug>snipMateNextOrTrigger', 'i')
+		call s:map_if_not_mapped('<Tab>', '<Plug>snipMateNextOrTrigger', 's')
+		let s:overwrite = 0
+		call s:map_if_not_mapped('<Tab>', '<Plug>snipMateVisual', 'x')
+	endif
+
+	if exists('g:snips_trigger_key_backwards')
+		echom 'g:snips_trigger_key_backwards is deprecated. See :h snipMate-mappings'
+		exec 'imap <unique>' g:snips_trigger_key_backwards '<Plug>snipMateIBack'
+		exec 'smap <unique>' g:snips_trigger_key_backwards '<Plug>snipMateSBack'
+	else
+		let s:overwrite = maparg('<S-Tab>', 'i') ==? '<Plug>SuperTabBackward'
+		call s:map_if_not_mapped('<S-Tab>', '<Plug>snipMateBack', 'i')
+		call s:map_if_not_mapped('<S-Tab>', '<Plug>snipMateBack', 's')
+		let s:overwrite = 0
+	endif
+
+	call s:map_if_not_mapped('<C-R><Tab>', '<Plug>snipMateShow', 'i')
 endif
-let s:did_snips_mappings = 1
 
-" This is put here in the 'after' directory in order for snipMate to override
-" other plugin mappings (e.g., supertab).
-"
-" You can safely adjust these mappings to your preferences (as explained in
-" :help snipMate-remap).
-ino <silent> <tab> <c-r>=TriggerSnippet()<cr>
-snor <silent> <tab> <esc>i<right><c-r>=TriggerSnippet()<cr>
-ino <silent> <s-tab> <c-r>=BackwardsSnippet()<cr>
-snor <silent> <s-tab> <esc>i<right><c-r>=BackwardsSnippet()<cr>
-ino <silent> <c-r><tab> <c-r>=ShowAvailableSnips()<cr>
+" FIXME: Without this map, <BS> in select mode deletes the current selection and
+" returns to normal mode. This doesn't update placeholders. Ideally there's some
+" way to update the placeholders without this otherwise useless map.
+silent! snoremap <unique> <BS> b<BS><Esc>
 
-" The default mappings for these are annoying & sometimes break snipMate.
-" You can change them back if you want, I've put them here for convenience.
-snor <bs> b<bs>
-snor <right> <esc>a
-snor <left> <esc>bi
-snor ' b<bs>'
-snor ` b<bs>`
-snor % b<bs>%
-snor U b<bs>U
-snor ^ b<bs>^
-snor \ b<bs>\
-snor <c-x> b<bs><c-x>
+let &cpo = s:save_cpo
 
-" By default load snippets in snippets_dir
-if empty(snippets_dir)
-	finish
-endif
-
-call GetSnippets(snippets_dir, '_') " Get global snippets
-
-au FileType * if &ft != 'help' | call GetSnippets(snippets_dir, &ft) | endif
-" vim:noet:sw=4:ts=4:ft=vim
+" vim:noet:
