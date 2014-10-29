@@ -1,7 +1,16 @@
 # Creates Pivotal Tracker git commit comment
 snippet tp
-	[${1:Finishes} #${2:}] ${3:commit message here}
+	${1:commit subject here}
 
-		${4}
+	${2:commit description here}
 
-	https://www.pivotaltracker.com/story/show/$2
+	[#${3:}]
+	https://www.pivotaltracker.com/story/show/$3
+
+snippet tpf
+	${1:commit subject here}
+
+	${2:commit description here}
+
+	[${3:Finishes} #${4:}]
+	https://www.pivotaltracker.com/story/show/$4
