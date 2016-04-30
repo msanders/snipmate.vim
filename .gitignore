@@ -1,0 +1,6 @@
+.swp
+*.swp
+snippets
+snippets/*
+doc/tags/
+doc/tags/*
