@@ -1,5 +1,3 @@
-Quickly install with:
+## snipMate
 
-    git clone git://github.com/msanders/snipmate.vim.git
-	cd snipmate.vim
-	cp -R * ~/.vim
+The most recent version of snipMate is now available at [@garbas/vim-snipmate](https://github.com/garbas/vim-snipmate).
