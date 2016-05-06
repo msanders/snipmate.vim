@@ -55,7 +55,7 @@ snippet doctype HTML 4.01 Transitional
 	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 	"http://www.w3.org/TR/html4/loose.dtd">
 snippet doctype HTML 5
-	<!DOCTYPE HTML>
+	<!DOCTYPE html>
 snippet doctype XHTML 1.0 Frameset
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -109,7 +109,7 @@ snippet body
 	</body>
 snippet head
 	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8"`Close()`>
+		<meta charset="utf-8"`Close()`>
 
 		<title>${1:`substitute(Filename('', 'Page Title'), '^.', '\u&', '')`}</title>
 		${2}
@@ -131,7 +131,7 @@ snippet base
 snippet r
 	<br`Close()[1:]`>
 snippet div
-	<div id="${1:name}">
+	<div class="${1:name}">
 		${2}
 	</div>
 # Embed QT Movie
@@ -161,8 +161,14 @@ snippet form
 
 	<p><input type="submit" value="Continue &rarr;"`Close()`></p>
 	</form>
-snippet h1
+snippet h1 plain
+	<h1>${1}</h1>
+snippet h1 with id attribute
 	<h1 id="${1:heading}">${2:$1}</h1>
+snippet href
+	<a href="${1:URL}">${2:reference}</a>
+snippet p
+	<p>${1}</p>
 snippet input
 	<input type="${1:text/submit/hidden/button}" name="${2:some_name}" value="${3}"`Close()`>${4}
 snippet label
@@ -188,3 +194,12 @@ snippet table
 	</table>${4}
 snippet textarea
 	<textarea name="${1:Name}" rows="${2:8}" cols="${3:40}">${4}</textarea>${5}
+snippet article
+	<article hidden itemscope itemtype="http://schema.org/BlogPosting">
+		<header>
+			<h1 itemprop="name">${1:title_of_post}</h1>
+			<meta itemprop="keywords" content="${2:keywords}">
+		</header>
+		<p>
+		</p>
+	</article>
