@@ -234,17 +234,18 @@ just enable 'expandtab' and set 'softtabstop' to your preferred amount of
 spaces. If 'softtabstop' is not set, 'shiftwidth' is used instead.
 
                                                               *snipMate-remap*
-snipMate does not come with a setting to customize the trigger key, but you
-can remap it easily in the two lines it's defined in the 'after' directory
-under 'plugin/snipMate.vim'. For instance, to change the trigger key
-to CTRL-J, just change this: >
+snipMate comes with a setting to customize the trigger key. You
+can remap it easily in your config by setting a corresponding variable. For
+instance, to have CTRL-J to trigger snippets add the following line to your
+config:
 
- ino <tab> <c-r>=TriggerSnippet()<cr>
- snor <tab> <esc>i<right><c-r>=TriggerSnippet()<cr>
+ let g:snipMateTriggerSnippetKey = "<c-j>"
 
-to this: >
- ino <c-j> <c-r>=TriggerSnippet()<cr>
- snor <c-j> <esc>i<right><c-r>=TriggerSnippet()<cr>
+Default mappings are:
+
+ g:snipMateTriggerSnippetKey = "<tab>"
+ g:snipMateBackwardSnippetKey = "<s-tab>"
+ g:snipMateShowAvailableSnipsKey = "<c-r><tab>"
 
 ==============================================================================
 FEATURES                                                   *snipMate-features*

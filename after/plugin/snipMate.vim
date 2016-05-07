@@ -10,11 +10,24 @@ let s:did_snips_mappings = 1
 "
 " You can safely adjust these mappings to your preferences (as explained in
 " :help snipMate-remap).
-ino <silent> <tab> <c-r>=TriggerSnippet()<cr>
-snor <silent> <tab> <esc>i<right><c-r>=TriggerSnippet()<cr>
-ino <silent> <s-tab> <c-r>=BackwardsSnippet()<cr>
-snor <silent> <s-tab> <esc>i<right><c-r>=BackwardsSnippet()<cr>
-ino <silent> <c-r><tab> <c-r>=ShowAvailableSnips()<cr>
+if !exists("g:snipMateTriggerSnippetKey")
+    let g:snipMateTriggerSnippetKey = "<tab>"
+endif
+
+if !exists("g:snipMateBackwardSnippetKey")
+    let g:snipMateBackwardSnippetKey = "<s-tab>"
+endif
+
+if !exists("g:snipMateShowAvailableSnipsKey")
+    let g:snipMateShowAvailableSnipsKey = "<c-r><tab>"
+endif
+
+
+exe "ino <silent> ".g:snipMateTriggerSnippetKey." <c-r>=TriggerSnippet()<cr>"
+exe "snor <silent> ".g:snipMateTriggerSnippetKey." <esc>i<right><c-r>=TriggerSnippet()<cr>"
+exe "ino <silent> ".g:snipMateBackwardSnippetKey." <c-r>=BackwardsSnippet()<cr>"
+exe "snor <silent> ".g:snipMateBackwardSnippetKey." <esc>i<right><c-r>=BackwardsSnippet()<cr>"
+exe "ino <silent> ".g:snipMateShowAvailableSnipsKey." <c-r>=ShowAvailableSnips()<cr>"
 
 " The default mappings for these are annoying & sometimes break snipMate.
 " You can change them back if you want, I've put them here for convenience.
