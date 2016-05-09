@@ -1,0 +1,146 @@
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Copyright 2010 Paul Anton Letnes
+
+# Fortran program snippet
+snippet program
+	program ${1:name}
+		implicit none
+		${2}
+	contains
+		${3:!TODO}
+	end program $1
+# Use statement
+snippet use
+	use ${1:module}, only: ${2:symbols}
+# Module snippet
+snippet module
+	module ${1:name}
+		implicit none
+		${2:contents}
+	contains
+		${3:!TODO}
+	end module $1
+
+# Do loop
+snippet	do
+	do ${1:loopvar} = ${2:lower}, ${3:higher}
+		${4}
+	end do
+# Until loop
+snippet	until
+	do 
+		${1:statements}
+	until ${2:logical expression}
+# While loop
+snippet	while
+	while ${1:logical expression} do
+		${2:statements}
+	enddo
+# OMP parallel do loop
+snippet ompdo
+	!$omp parallel do private(${5:privatevars}) shared(${6:sharedvars})
+	do ${1:loopvar} = ${2:lower}, ${3:higher}
+		${4}
+	end do
+	!$omp end parallel do
+
+# Write statement
+snippet write
+	write (${1:*}, ${2:*}) ${3:variable}
+
+# Where / elsewhere construct
+snippet elsewhere
+	where (${1:condition})
+		${2:! TODO}
+	elsewhere
+		${3:! TODO}
+	end where
+# Where statement
+snippet where
+	where (${1:condition}) ${2:code}
+
+# General variables
+snippet var
+	${1:type}(${2:kind})${3:, properties} :: ${4:varname}
+# Function arguments, with intent statement
+snippet fvar
+	${1:type}(${2:kind}), intent(${3:inout})${4:, properties} :: ${5:varname}
+
+# Derived datatypes
+snippet type
+	type ${1:name}
+		${2:members}
+	end type $1
+
+# Subroutines
+snippet sub
+	subroutine ${1:name}(${2:parameters})
+		implicit none
+		${3}
+	end subroutine $1
+# Functions
+snippet func
+	function ${1:name}(${2:parameters})
+		implicit none
+		${3}
+	end function $1
+# Pure functions
+snippet pfunc
+	pure function ${1:name}(${2:parameters})
+		implicit none
+		${3}
+	end function $1
+# Elemental functions
+snippet efunc
+	elemental function ${1:name}(${2:parameters})
+		implicit none
+		${3}
+	end function $1
+
+# If construct
+snippet if
+	if (${1:condition}) then
+		${2}
+	end if
+# If-else construct
+snippet ifelse
+	if (${1:condition}) then
+		${2}
+	else
+		${3:! TODO}
+	end if
+
+
+# Read statement
+snippet read 
+	read (${1:*}, ${2:*}) ${3:target}
+
+# GPL header snippet
+snippet gplheader
+	! This program is free software: you can redistribute it and/or modify
+	! it under the terms of the GNU General Public License as published by
+	! the Free Software Foundation, either version 3 of the License, or
+	! (at your option) any later version.
+	!
+	! This program is distributed in the hope that it will be useful,
+	! but WITHOUT ANY WARRANTY; without even the implied warranty of
+	! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	! GNU General Public License for more details.
+	!
+	! You should have received a copy of the GNU General Public License
+	! along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	!
+	! Copyright ${1:year}, ${2:author}
+
