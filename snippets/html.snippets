@@ -171,6 +171,10 @@ snippet link
 	<link rel="${1:stylesheet}" href="${2:/css/master.css}" type="text/css" media="${3:screen}" charset="utf-8"`Close()`>${4}
 snippet mailto
 	<a href="mailto:${1:joe@example.com}?subject=${2:feedback}">${3:email me}</a>
+snippet a
+	<a href="{1:some.html}">{2:text}</a>{3}
+snippet aname
+	<a name="{1:name}">{2:text}</a>{3}
 snippet meta
 	<meta name="${1:name}" content="${2:content}"`Close()`>${3}
 snippet opt
@@ -184,7 +188,7 @@ snippet select
 snippet table
 	<table border="${1:0}">
 		<tr><th>${2:Header}</th></tr>
-		<tr><th>${3:Data}</th></tr>
+		<tr><td>${3:Data}</td></tr>
 	</table>${4}
 snippet textarea
 	<textarea name="${1:Name}" rows="${2:8}" cols="${3:40}">${4}</textarea>${5}
