@@ -223,14 +223,18 @@ fun s:GetSnippet(word, scope)
 endf
 
 fun s:ChooseSnippet(scope, trigger)
-	let snippet = []
+	if !exists('g:snipmate_default_choice') | let snippet = [] | else | let snippet = "" | endif
 	let i = 1
 	for snip in s:multi_snips[a:scope][a:trigger]
-		let snippet += [i.'. '.snip[0]]
+		if !exists('g:snipmate_default_choice') | let snippet += [i.'. '.snip[0]] | else | let snippet .= i.'. '.snip[0] . "\n" | endif
 		let i += 1
 	endfor
 	if i == 2 | return s:multi_snips[a:scope][a:trigger][0][1] | endif
-	let num = inputlist(snippet) - 1
+	if !exists('g:snipmate_default_choice') | let num = inputlist(snippet) - 1
+	else
+		let snippet .= 'Type number and <Enter> or press <Esc> to cancel: '
+		let num = str2nr(input(snippet, g:snipmate_default_choice)) - 1
+	endif
 	return num == -1 ? '' : s:multi_snips[a:scope][a:trigger][num][1]
 endf
 

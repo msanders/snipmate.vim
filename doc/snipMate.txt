@@ -221,12 +221,19 @@ in the current buffer to show a list via |popupmenu-completion|.
 ==============================================================================
 SETTINGS                                  *snipMate-settings* *g:snips_author*
 
-The g:snips_author string (similar to $TM_FULLNAME in TextMate) should be set
+The `g:snips_author string (similar to $TM_FULLNAME in TextMate) should be set
 to your name; it can then be used in snippets to automatically add it. E.g.: >
 
  let g:snips_author = 'Hubert Farnsworth'
  snippet name
  	`g:snips_author`
+<
+                                                 *g:snipmate_default_choice*
+
+The `g:snipmate_default_choice` variable is provided to select in advance an
+option when snipmate output several alternatives, by default it selects none >
+
+ let g:snipmate_default_choice = 1
 <
                                      *snipMate-expandtab* *snipMate-indenting*
 If you would like your snippets to be expanded using spaces instead of tabs,
