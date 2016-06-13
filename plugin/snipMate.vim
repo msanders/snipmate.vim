@@ -22,6 +22,7 @@ let s:snippets = {} | let s:multi_snips = {}
 
 if !exists('snippets_dir')
 	let snippets_dir = substitute(globpath(&rtp, 'snippets/'), "\n", ',', 'g')
+	let snippets_dir = substitute(snippets_dir, "\\", "\/", "g")
 endif
 
 fun! MakeSnip(scope, trigger, content, ...)
