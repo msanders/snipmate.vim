@@ -1,0 +1,55 @@
+snippet if
+	if ${1:true}
+		${2}
+
+snippet ife
+	if ${1:true}
+		${2}
+	else
+		${3}
+
+snippet ift
+	${1} = if ${2:true} then ${3:first} else ${4:second}
+
+snippet forin
+	${1:var} for $1 in ${2}
+
+snippet forof
+	${1} = for ${2}, ${3} of ${4}
+
+snippet try
+	try
+		${1:#code}
+	catch ${2:error}
+		${3:#code}
+
+snippet tryf
+	try
+		${1:#code}
+	catch ${2:error}
+		${3:#code}
+	finally
+		${4}
+
+snippet class class
+	class ${1:ClassName}
+		constructor: (${2:arguments})->
+			${3:#code}
+	
+snippet class class ... extends ...
+	class ${1:ClassName} extends ${2:ExtendedClassName}
+		constructor: (${3:arguments})->
+			${4:#code}
+
+snippet switch
+	switch ${1}
+		when "${2}" then ${3}
+		when "${4}" then ${5}
+		${7:when}
+		else ${6}
+
+snippet when
+	when ${1} then ${2}
+
+snippet #
+	#{${1}}
