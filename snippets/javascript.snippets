@@ -72,3 +72,79 @@ snippet get
 # Get Element
 snippet gett
 	getElementBy${1:Id}('${2}')${3}
+# console.log
+snippet log
+        console.log('${1}');
+# return
+snippet ret
+        return ${1:result}
+# for (property in object ) { ... }
+snippet in
+        for (var ${1:prop} in ${2:Things}) {
+                ${3:$2[$1]}
+        };
+# hasOwnProperty
+snippet has
+        hasOwnProperty(${1})
+# docstring
+snippet /**
+        /**
+         * ${1:description}
+         *
+         */
+snippet @par
+        @param {${1:type}} ${2:name} ${3:description}
+snippet @ret
+        @return {${1:type}} ${2:description}
+
+# JSON.parse
+snippet jsonp
+        JSON.parse(${1:jstr});
+# JSON.stringify
+snippet jsons
+        JSON.stringify(${1:object});
+# try { ... } catch ...
+snippet try
+        try {
+                ${1:/* code */}
+        } catch (${2:err}) {
+                ${3:alert($2.message);}
+        }
+# immediate function
+snippet imf
+        (function (${1:argument}) {
+                ${2:// body ...}
+        }(${3:$1}));
+# self-defining function
+snippet sdf
+        var ${1:function_name} = function (${2:argument}) {
+                ${3:// initial code ...}
+
+                $1 = function ($2) {
+                        ${4:// main code}
+                };
+        }
+# singleton
+snippet sing
+        function ${1:Singleton} (${2:argument}) {
+                // the cached instance
+                var instance;
+
+                // rewrite the constructor
+                $1 = function $1($2) {
+                        return instance;
+                };
+                
+                // carry over the prototype properties
+                $1.prototype = this;
+
+                // the instance
+                instance = new $1();
+
+                // reset the constructor pointer
+                instance.constructor = $1;
+
+                ${3:// code ...}
+
+                return instance;
+        }
