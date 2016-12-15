@@ -1,7 +1,6 @@
 snippet php
 	<?php
 	${1}
-	?>
 snippet ec
 	echo "${1:string}"${2};
 snippet inc
@@ -214,3 +213,17 @@ snippet fun
 # $... = array (...)
 snippet array
 	$${1:arrayName} = array('${2}' => ${3});${4}
+snippet kd
+	echo Kohana::debug(${1});
+snippet kdd
+	echo Kohana::debug(${1});
+	die;
+snippet vd
+	echo "<pre>";
+	var_dump(__METHOD__.':'.__LINE__, ${1});
+snippet vdd
+	echo "<pre>";
+	var_dump(__METHOD__.':'.__LINE__, ${1});
+	die;
+snippet vdi
+	fwrite(STDERR, var_export(${1}, true));
