@@ -1,3 +1,36 @@
+# #!/usr/bin/env ruby
+snippet if
+	<% if ${1:condition} %>
+		${2}
+	<% end %>
+snippet ife
+	<% if ${1:condition} %>
+		${2}
+	<% else %>
+		${3}
+	<% end %>
+snippet elsif
+	<% elsif ${1:condition} %>
+		${2}
+snippet unless
+	<% unless ${1:condition} %>
+		${2}
+	<% end %>
+snippet while
+	<% while ${1:condition} %>
+		${2}
+	<% end %>
+snippet for
+	<% for ${1:e} in ${2:c} %>
+		${3}
+	<% end %>
+snippet until
+	<% until ${1:condition} %>
+		${2}
+	<% end %>
+snippet :
+	:${1:key} => ${2:"value"}${3}
+
 # Some useful Unicode entities
 # Non-Breaking Space
 snippet nbs
@@ -96,14 +129,8 @@ snippet docx
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 snippet html
-	<!doctype html>
 	<html>
-	  <head>
-	    <title>${1:`substitute(Filename('', 'Page Title'), '^.', '\u&', '')`}</title>
-	  <head>
-	  <body>
-	    ${2}
-	  </body>
+	${1}
 	</html>
 snippet xhtml
 	<html xmlns="http://www.w3.org/1999/xhtml">
@@ -123,7 +150,7 @@ snippet head
 snippet title
 	<title>${1:`substitute(Filename('', 'Page Title'), '^.', '\u&', '')`}</title>${2}
 snippet script
-	<script type="text/javascript">
+	<script type="text/javascript" charset="utf-8">
 		${1}
 	</script>${2}
 snippet scriptsrc
@@ -170,7 +197,7 @@ snippet form
 snippet h1
 	<h1 id="${1:heading}">${2:$1}</h1>
 snippet input
-	<input type="${1:text/submit/hidden/button/search}" name="${2:some_name}" value="${3}"`Close()`>${4}
+	<input type="${1:text/submit/hidden/button}" name="${2:some_name}" value="${3}"`Close()`>${4}
 snippet label
 	<label for="${2:$1}">${1:name}</label><input type="${3:text/submit/hidden/button}" name="${4:$2}" value="${5}" id="${6:$2}"`Close()`>${7}
 snippet link

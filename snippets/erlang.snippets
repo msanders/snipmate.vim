@@ -37,3 +37,47 @@ snippet case
 snippet rec
 	-record(${1:record}, {
 	    ${2:field}=${3:value}}).${4}
+# fun
+snippet fun
+        fun(${1:arguments}) -> ${2:code} end
+
+# gen_server
+snippet gen_server
+	-module(${1:module}).
+	-behaviour(gen_server).
+
+	%% API
+	-export([start_link/0]).
+
+	%% callbacks
+	-export([init/1, handle_call/3, handle_cast/2, handle_info/2,
+		terminate/2, code_change/3]).
+
+	-record(state, {}).
+
+	%% API
+
+	start_link() ->
+		gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+
+	%% callbacks
+
+	init([]) ->
+		{ok, #state{}}.
+
+	handle_call(_Request, _From, State) ->
+		Reply = ok,
+		{reply, Reply, State}.
+
+	handle_cast(_Msg, State) ->
+		{noreply, State}.
+
+	handle_info(_Info, State) ->
+		{noreply, State}.
+
+	terminate(_Reason, _State) ->
+		ok.
+
+	code_change(_OldVsn, State, _Extra) ->
+		{ok, State}.
+
