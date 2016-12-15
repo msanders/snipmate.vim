@@ -1,6 +1,10 @@
-# #!/usr/bin/perl
+# #!/usr/bin/env perl
 snippet #!
-	#!/usr/bin/perl
+	#!/usr/bin/env perl
+
+	use v5.10.0;
+	use warnings;
+	use strict;
 
 # Hash Pointer
 snippet .
@@ -95,3 +99,8 @@ snippet cl
 snippet slurp
 	my $${1:var};
 	{ local $/ = undef; local *FILE; open FILE, "<${2:file}"; $$1 = <FILE>; close FILE }${3}
+# basic warning and stricts
+snippet basic
+	use 5.010;
+	use warnings;
+	use strict;${1}
