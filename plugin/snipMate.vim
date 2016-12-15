@@ -18,16 +18,28 @@ if !exists('snips_author') | let snips_author = 'Me' | endif
 au BufRead,BufNewFile *.snippets\= set ft=snippet
 au FileType snippet setl noet fdm=indent
 
-let s:snippets = {} | let s:multi_snips = {}
+let s:snippets = {} | let s:multi_snips = {} | let s:snippets_overrode = {}
 
 if !exists('snippets_dir')
 	let snippets_dir = substitute(globpath(&rtp, 'snippets/'), "\n", ',', 'g')
 endif
 
-fun! MakeSnip(scope, trigger, content, ...)
+fun! MakeSnip(scope, trigger, content, overrideMode, ...)
 	let multisnip = a:0 && a:1 != ''
 	let var = multisnip ? 's:multi_snips' : 's:snippets'
 	if !has_key({var}, a:scope) | let {var}[a:scope] = {} | endif
+	if a:overrideMode == 1
+		if has_key({var}[a:scope], a:trigger)
+			unlet {var}[a:scope][a:trigger]
+			let multisnip = 0
+		endif
+		if !has_key(s:snippets_overrode, a:scope) | let s:snippets_overrode[a:scope] = {} | endif
+		let s:snippets_overrode[a:scope][a:trigger] = 1
+	else
+		if has_key(s:snippets_overrode, a:scope) && has_key(s:snippets_overrode[a:scope], a:trigger)
+			return
+		endif
+	endif
 	if !has_key({var}[a:scope], a:trigger)
 		let {var}[a:scope][a:trigger] = multisnip ? [[a:1, a:content]] : a:content
 	elseif multisnip | let {var}[a:scope][a:trigger] += [[a:1, a:content]]
@@ -60,26 +72,32 @@ fun s:ProcessFile(file, ft, ...)
 	catch /E484/
 		echom "Error in snipMate.vim: couldn't read file: ".a:file
 	endtry
-	return a:0 ? MakeSnip(a:ft, a:1, text, keyword)
-			\  : MakeSnip(a:ft, keyword, text)
+	return a:0 ? MakeSnip(a:ft, a:1, text, 0, keyword)
+			\  : MakeSnip(a:ft, keyword, 0, text)
 endf
 
 fun! ExtractSnipsFile(file, ft)
 	if !filereadable(a:file) | return | endif
 	let text = readfile(a:file)
 	let inSnip = 0
+	let overrideMode = 0
 	for line in text + ["\n"]
 		if inSnip && (line[0] == "\t" || line == '')
 			let content .= strpart(line, 1)."\n"
 			continue
 		elseif inSnip
-			call MakeSnip(a:ft, trigger, content[:-2], name)
+			call MakeSnip(a:ft, trigger, content[:-2], overrideMode, name)
 			let inSnip = 0
 		endif
 
 		if line[:6] == 'snippet'
 			let inSnip = 1
-			let trigger = strpart(line, 8)
+			if line[7] == '!'
+				let overrideMode = 1
+			else
+				let overrideMode = 0
+			endif
+			let trigger = strpart(line, 8 + overrideMode)
 			let name = ''
 			let space = stridx(trigger, ' ') + 1
 			if space " Process multi snip
