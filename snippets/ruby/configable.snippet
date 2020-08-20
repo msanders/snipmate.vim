@@ -1,0 +1,15 @@
+class Config
+  attr_accessor :your_attribute
+end
+
+class << self
+  attr_writer :config
+
+  def config
+    @config ||= Config.new
+  end
+
+  def configure
+    yield(config)
+  end
+end
