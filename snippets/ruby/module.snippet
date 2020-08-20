@@ -1,0 +1,11 @@
+module ${1:`Snippet_RubyClassNameFromFilename()`}
+
+	def self.included(base)
+		base.extend	ClassMethods
+	end
+
+	module ClassMethods
+		${2}
+	end
+
+end

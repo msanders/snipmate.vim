@@ -1,0 +1,3 @@
+CSV.open(${1:Rails.root.join("tmp/file.csv")}, "wb") do |csv|
+  csv << [${2:}]
+end
